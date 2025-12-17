@@ -54,6 +54,8 @@
 
   /* Primary font-family */
   --font-inter: inter, sans-serif;
+
+  --breakpoint-xs: 400px;
 }
 
 :root {
@@ -135,5 +137,14 @@
 
   button {
     @apply cursor-pointer;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
