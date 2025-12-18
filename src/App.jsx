@@ -1,18 +1,12 @@
-import { SidebarProvider } from './components/ui/sidebar';
+import { createBrowserRouter, RouterProvider } from 'react-router';
 
-import Header from './components/shared/Header/Header';
-import AppSidebar from './components/shared/AppSidebar/AppSidebar';
+import routes from './router';
 import './App.css';
 
+const router = createBrowserRouter(routes);
+
 function App() {
-  return (
-    <SidebarProvider>
-      <AppSidebar />
-      <main className="grow">
-        <Header />
-      </main>
-    </SidebarProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
