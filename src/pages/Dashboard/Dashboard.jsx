@@ -2,6 +2,7 @@ import PageHeader from '@/components/shared/PageHeader/PageHeader';
 import { MusicIcon, AlbumIcon, ListMusicIcon, UsersIcon } from 'lucide-react';
 
 import StatCard from '@/components/StatCard/StatCard';
+import VisitorsChart from '@/components/VisitorsChart/VisitorsChart';
 
 const stats = [
   { title: 'Songs', value: '12,847', icon: MusicIcon, progress: '+12.5' },
@@ -15,10 +16,13 @@ function Dashboard() {
     <div>
       <PageHeader title="Dashboard" description="Welcome back! Here's your overview." />
 
-      <div className="xs:grid-cols-2 grid grid-cols-1 gap-3 min-[1180px]:grid-cols-4! lg:grid-cols-3">
-        {stats.map((stat) => (
-          <StatCard key={stat.title} {...stat} />
-        ))}
+      <div className="space-y-6">
+        <div className="xs:grid-cols-2 grid grid-cols-1 gap-3 min-[1180px]:grid-cols-4! lg:grid-cols-3">
+          {stats.map((stat) => (
+            <StatCard key={stat.title} {...stat} />
+          ))}
+        </div>
+        <VisitorsChart />
       </div>
     </div>
   );
