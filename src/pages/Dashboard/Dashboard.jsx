@@ -5,6 +5,7 @@ import StatCard from '@/components/StatCard/StatCard';
 import TotalPlaysChart from '@/components/Charts/TotalPlaysChart/TotalPlaysChart';
 import UsersChart from '@/components/Charts/UsersChart/UsersChart';
 import SessionDurationChart from '@/components/Charts/SessionDurationChart/SessionDurationChart';
+import RecentActivityTable from '@/components/Tables/RecentActivityTable';
 
 const stats = [
   { title: 'Songs', value: '12,847', icon: MusicIcon, progress: '+12.5' },
@@ -25,10 +26,11 @@ function Dashboard() {
           ))}
         </div>
         <TotalPlaysChart />
-        <div className="flex flex-col lg:gap-4 gap-6 lg:flex-row">
+        <div className="flex flex-col gap-6 lg:flex-row lg:gap-4">
           <UsersChart />
           <SessionDurationChart />
         </div>
+        <RecentActivityTable />
       </div>
     </div>
   );
