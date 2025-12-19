@@ -2,7 +2,9 @@ import PageHeader from '@/components/shared/PageHeader/PageHeader';
 import { MusicIcon, AlbumIcon, ListMusicIcon, UsersIcon } from 'lucide-react';
 
 import StatCard from '@/components/StatCard/StatCard';
-import TotalPlaysChart from '@/components/TotalPlaysChart/TotalPlaysChart';
+import TotalPlaysChart from '@/components/Charts/TotalPlaysChart/TotalPlaysChart';
+import UsersChart from '@/components/Charts/UsersChart/UsersChart';
+import SessionDurationChart from '@/components/Charts/SessionDurationChart/SessionDurationChart';
 
 const stats = [
   { title: 'Songs', value: '12,847', icon: MusicIcon, progress: '+12.5' },
@@ -23,6 +25,10 @@ function Dashboard() {
           ))}
         </div>
         <TotalPlaysChart />
+        <div className="flex flex-col lg:gap-4 gap-6 lg:flex-row">
+          <UsersChart />
+          <SessionDurationChart />
+        </div>
       </div>
     </div>
   );

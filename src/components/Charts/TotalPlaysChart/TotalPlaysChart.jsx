@@ -32,10 +32,8 @@ const chartData = [
 ];
 
 const chartConfig = {
-  desktop: {
-    label: 'Users',
-    color: 'var(--chart-2)',
-  },
+  label: 'Plays',
+  color: 'var(--chart-2)',
 };
 
 function TotalPlaysChart() {
