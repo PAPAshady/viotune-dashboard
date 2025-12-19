@@ -38,7 +38,7 @@ const chartConfig = {
   },
 };
 
-function VisitorsChart() {
+function TotalPlaysChart() {
   const isTablet = useMediaQuery('(min-width: 1024px)');
   const [range, setRange] = useState('last-3-months');
 
@@ -51,7 +51,7 @@ function VisitorsChart() {
   return (
     <Card>
       <CardHeader className="xs:px-6 px-3">
-        <CardTitle>Total Visitors</CardTitle>
+        <CardTitle>Plays over time</CardTitle>
         <CardDescription>Total for the {range.replace(/-/g, ' ')}</CardDescription>
         <CardAction>
           {isTablet ? (
@@ -108,4 +108,4 @@ function VisitorsChart() {
   );
 }
 
-export default VisitorsChart;
+export default TotalPlaysChart;

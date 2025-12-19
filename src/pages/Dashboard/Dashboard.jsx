@@ -2,7 +2,7 @@ import PageHeader from '@/components/shared/PageHeader/PageHeader';
 import { MusicIcon, AlbumIcon, ListMusicIcon, UsersIcon } from 'lucide-react';
 
 import StatCard from '@/components/StatCard/StatCard';
-import VisitorsChart from '@/components/VisitorsChart/VisitorsChart';
+import TotalPlaysChart from '@/components/TotalPlaysChart/TotalPlaysChart';
 
 const stats = [
   { title: 'Songs', value: '12,847', icon: MusicIcon, progress: '+12.5' },
@@ -22,7 +22,7 @@ function Dashboard() {
             <StatCard key={stat.title} {...stat} />
           ))}
         </div>
-        <VisitorsChart />
+        <TotalPlaysChart />
       </div>
     </div>
   );
