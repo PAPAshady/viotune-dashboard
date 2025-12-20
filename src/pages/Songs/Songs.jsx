@@ -4,6 +4,7 @@ import { useIsMobile } from '@hooks/use-mobile';
 import { InputGroup, InputGroupInput, InputGroupAddon } from '@components/ui/input-group';
 
 import PageHeader from '@components/shared/PageHeader/PageHeader';
+import FilterBar from '@/components/FilterBar/FilterBar';
 
 function Songs() {
   const isMobile = useIsMobile();
@@ -32,6 +33,7 @@ function Songs() {
           </InputGroupAddon>
         </InputGroup>
       </div>
+      <FilterBar />
     </div>
   );
 }
