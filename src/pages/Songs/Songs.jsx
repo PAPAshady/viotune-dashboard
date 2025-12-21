@@ -1,13 +1,62 @@
+import { useState } from 'react';
+
 import { Button } from '@components/ui/button';
 import { UploadIcon, SearchIcon } from 'lucide-react';
 import { useIsMobile } from '@hooks/use-mobile';
 import { InputGroup, InputGroupInput, InputGroupAddon } from '@components/ui/input-group';
 
 import PageHeader from '@components/shared/PageHeader/PageHeader';
-import FilterBar from '@/components/FilterBar/FilterBar';
+import FilterBar from '@components/FilterBar/FilterBar';
+import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
+import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
+
+const artists = [
+  { id: 1, name: 'Artist One' },
+  { id: 2, name: 'Artist Two' },
+  { id: 3, name: 'Artist Three' },
+  { id: 4, name: 'Artist Four' },
+];
+
+const albums = [
+  { id: 1, title: 'Album One' },
+  { id: 2, title: 'Album Two' },
+  { id: 3, title: 'Album Three' },
+  { id: 4, title: 'Album Four' },
+];
+
+const genres = [
+  { id: 1, title: 'Rock' },
+  { id: 2, title: 'Pop' },
+  { id: 3, title: 'Jazz' },
+  { id: 5, title: 'Classical' },
+];
+
+const visibilityOptions = [
+  { value: 'public', label: 'Public' },
+  { value: 'private', label: 'Private' },
+  { value: 'draft', label: 'Draft' },
+];
 
 function Songs() {
+  const [visibility, setVisibility] = useState();
   const isMobile = useIsMobile();
+
+  const onArtistSelect = (value) => {
+    console.log(`Selected artist: ${value}`);
+  };
+
+  const onAlbumSelect = (value) => {
+    console.log(`Selected album: ${value}`);
+  };
+
+  const onGenreSelect = (value) => {
+    console.log(`Selected genre: ${value}`);
+  };
+
+  const onVisibilityChange = (e) => {
+    const value = e.target.value;
+    setVisibility(value);
+  };
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -33,7 +82,36 @@ function Songs() {
           </InputGroupAddon>
         </InputGroup>
       </div>
-      <FilterBar />
+      <FilterBar>
+        <FilterComboBox
+          filterName="Artists"
+          placeholder="Select an artist"
+          options={artists}
+          valueKey="name"
+          onSelect={onArtistSelect}
+        />
+        <FilterComboBox
+          filterName="Albums"
+          placeholder="Select an album"
+          options={albums}
+          valueKey="title"
+          onSelect={onAlbumSelect}
+        />
+        <FilterComboBox
+          filterName="Genres"
+          placeholder="Select a genre"
+          options={genres}
+          valueKey="title"
+          onSelect={onGenreSelect}
+        />
+        <FilterSelectBox
+          filterName="Visibility"
+          placeholder="Select visibility"
+          options={visibilityOptions}
+          value={visibility}
+          onChange={onVisibilityChange}
+        />
+      </FilterBar>
     </div>
   );
 }
