@@ -8,19 +8,17 @@ function SidebarItem({ title, icon, href }) {
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuItem>
-        <NavLink to={href}>
-          {({ isActive }) => (
-            <SidebarMenuButton
-              isActive={isActive}
-              className="h-9 px-3 text-neutral-300 transition-colors data-[active=true]:bg-blue-500"
-            >
-              <span className="size-5">{styledIcon}</span>
-              <span>{title}</span>
-            </SidebarMenuButton>
-          )}
-        </NavLink>
-      </SidebarMenuItem>
+      <NavLink to={href}>
+        {({ isActive }) => (
+          <SidebarMenuButton
+            isActive={isActive}
+            className="h-9 px-3 text-neutral-300 transition-colors data-[active=true]:bg-blue-500"
+          >
+            <span className="size-5">{styledIcon}</span>
+            <span>{title}</span>
+          </SidebarMenuButton>
+        )}
+      </NavLink>
     </SidebarMenuItem>
   );
 }
