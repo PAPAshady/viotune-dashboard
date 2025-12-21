@@ -9,7 +9,7 @@ import defaultAvatar from '@assets/images/default-avatar.png';
 function Header() {
   const { toggleSidebar } = useSidebar();
   return (
-    <div className="border-secondary xs:px-6 xs:gap-3 bg-background sticky top-0 flex w-full items-center justify-between gap-2 border-b p-3.25">
+    <div className="border-secondary xs:px-6 xs:gap-3 bg-background sticky z-1 top-0 flex w-full items-center justify-between gap-2 border-b p-3.25">
       <button className="md:hidden">
         <MenuIcon onClick={toggleSidebar} size={20} />
       </button>
