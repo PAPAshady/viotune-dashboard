@@ -10,6 +10,7 @@ import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import SongsKpi from '@components/SongsKpi/SongsKpi';
+import SongsTable from '@/components/Tables/SongsTable/SongsTable';
 
 const artists = [
   { id: 1, name: 'Artist One' },
@@ -125,6 +126,7 @@ function Songs() {
           <SongsKpi key={kpi.id} {...kpi} />
         ))}
       </div>
+      <SongsTable />
     </div>
   );
 }
