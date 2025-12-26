@@ -9,6 +9,9 @@ import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
+import SongsKpi from '@components/SongsKpi/SongsKpi';
+import SongsTable from '@components/Tables/SongsTable/SongsTable';
+import MostPlayedSongsChart from '@components/MostPlayedSongsChart/MostPlayedSongsChart';
 
 const artists = [
   { id: 1, name: 'Artist One' },
@@ -35,6 +38,13 @@ const visibilityOptions = [
   { value: 'public', label: 'Public' },
   { value: 'private', label: 'Private' },
   { value: 'draft', label: 'Draft' },
+];
+
+const kpiInfos = [
+  { id: 1, title: 'Total Songs', value: 1564 },
+  { id: 2, title: 'Total Song Plays', value: 164_770 },
+  { id: 3, title: 'Songs with Zero Plays', value: 15 },
+  { id: 4, title: 'Avg Plays per Songs', value: 1564 },
 ];
 
 function Songs() {
@@ -112,6 +122,13 @@ function Songs() {
           onChange={onVisibilityChange}
         />
       </FilterBar>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:gap-4">
+        {kpiInfos.map((kpi) => (
+          <SongsKpi key={kpi.id} {...kpi} />
+        ))}
+      </div>
+      <SongsTable />
+      <MostPlayedSongsChart />
     </div>
   );
 }
