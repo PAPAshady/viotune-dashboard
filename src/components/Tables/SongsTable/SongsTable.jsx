@@ -16,6 +16,13 @@ import {
   DropdownMenuContent,
   DropdownMenuSeparator,
 } from '@components/ui/dropdown-menu';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ui/select';
 import { Badge } from '@components/ui/badge';
 
 import { Button } from '@components/ui/button';
@@ -99,7 +106,7 @@ const columns = [
 ];
 
 function SongsTable() {
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 6 });
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const { data: songs } = useQuery({
     ...getSongsQuery(pagination),
     placeholderData: keepPreviousData, // don't have 0 rows flash while changing pages/loading next page
@@ -136,7 +143,7 @@ function SongsTable() {
         </CardHeader>
       )}
       <CardContent>
-        <div className="max-w-[calc(100dvw-50px)] overflow-x-auto md:max-w-[calc(100dvw-306px)]">
+        <div className="max-h-110 max-w-[calc(100dvw-50px)] overflow-x-auto overflow-y-auto md:max-w-[calc(100dvw-306px)]">
           <Table className="min-w-187.5">
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -166,13 +173,28 @@ function SongsTable() {
         </div>
       </CardContent>
       <CardFooter className="overflow-hidden px-2 sm:px-6">
-        <div className="flex w-full flex-wrap items-center justify-between gap-4">
-          <p className="text-muted-foreground text-sm">
+        <div className="flex w-full flex-wrap items-center gap-4">
+          <p className="text-muted-foreground me-auto text-sm">
             Showing <span className="font-semibold">{from}</span> to{' '}
             <span className="font-semibold">{to}</span> of{' '}
             <span className="font-semibold">{rowCount}</span> songs
           </p>
-          <div>
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground text-sm">Rows per page : </span>
+            <Select value={pagination.pageSize.toString()} onValueChange={table.setPageSize}>
+              <SelectTrigger className="w-20!">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[5, 10, 25, 50].map((pageSize) => (
+                  <SelectItem key={pageSize} value={pageSize.toString()}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {pageCount > 1 && (
             <Pagination
               pageNumber={pagination.pageIndex + 1}
               pageCount={pageCount}
@@ -180,7 +202,7 @@ function SongsTable() {
               boundryCount={paginationBoundryCount}
               setPageIndex={table.setPageIndex}
             />
-          </div>
+          )}
         </div>
       </CardFooter>
     </Card>

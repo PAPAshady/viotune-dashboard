@@ -16,7 +16,7 @@ function Pagination({ pageNumber, pageCount, siblingCount, boundryCount, setPage
   const isNextDisabled = pageNumber >= pageCount;
 
   return (
-    <PaginationWrapper>
+    <PaginationWrapper className='w-auto mx-0'>
       <PaginationContent>
         <PaginationPrevious
           onClick={() => setPageIndex(pageNumber - 2)}
