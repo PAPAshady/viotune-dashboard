@@ -16,10 +16,11 @@ import {
   DropdownMenuContent,
   DropdownMenuSeparator,
 } from '@components/ui/dropdown-menu';
+import { Badge } from '@components/ui/badge';
 
 import { Button } from '@components/ui/button';
 import { Checkbox } from '@components/ui/checkbox';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { MoreHorizontalIcon, PencilIcon, EyeOffIcon, Trash2Icon } from 'lucide-react';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 
@@ -118,11 +119,22 @@ function SongsTable() {
   const isMobile = useMediaQuery('(min-width: 360px)');
   const paginationSiblingCount = isMobile ? 1 : 0; // show no sibling pages on mobile due to limited space
   const paginationBoundryCount = 1;
+  const numberOfSelectedSongs = Object.keys(table.getState().rowSelection).length;
   const from = (pagination.pageIndex + 1) * pagination.pageSize - pagination.pageSize + 1;
   const to = Math.min(pagination.pageIndex * pagination.pageSize + pagination.pageSize, rowCount);
 
   return (
     <Card>
+      {!!numberOfSelectedSongs && (
+        <CardHeader className="flex items-center gap-2">
+          <Badge variant="secondary">
+            {numberOfSelectedSongs} song{numberOfSelectedSongs > 1 && 's'} selected
+          </Badge>
+          <span className="text-muted-foreground text-sm">
+            Actions will apply to selected song{numberOfSelectedSongs > 1 && 's'}
+          </span>
+        </CardHeader>
+      )}
       <CardContent>
         <div className="max-w-[calc(100dvw-50px)] overflow-x-auto md:max-w-[calc(100dvw-306px)]">
           <Table className="min-w-187.5">
