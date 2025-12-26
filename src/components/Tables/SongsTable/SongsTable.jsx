@@ -113,6 +113,7 @@ function SongsTable() {
     rowCount,
     state: { pagination },
     onPaginationChange: setPagination,
+    getRowId: (row) => row.id,
   });
   const isMobile = useMediaQuery('(min-width: 360px)');
   const paginationSiblingCount = isMobile ? 1 : 0; // show no sibling pages on mobile due to limited space
