@@ -10,7 +10,8 @@ import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import SongsKpi from '@components/SongsKpi/SongsKpi';
-import SongsTable from '@/components/Tables/SongsTable/SongsTable';
+import SongsTable from '@components/Tables/SongsTable/SongsTable';
+import MostPlayedSongsChart from '@components/MostPlayedSongsChart/MostPlayedSongsChart';
 
 const artists = [
   { id: 1, name: 'Artist One' },
@@ -127,6 +128,7 @@ function Songs() {
         ))}
       </div>
       <SongsTable />
+      <MostPlayedSongsChart />
     </div>
   );
 }

@@ -11,3 +11,13 @@ export const getSongs = async (pageIndex, pageSize) => {
   if (error) throw error;
   return { data, total: count };
 };
+
+export const getMostPlayedSongs = async ({ limit = 5 }) => {
+  const { data, error } = await supabase
+    .from('most_played_songs')
+    .select('*')
+    .limit(limit)
+    .order('play_count', { ascending: false });
+  if (error) throw error;
+  return data;
+};
