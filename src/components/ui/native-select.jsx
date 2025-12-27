@@ -10,7 +10,7 @@ function NativeSelect({
 }) {
   return (
     <div
-      className="group/native-select relative w-fit has-[select:disabled]:opacity-50"
+      className="group/native-select relative w-full has-[select:disabled]:opacity-50"
       data-slot="native-select-wrapper">
       <select
         data-slot="native-select"
