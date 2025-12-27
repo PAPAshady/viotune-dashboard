@@ -1,16 +1,8 @@
 import { useState } from 'react';
 
 import { Button } from '@components/ui/button';
-import {
-  UploadIcon,
-  SearchIcon,
-  MoreHorizontalIcon,
-  PencilIcon,
-  EyeOffIcon,
-  Trash2Icon,
-} from 'lucide-react';
+import { UploadIcon, MoreHorizontalIcon, PencilIcon, EyeOffIcon, Trash2Icon } from 'lucide-react';
 import { useIsMobile } from '@hooks/use-mobile';
-import { InputGroup, InputGroupInput, InputGroupAddon } from '@components/ui/input-group';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -30,6 +22,7 @@ import SongsKpi from '@components/SongsKpi/SongsKpi';
 import { formatTime } from '@/utils';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import MostPlayedSongsChart from '@components/MostPlayedSongsChart/MostPlayedSongsChart';
+import SearchInput from '@components/Tables/SearchInput/SearchInput';
 import defaultCover from '@assets/images/default-cover.jpg';
 
 const artists = [
@@ -175,14 +168,7 @@ function Songs() {
           <UploadIcon /> Upload Song
         </Button>
       </PageHeader>
-      <div className="sm:-mt-5">
-        <InputGroup>
-          <InputGroupInput placeholder="Search by song title or artist..." />
-          <InputGroupAddon>
-            <SearchIcon />
-          </InputGroupAddon>
-        </InputGroup>
-      </div>
+      <SearchInput placeholder="Search by song title or artist..." />
       <FilterBar>
         <FilterComboBox
           filterName="Artists"

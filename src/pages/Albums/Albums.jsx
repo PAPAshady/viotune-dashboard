@@ -7,16 +7,8 @@ import {
   DropdownMenuContent,
   DropdownMenuSeparator,
 } from '@components/ui/dropdown-menu';
-import { InputGroup, InputGroupInput, InputGroupAddon } from '@components/ui/input-group';
 import { Checkbox } from '@components/ui/checkbox';
-import {
-  PlusIcon,
-  SearchIcon,
-  MoreHorizontalIcon,
-  PencilIcon,
-  EyeOffIcon,
-  Trash2Icon,
-} from 'lucide-react';
+import { PlusIcon, MoreHorizontalIcon, PencilIcon, EyeOffIcon, Trash2Icon } from 'lucide-react';
 import { Button } from '@components/ui/button';
 import { useIsMobile } from '@hooks/use-mobile';
 import { useQuery } from '@tanstack/react-query';
@@ -27,6 +19,7 @@ import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import { getAlbumsQuery } from '@/queries/albums';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
+import SearchInput from '@components/Tables/SearchInput/SearchInput';
 import defaultCover from '@assets/images/default-cover.jpg';
 
 const artists = [
@@ -152,14 +145,7 @@ function Albums() {
           <PlusIcon /> Add Album
         </Button>
       </PageHeader>
-      <div className="sm:-mt-5">
-        <InputGroup>
-          <InputGroupInput placeholder="Search albums by title or artist..." />
-          <InputGroupAddon>
-            <SearchIcon />
-          </InputGroupAddon>
-        </InputGroup>
-      </div>
+      <SearchInput placeholder="Search albums by title or artist..." />
       <FilterBar>
         <FilterComboBox
           filterName="Artists"
