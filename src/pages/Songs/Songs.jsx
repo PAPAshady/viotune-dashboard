@@ -19,7 +19,7 @@ import {
   DropdownMenuSeparator,
 } from '@components/ui/dropdown-menu';
 import { Checkbox } from '@components/ui/checkbox';
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { getSongsQuery } from '@/queries/songs';
 import PageHeader from '@components/shared/PageHeader/PageHeader';
@@ -141,10 +141,7 @@ const columns = [
 
 function Songs() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
-  const { data } = useQuery({
-    ...getSongsQuery(pagination),
-    placeholderData: keepPreviousData, // don't have 0 rows flash while changing pages/loading next page
-  });
+  const { data } = useQuery(getSongsQuery(pagination));
   const [visibility, setVisibility] = useState();
   const isMobile = useIsMobile();
 
