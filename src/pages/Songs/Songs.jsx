@@ -1,16 +1,34 @@
 import { useState } from 'react';
 
 import { Button } from '@components/ui/button';
-import { UploadIcon, SearchIcon } from 'lucide-react';
+import {
+  UploadIcon,
+  SearchIcon,
+  MoreHorizontalIcon,
+  PencilIcon,
+  EyeOffIcon,
+  Trash2Icon,
+} from 'lucide-react';
 import { useIsMobile } from '@hooks/use-mobile';
 import { InputGroup, InputGroupInput, InputGroupAddon } from '@components/ui/input-group';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+} from '@components/ui/dropdown-menu';
+import { Checkbox } from '@components/ui/checkbox';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 
+import { getSongsQuery } from '@/queries/songs';
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import SongsKpi from '@components/SongsKpi/SongsKpi';
-import SongsTable from '@components/Tables/SongsTable/SongsTable';
+import { formatTime } from '@/utils';
+import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import MostPlayedSongsChart from '@components/MostPlayedSongsChart/MostPlayedSongsChart';
 
 const artists = [
@@ -47,7 +65,81 @@ const kpiInfos = [
   { id: 4, title: 'Avg Plays per Songs', value: 1564 },
 ];
 
+const columns = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={table.toggleAllPageRowsSelected}
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox checked={row.getIsSelected()} onCheckedChange={row.getToggleSelectedHandler()} />
+    ),
+  },
+  {
+    id: 'song',
+    header: 'Song',
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <img src={row.original.cover} alt={row.original.title} className="size-12 rounded-md" />
+        <div className="space-y-1">
+          <p className="text-base font-semibold">{row.original.title}</p>
+          <p className="text-muted-foreground">{row.original.album}</p>
+        </div>
+      </div>
+    ),
+  },
+  { header: 'Artist', accessorKey: 'artist' },
+  { header: 'Genre', accessorKey: 'genre_name' },
+  { header: 'Plays', accessorKey: 'play_count' },
+  { header: 'Duration', accessorKey: 'duration', cell: ({ getValue }) => formatTime(getValue()) },
+  {
+    header: 'Uploaded',
+    accessorKey: 'created_at',
+    cell: ({ getValue }) => (
+      <span className="text-muted-foreground">
+        {new Date(getValue()).toLocaleString('en-CA', { hour12: false }).replace(/-/g, '/')}
+      </span>
+    ),
+  },
+  {
+    header: 'actions',
+    id: 'actions',
+    cell: () => (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button className="size-8 p-0" variant="ghost">
+            <MoreHorizontalIcon />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem>
+            <PencilIcon className="me-2 size-4" />
+            Edit metadata
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <EyeOffIcon className="me-2 size-4" />
+            Hide / Unpublish
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem className="text-destructive">
+            <Trash2Icon className="me-2 size-4" />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    ),
+  },
+];
+
 function Songs() {
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
+  const { data } = useQuery({
+    ...getSongsQuery(pagination),
+    placeholderData: keepPreviousData, // don't have 0 rows flash while changing pages/loading next page
+  });
   const [visibility, setVisibility] = useState();
   const isMobile = useIsMobile();
 
@@ -127,7 +219,12 @@ function Songs() {
           <SongsKpi key={kpi.id} {...kpi} />
         ))}
       </div>
-      <SongsTable />
+      <PrimaryTable
+        columns={columns}
+        rows={data}
+        pagination={pagination}
+        setPagination={setPagination}
+      />
       <MostPlayedSongsChart />
     </div>
   );
