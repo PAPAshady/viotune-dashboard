@@ -9,7 +9,7 @@ import KpiCard from '@components/KpiCard/KpiCard';
 import SearchInput from '@components/Tables/SearchInput/SearchInput';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
-import FilterSearchBox from '@/components/FilterSearchBox/FilterSearchBox';
+import FilterSearchBox from '@components/FilterSearchBox/FilterSearchBox';
 
 const kpiInfos = [
   { id: 1, value: 2, title: 'Total Playlists' },
@@ -24,14 +24,25 @@ const visibilityOptions = [
   { value: 'draft', label: 'Draft' },
 ];
 
+const typeOptions = [
+  { value: 'private', label: 'User playlists' },
+  { value: 'public', label: 'Admin playlists' },
+];
+
 function Playlists() {
   const [filterSearchValue, setFilterSearchValue] = useState();
   const [visibility, setVisibility] = useState();
+  const [type, setType] = useState();
   const isMobile = useIsMobile();
 
   const onVisibilityChange = (e) => {
     const value = e.target.value;
     setVisibility(value);
+  };
+
+  const onTypeChange = (e) => {
+    const value = e.target.value;
+    setType(value);
   };
 
   const onFilterSearchChange = (e) => {
@@ -59,6 +70,13 @@ function Playlists() {
           value={filterSearchValue}
           onChange={onFilterSearchChange}
           placeholder="Filter by creator"
+        />
+        <FilterSelectBox
+          filterName="Type"
+          placeholder="Select type"
+          options={typeOptions}
+          value={type}
+          onChange={onTypeChange}
         />
         <FilterSelectBox
           filterName="Visibility"
