@@ -19,7 +19,7 @@ import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import { getAlbumsQuery } from '@/queries/albums';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
-import SearchInput from '@components/Tables/SearchInput/SearchInput';
+import SearchInput from '@/components/SearchInput/SearchInput';
 import defaultCover from '@assets/images/default-cover.jpg';
 
 const artists = [
@@ -127,7 +127,7 @@ function Albums() {
     const value = e.target.value;
     setVisibility(value);
   };
-  
+
   const onReleaseYearChange = (e) => {
     const value = e.target.value;
     setReleaseYear(value);

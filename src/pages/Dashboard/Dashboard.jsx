@@ -5,7 +5,7 @@ import StatCard from '@/components/StatCard/StatCard';
 import TotalPlaysChart from '@/components/Charts/TotalPlaysChart/TotalPlaysChart';
 import UsersChart from '@/components/Charts/UsersChart/UsersChart';
 import SessionDurationChart from '@/components/Charts/SessionDurationChart/SessionDurationChart';
-import RecentActivityTable from '@/components/Tables/RecentActivityTable';
+import RecentActivityTable from '@/components/Tables/RecentActivityTable/RecentActivityTable';
 
 const stats = [
   { title: 'Songs', value: '12,847', icon: MusicIcon, progress: '+12.5' },

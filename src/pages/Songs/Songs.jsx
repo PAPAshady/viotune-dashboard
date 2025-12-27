@@ -22,7 +22,7 @@ import KpiCard from '@/components/KpiCard/kpiCard';
 import { formatTime } from '@/utils';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import MostPlayedSongsChart from '@components/MostPlayedSongsChart/MostPlayedSongsChart';
-import SearchInput from '@components/Tables/SearchInput/SearchInput';
+import SearchInput from '@/components/SearchInput/SearchInput';
 import defaultCover from '@assets/images/default-cover.jpg';
 
 const artists = [
