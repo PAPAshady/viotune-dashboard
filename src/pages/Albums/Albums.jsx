@@ -127,6 +127,7 @@ function Albums() {
     const value = e.target.value;
     setVisibility(value);
   };
+  
   const onReleaseYearChange = (e) => {
     const value = e.target.value;
     setReleaseYear(value);
