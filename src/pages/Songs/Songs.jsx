@@ -18,7 +18,7 @@ import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
-import SongsKpi from '@components/SongsKpi/SongsKpi';
+import KpiCard from '@/components/KpiCard/kpiCard';
 import { formatTime } from '@/utils';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import MostPlayedSongsChart from '@components/MostPlayedSongsChart/MostPlayedSongsChart';
@@ -201,7 +201,7 @@ function Songs() {
       </FilterBar>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:gap-4">
         {kpiInfos.map((kpi) => (
-          <SongsKpi key={kpi.id} {...kpi} />
+          <KpiCard key={kpi.id} {...kpi} />
         ))}
       </div>
       <PrimaryTable
