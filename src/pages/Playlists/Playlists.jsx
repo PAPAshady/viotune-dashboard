@@ -9,6 +9,7 @@ import KpiCard from '@components/KpiCard/KpiCard';
 import SearchInput from '@components/Tables/SearchInput/SearchInput';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
+import FilterSearchBox from '@/components/FilterSearchBox/FilterSearchBox';
 
 const kpiInfos = [
   { id: 1, value: 2, title: 'Total Playlists' },
@@ -24,12 +25,18 @@ const visibilityOptions = [
 ];
 
 function Playlists() {
+  const [filterSearchValue, setFilterSearchValue] = useState();
   const [visibility, setVisibility] = useState();
   const isMobile = useIsMobile();
 
   const onVisibilityChange = (e) => {
     const value = e.target.value;
     setVisibility(value);
+  };
+
+  const onFilterSearchChange = (e) => {
+    const value = e.target.value;
+    setFilterSearchValue(value);
   };
 
   return (
@@ -47,6 +54,12 @@ function Playlists() {
       </PageHeader>
       <SearchInput placeholder="Search playlists or creator..." />
       <FilterBar>
+        <FilterSearchBox
+          filterName="Creator"
+          value={filterSearchValue}
+          onChange={onFilterSearchChange}
+          placeholder="Filter by creator"
+        />
         <FilterSelectBox
           filterName="Visibility"
           placeholder="Select visibility"
