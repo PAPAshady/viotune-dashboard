@@ -140,21 +140,18 @@ function Albums() {
   };
 
   return (
-    <div className="space-y-4 md:space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <PageHeader title="Albums" description="Manage all albums in your platform." />
-        <div className="flex-wra -mt-6 flex gap-2 sm:m-0 sm:justify-end">
-          <Button size={isMobile ? 'sm' : 'default'} variant="outline">
-            Bulk Actions (0)
-          </Button>
-          <Button
-            size={isMobile ? 'sm' : 'default'}
-            className="bg-blue-500 text-white hover:bg-blue-600"
-          >
-            <PlusIcon /> Add Album
-          </Button>
-        </div>
-      </div>
+    <>
+      <PageHeader title="Albums" description="Manage all albums in your platform.">
+        <Button size={isMobile ? 'sm' : 'default'} variant="outline">
+          Bulk Actions (0)
+        </Button>
+        <Button
+          size={isMobile ? 'sm' : 'default'}
+          className="bg-blue-500 text-white hover:bg-blue-600"
+        >
+          <PlusIcon /> Add Album
+        </Button>
+      </PageHeader>
       <div className="sm:-mt-5">
         <InputGroup>
           <InputGroupInput placeholder="Search albums by title or artist..." />
@@ -192,7 +189,7 @@ function Albums() {
         pagination={pagination}
         setPagination={setPagination}
       />
-    </div>
+    </>
   );
 }
 

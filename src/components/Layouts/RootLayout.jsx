@@ -10,7 +10,7 @@ function RootLayout() {
       <AppSidebar />
       <main className="grow">
         <Header />
-        <div className="container py-4 md:py-6">
+        <div className="container space-y-4 py-4 md:space-y-6 md:py-6">
           <Outlet />
         </div>
       </main>
