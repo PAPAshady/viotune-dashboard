@@ -5,7 +5,7 @@ import { UploadIcon } from 'lucide-react';
 import { useIsMobile } from '@hooks/use-mobile';
 import { useQuery } from '@tanstack/react-query';
 
-import { getSongsQuery } from '@/queries/songs';
+import { getSongsQuery, getMostPlayedSongsQuery } from '@/queries/songs';
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
@@ -13,7 +13,7 @@ import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import KpiCard from '@components/KpiCard/kpiCard';
 import { formatTime } from '@/utils';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
-import MostPlayedSongsChart from '@components/MostPlayedSongsChart/MostPlayedSongsChart';
+import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import SearchInput from '@components/SearchInput/SearchInput';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
 import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
@@ -85,6 +85,7 @@ const columns = [
 function Songs() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const { data } = useQuery(getSongsQuery(pagination));
+  const { data: chartData } = useQuery(getMostPlayedSongsQuery({ limit: 6 }));
   const [visibility, setVisibility] = useState();
   const isMobile = useIsMobile();
 
@@ -160,7 +161,12 @@ function Songs() {
         pagination={pagination}
         setPagination={setPagination}
       />
-      <MostPlayedSongsChart />
+      <MostPlaysChart
+        chartTitle="Top songs by Plays"
+        data={chartData}
+        yAxisDataKey="title"
+        barDataKey="play_count"
+      />
     </>
   );
 }
