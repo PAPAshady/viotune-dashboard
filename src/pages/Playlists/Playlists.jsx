@@ -1,18 +1,9 @@
 import { useState } from 'react';
 
 import { useIsMobile } from '@hooks/use-mobile';
-import { PlusIcon, MoreHorizontalIcon, PencilIcon, EyeOffIcon, Trash2Icon } from 'lucide-react';
-
+import { PlusIcon } from 'lucide-react';
 import { Button } from '@components/ui/button';
 import { useQuery } from '@tanstack/react-query';
-import { Checkbox } from '@components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenuSeparator,
-} from '@components/ui/dropdown-menu';
 
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import KpiCard from '@components/KpiCard/KpiCard';
@@ -22,7 +13,11 @@ import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import FilterSearchBox from '@components/FilterSearchBox/FilterSearchBox';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import { getPlaylistsQuery } from '@/queries/playlists';
-import defaultCover from '@assets/images/default-cover.jpg';
+import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
+import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
+import PlaylistsTablePlaylistCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTablePlaylistCell';
+import PlaylistsTableCreatorCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCreatorCell';
+import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
 
 const kpiInfos = [
   { id: 1, value: 2, title: 'Total Playlists' },
@@ -45,64 +40,25 @@ const typeOptions = [
 const columns = [
   {
     id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={table.toggleAllPageRowsSelected}
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox checked={row.getIsSelected()} onCheckedChange={row.getToggleSelectedHandler()} />
-    ),
+    header: (props) => <CheckBoxHeader {...props} />,
+    cell: (props) => <CheckBoxCell {...props} />,
   },
   {
-    id: 'title_and_cover',
-    header: 'Title',
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <img
-          src={row.original.cover || defaultCover}
-          alt={row.original.title}
-          className="size-12 rounded-md object-cover"
-        />
-        <p className="text-base font-semibold">{row.original.title}</p>
-      </div>
-    ),
+    id: 'playlist',
+    header: 'Playlist',
+    cell: (props) => <PlaylistsTablePlaylistCell {...props} />,
   },
   {
     accessorKey: 'user_id',
     header: 'Creator',
-    cell: ({ getValue }) => <span className="text-muted-foreground">{getValue()}</span>,
+    cell: (props) => <PlaylistsTableCreatorCell {...props} />,
   },
   { accessorKey: 'totaltracks', header: 'Tracks' },
   { accessorKey: 'genre_title', header: 'Genre' },
   {
     header: 'Actions',
     id: 'actions',
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button className="size-8 p-0" variant="ghost">
-            <MoreHorizontalIcon />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem>
-            <PencilIcon className="me-2 size-4" />
-            Edit metadata
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <EyeOffIcon className="me-2 size-4" />
-            Hide / Unpublish
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-destructive">
-            <Trash2Icon className="me-2 size-4" />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: (props) => <ActionsCell {...props} />,
   },
 ];
 
