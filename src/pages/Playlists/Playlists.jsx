@@ -12,12 +12,13 @@ import FilterBar from '@components/FilterBar/FilterBar';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import FilterSearchBox from '@components/FilterSearchBox/FilterSearchBox';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
-import { getPlaylistsQuery } from '@/queries/playlists';
+import { getPlaylistsQuery, getMostPlayedPlaylistsQuery } from '@/queries/playlists';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
 import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
 import PlaylistsTablePlaylistCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTablePlaylistCell';
 import PlaylistsTableCreatorCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCreatorCell';
 import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
+import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 
 const kpiInfos = [
   { id: 1, value: 2, title: 'Total Playlists' },
@@ -70,6 +71,7 @@ function Playlists() {
   const [type, setType] = useState();
   const isMobile = useIsMobile();
   const { data } = useQuery(getPlaylistsQuery(pagination));
+  const { data: mostPlayedPublicPlaylists } = useQuery(getMostPlayedPlaylistsQuery({ limit: 6 }));
 
   const onVisibilityChange = (e) => {
     const value = e.target.value;
@@ -132,6 +134,12 @@ function Playlists() {
         rows={data}
         pagination={pagination}
         setPagination={setPagination}
+      />
+      <MostPlaysChart
+        chartTitle="Most Played Playlists"
+        data={mostPlayedPublicPlaylists}
+        yAxisDataKey="title"
+        barDataKey="play_count"
       />
     </>
   );
