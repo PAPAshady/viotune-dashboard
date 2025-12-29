@@ -9,6 +9,9 @@ import Users from './pages/Users/Users';
 import Admins from './pages/Analytics/Analytics';
 import Analytics from './pages/Admins/Admins';
 import Settings from './pages/Settings/Settings';
+import AuthLayout from './components/Layouts/AuthLayout/AuthLayout';
+import SignIn from './pages/SignIn/SignIn';
+import { Navigate } from 'react-router';
 
 const routes = [
   {
@@ -55,6 +58,14 @@ const routes = [
         path: '/settings',
         element: <Settings />,
       },
+    ],
+  },
+  {
+    path: '/auth',
+    element: <AuthLayout />,
+    children: [
+      { index: true, element: <Navigate to="/auth/sign-in" replace /> },
+      { path: 'sign-in', element: <SignIn /> },
     ],
   },
 ];
