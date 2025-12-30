@@ -7,7 +7,20 @@ import { Button } from '@components/ui/button';
 import { EyeIcon } from 'lucide-react';
 import googleLogo from '@assets/icons/google.svg';
 import githubLogo from '@assets/icons/github.svg';
+import OAuthButton from '@components/OAuthButton/OAuthButton';
+import AuthInput from '@components/AuthInput/AuthInput';
 import { Link } from 'react-router';
+
+const OAuthProviders = [
+  {
+    provider: 'Google',
+    iconUrl: googleLogo,
+  },
+  {
+    provider: 'Github',
+    iconUrl: githubLogo,
+  },
+];
 
 function SignIn() {
   return (
@@ -20,28 +33,15 @@ function SignIn() {
               <FieldGroup className="gap-4">
                 <Field>
                   <FieldLabel>Email</FieldLabel>
-                  <InputGroup>
-                    <InputGroupInput
-                      autoComplete="new-password"
-                      type="email"
-                      required
-                      placeholder="Enter your email"
-                    />
-                  </InputGroup>
+                  <AuthInput type="email" placeholder="Enter your email" />
                 </Field>
                 <Field>
                   <FieldLabel>Password</FieldLabel>
-                  <InputGroup>
-                    <InputGroupInput
-                      autoComplete="new-password"
-                      type="password"
-                      required
-                      placeholder="Enter your password"
-                    />
-                    <InputGroupButton size="sm">
-                      <EyeIcon />
-                    </InputGroupButton>
-                  </InputGroup>
+                  <AuthInput
+                    type="password"
+                    placeholder="Enter your password"
+                    buttonIcon={<EyeIcon />}
+                  />
                 </Field>
                 <div className="flex justify-between gap-2">
                   <div className="flex items-center gap-2">
@@ -69,14 +69,9 @@ function SignIn() {
           </div>
         </div>
         <div className="space-y-3">
-          <Button className="h-10 w-full" variant="secondary">
-            <img src={googleLogo} alt="Google" className="me-1 size-5" />
-            Sign in with Google
-          </Button>
-          <Button className="h-10 w-full" variant="secondary">
-            <img src={githubLogo} alt="Google" className="me-1 size-5" />
-            Sign in with Github
-          </Button>
+          {OAuthProviders.map((button) => (
+            <OAuthButton key={button.provider} {...button} />
+          ))}
         </div>
         <p className="text-muted-foreground text-center text-sm">
           Don't have an account? <Link className="text-sm text-blue-400 underline">Sign Up</Link>
