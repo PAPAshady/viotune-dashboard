@@ -1,14 +1,29 @@
+import { useState } from 'react';
+
 import { Card, CardContent } from '@components/ui/card';
-import { Field, FieldLabel, FieldGroup, FieldSet, FieldLegend } from '@components/ui/field';
+import {
+  Field,
+  FieldLabel,
+  FieldGroup,
+  FieldSet,
+  FieldLegend,
+  FieldError,
+} from '@components/ui/field';
 import { Label } from '@components/ui/label';
 import { Checkbox } from '@components/ui/checkbox';
 import { Button } from '@components/ui/button';
-import { EyeIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { Link } from 'react-router';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import supabase from '@/services/supabase';
+import { useNavigate } from 'react-router';
+
 import googleLogo from '@assets/icons/google.svg';
 import githubLogo from '@assets/icons/github.svg';
 import OAuthButton from '@components/OAuthButton/OAuthButton';
 import AuthInput from '@components/AuthInput/AuthInput';
-import { Link } from 'react-router';
 
 const OAuthProviders = [
   {
@@ -21,26 +36,78 @@ const OAuthProviders = [
   },
 ];
 
+const schema = z.object({
+  email: z.email({ message: 'Please enter a valid email address' }),
+  password: z
+    .string()
+    .min(6, { message: 'Password must be at least 6 characters' })
+    .max(12, { message: 'Password must be at most 12 characters' }),
+});
+
 function SignIn() {
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const {
+    handleSubmit,
+    register,
+    setError,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: { email: 'zamani.nima18@gmail.com' },
+  });
+
+  const onSubmit = async (userInfo) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword(userInfo);
+      if (data.user) {
+        navigate('/');
+      } else throw error;
+    } catch (err) {
+      const error = Object.fromEntries(Object.entries(err));
+      let errorMsg = '';
+      if (error.code === 'ERR_NETWORK' || error.status === 0) {
+        errorMsg = 'Network error. Please check your connection and try again.';
+      } else if (error.code === 'invalid_credentials') {
+        errorMsg = 'Incorrect email or password. Please try again.';
+      } else {
+        errorMsg = 'An unexpected error occurred. Please try again.';
+        console.log('error in login user => ', error);
+      }
+      setError('root', { message: errorMsg });
+    }
+  };
+
   return (
     <Card className="w-full">
       <CardContent className="space-y-6">
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <FieldGroup>
             <FieldSet>
               <FieldLegend className="mb-3 text-lg!">Sign In to your account</FieldLegend>
+              <FieldError>{errors.root?.message}</FieldError>
               <FieldGroup className="gap-4">
                 <Field>
                   <FieldLabel>Email</FieldLabel>
-                  <AuthInput type="email" placeholder="Enter your email" />
+                  <AuthInput
+                    type="email"
+                    placeholder="Enter your email"
+                    aria-invalid={!!errors.email}
+                    {...register('email')}
+                  />
+                  <FieldError>{errors.email?.message}</FieldError>
                 </Field>
                 <Field>
                   <FieldLabel>Password</FieldLabel>
                   <AuthInput
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
-                    buttonIcon={<EyeIcon />}
+                    buttonIcon={showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                    onButtonClick={() => setShowPassword((prev) => !prev)}
+                    aria-invalid={!!errors.password}
+                    {...register('password')}
                   />
+                  <FieldError>{errors.password?.message}</FieldError>
                 </Field>
                 <div className="flex justify-between gap-2">
                   <div className="flex items-center gap-2">

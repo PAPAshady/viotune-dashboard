@@ -1,22 +1,27 @@
-import RootLayout from './components/Layouts/RootLayout';
-import Dashboard from './pages/Dashboard/Dashboard';
-import Songs from './pages/Songs/Songs';
-import Albums from './pages/Albums/Albums';
-import Playlists from './pages/Playlists/Playlists';
-import Artists from './pages/Artists/Artists';
-import Genres from './pages/Genres/Genres';
-import Users from './pages/Users/Users';
-import Admins from './pages/Analytics/Analytics';
-import Analytics from './pages/Admins/Admins';
-import Settings from './pages/Settings/Settings';
-import AuthLayout from './components/Layouts/AuthLayout/AuthLayout';
-import SignIn from './pages/SignIn/SignIn';
+import RootLayout from '@components/Layouts/RootLayout';
+import Dashboard from '@/pages/Dashboard/Dashboard';
+import Songs from '@/pages/Songs/Songs';
+import Albums from '@/pages/Albums/Albums';
+import Playlists from '@/pages/Playlists/Playlists';
+import Artists from '@/pages/Artists/Artists';
+import Genres from '@/pages/Genres/Genres';
+import Users from '@/pages/Users/Users';
+import Admins from '@/pages/Analytics/Analytics';
+import Analytics from '@/pages/Admins/Admins';
+import Settings from '@/pages/Settings/Settings';
+import AuthLayout from '@components/Layouts/AuthLayout/AuthLayout';
+import SignIn from '@/pages/SignIn/SignIn';
+import ProtectedRoute from '@components/shared/ProtectedRoute/ProtectedRoute';
 import { Navigate } from 'react-router';
 
 const routes = [
   {
     path: '/',
-    element: <RootLayout />,
+    element: (
+      <ProtectedRoute>
+        <RootLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: '/',
