@@ -21,13 +21,23 @@ function SignIn() {
                 <Field>
                   <FieldLabel>Email</FieldLabel>
                   <InputGroup>
-                    <InputGroupInput type="email" required placeholder="Enter your email" />
+                    <InputGroupInput
+                      autoComplete="new-password"
+                      type="email"
+                      required
+                      placeholder="Enter your email"
+                    />
                   </InputGroup>
                 </Field>
                 <Field>
                   <FieldLabel>Password</FieldLabel>
                   <InputGroup>
-                    <InputGroupInput type="password" required placeholder="Enter your password" />
+                    <InputGroupInput
+                      autoComplete="new-password"
+                      type="password"
+                      required
+                      placeholder="Enter your password"
+                    />
                     <InputGroupButton size="sm">
                       <EyeIcon />
                     </InputGroupButton>
