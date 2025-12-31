@@ -23,9 +23,7 @@ function AuthLayout() {
           <p className="text-muted-foreground text-sm">Admin Dashboard for Music Streaming</p>
         </div>
         <Outlet />
-        <p className="text-muted-foreground mt-6 text-center text-xs">
-          All rights reserved &copy; {new Date().getFullYear()}
-        </p>
+
       </div>
     </div>
   );

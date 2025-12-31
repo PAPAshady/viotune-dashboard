@@ -139,8 +139,8 @@ function SignIn() {
             <OAuthButton key={button.provider} {...button} />
           ))}
         </div>
-        <p className="text-muted-foreground text-center text-sm">
-          Don't have an account? <Link className="text-sm text-blue-400 underline">Sign Up</Link>
+        <p className="text-muted-foreground mt-6 text-center text-xs">
+          All rights reserved &copy; {new Date().getFullYear()}
         </p>
       </CardContent>
     </Card>
