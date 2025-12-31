@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Card, CardContent } from '@components/ui/card';
+import { Spinner } from '@components/ui/spinner';
 import {
   Field,
   FieldLabel,
@@ -51,7 +52,7 @@ function SignIn() {
     handleSubmit,
     register,
     setError,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: { email: 'zamani.nima18@gmail.com' },
@@ -120,8 +121,16 @@ function SignIn() {
               <Button
                 type="submit"
                 className="h-10 w-full bg-blue-500 text-white hover:bg-blue-500 hover:opacity-90"
+                disabled={isSubmitting}
               >
-                Sign In
+                {isSubmitting ? (
+                  <>
+                    <Spinner className="size-5" />
+                    Please wait...
+                  </>
+                ) : (
+                  'Sign In'
+                )}
               </Button>
             </FieldSet>
           </FieldGroup>
