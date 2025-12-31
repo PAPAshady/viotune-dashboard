@@ -25,6 +25,7 @@ import googleLogo from '@assets/icons/google.svg';
 import githubLogo from '@assets/icons/github.svg';
 import OAuthButton from '@components/OAuthButton/OAuthButton';
 import AuthInput from '@components/AuthInput/AuthInput';
+import { getMe } from '@/services/user';
 
 const OAuthProviders = [
   {
@@ -55,13 +56,22 @@ function SignIn() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: { email: 'zamani.nima18@gmail.com' },
+    defaultValues: { email: 'zamani.nima18@gmail.com', password: '123456789' },
   });
 
   const onSubmit = async (userInfo) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword(userInfo);
       if (data.user) {
+        const user = await getMe(data.user.id);
+        const isAdmin = user.role === 'admin' || user.role === 'super_admin';
+
+        if (!isAdmin) {
+          await supabase.auth.signOut();
+          setError('root', { message: 'Incorrect email or password.' });
+          return;
+        }
+
         navigate('/');
       } else throw error;
     } catch (err) {
@@ -70,7 +80,7 @@ function SignIn() {
       if (error.code === 'ERR_NETWORK' || error.status === 0) {
         errorMsg = 'Network error. Please check your connection and try again.';
       } else if (error.code === 'invalid_credentials') {
-        errorMsg = 'Incorrect email or password. Please try again.';
+        errorMsg = 'Incorrect email or password.';
       } else {
         errorMsg = 'An unexpected error occurred. Please try again.';
         console.log('error in login user => ', error);

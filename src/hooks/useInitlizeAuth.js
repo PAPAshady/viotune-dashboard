@@ -9,16 +9,10 @@ function useInitlizeAuth() {
   const setLoading = useAuth((state) => state.setLoading);
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((_, session) => {
-      // if user logged out then set user to null
-      if (!session) {
-        setUser(null);
-        setLoading(false);
-        return;
-      }
-      setUser(session.user);
+      if (session) setUser(session.user); // keep user up to date
+      else setUser(null); // if user logged out then set user to null
       setLoading(false);
     });
-
     return () => authListener.subscription.unsubscribe();
   }, [setUser, setLoading]);
 }
