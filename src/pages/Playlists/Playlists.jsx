@@ -139,7 +139,7 @@ function Playlists() {
         chartTitle="Most Played Playlists"
         data={mostPlayedPublicPlaylists}
         yAxisDataKey="title"
-        barDataKey="play_count"
+        barDataKey="total_plays"
       />
     </>
   );
