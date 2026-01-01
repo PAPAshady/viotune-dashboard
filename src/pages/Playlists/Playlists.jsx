@@ -54,7 +54,7 @@ const columns = [
     header: 'Creator',
     cell: (props) => <PlaylistsTableCreatorCell {...props} />,
   },
-  { accessorKey: 'play_count', header: 'Plays' },
+  { accessorKey: 'total_plays', header: 'Plays' },
   { accessorKey: 'genre_title', header: 'Genre', cell: ({ getValue }) => getValue() ?? '---' },
   { accessorKey: 'totaltracks', header: 'Tracks' },
   {
