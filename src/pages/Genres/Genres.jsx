@@ -3,7 +3,7 @@ import { PlusIcon } from 'lucide-react';
 import { Button } from '@components/ui/button';
 
 import PageHeader from '@components/shared/PageHeader/PageHeader';
-import KpiCard from '@components/KpiCard/KpiCard';
+import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import SearchInput from '@components/SearchInput/SearchInput';
 
 const kpiInfos = [
@@ -25,12 +25,8 @@ function Genres() {
           <PlusIcon /> Add Artist
         </Button>
       </PageHeader>
-      <SearchInput placeholder='Search by genre name...' />
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:gap-4">
-        {kpiInfos.map((kpi) => (
-          <KpiCard key={kpi.id} {...kpi} />
-        ))}
-      </div>
+      <SearchInput placeholder="Search by genre name..." />
+      <KpiCardWrapper data={kpiInfos} />
     </>
   );
 }

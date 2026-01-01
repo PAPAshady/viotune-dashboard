@@ -9,7 +9,6 @@ import SearchInput from '@components/SearchInput/SearchInput';
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
-import KpiCard from '@components/KpiCard/KpiCard';
 import { getArtistsQuery } from '@/queries/artists';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
 import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
@@ -17,6 +16,7 @@ import ArtistsTableArtistCell from '@components/Tables/ColumnDefs/Cells/ArtistsT
 import ArtistsTableGenreCell from '@components/Tables/ColumnDefs/Cells/ArtistsTableGenreCell';
 import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
+import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 
 const genre = [
   { id: 1, title: 'Genre One' },
@@ -81,11 +81,7 @@ function Artists() {
           onSelect={onGenreSelect}
         />
       </FilterBar>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:gap-4">
-        {kpiInfos.map((kpi) => (
-          <KpiCard key={kpi.id} {...kpi} />
-        ))}
-      </div>
+      <KpiCardWrapper data={kpiInfos} />
       <PrimaryTable
         columns={columns}
         rows={data}

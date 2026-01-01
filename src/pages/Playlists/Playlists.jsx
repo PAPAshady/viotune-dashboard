@@ -6,7 +6,6 @@ import { Button } from '@components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 
 import PageHeader from '@components/shared/PageHeader/PageHeader';
-import KpiCard from '@components/KpiCard/KpiCard';
 import SearchInput from '@/components/SearchInput/SearchInput';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
@@ -21,6 +20,7 @@ import PlaylistsTableGenreCell from '@components/Tables/ColumnDefs/Cells/Playlis
 import PlaylistsTableVisibilityCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableVisibilityCell';
 import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
 import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
+import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 
 const kpiInfos = [
   { id: 1, value: 2, title: 'Total Playlists' },
@@ -135,11 +135,7 @@ function Playlists() {
           onChange={onVisibilityChange}
         />
       </FilterBar>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:gap-4">
-        {kpiInfos.map((kpi) => (
-          <KpiCard key={kpi.id} {...kpi} />
-        ))}
-      </div>
+      <KpiCardWrapper data={kpiInfos} />
       <PrimaryTable
         columns={columns}
         rows={data}
