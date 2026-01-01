@@ -5,6 +5,7 @@ import { Button } from '@components/ui/button';
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import SearchInput from '@components/SearchInput/SearchInput';
+import GenreCard from '@components/GenreCard/GenreCard';
 
 const kpiInfos = [
   { id: 1, value: 2, title: 'Total Genres' },
@@ -27,6 +28,9 @@ function Genres() {
       </PageHeader>
       <SearchInput placeholder="Search by genre name..." />
       <KpiCardWrapper data={kpiInfos} />
+      <div className="grid grid-cols-1 gap-4">
+        <GenreCard />
+      </div>
     </>
   );
 }
