@@ -1,12 +1,22 @@
+import { useState } from 'react';
+
 import { useIsMobile } from '@hooks/use-mobile';
 import { PlusIcon } from 'lucide-react';
 import { Button } from '@components/ui/button';
+import { useQuery } from '@tanstack/react-query';
 
 import SearchInput from '@components/SearchInput/SearchInput';
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import KpiCard from '@components/KpiCard/KpiCard';
+import { getArtistsQuery } from '@/queries/artists';
+import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
+import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
+import ArtistsTableArtistCell from '@components/Tables/ColumnDefs/Cells/ArtistsTableArtistCell';
+import ArtistsTableGenreCell from '@components/Tables/ColumnDefs/Cells/ArtistsTableGenreCell';
+import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
+import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 
 const genre = [
   { id: 1, title: 'Genre One' },
@@ -22,7 +32,29 @@ const kpiInfos = [
   { id: 4, value: 15, title: 'Artists with Zero Songs' },
 ];
 
+const columns = [
+  {
+    id: 'select',
+    header: (props) => <CheckBoxHeader {...props} />,
+    cell: (props) => <CheckBoxCell {...props} />,
+  },
+  { id: 'Artist', header: 'Artist', cell: (props) => <ArtistsTableArtistCell {...props} /> },
+  { accessorKey: 'songs_count', header: 'Songs' },
+  { accessorKey: 'albums_count', header: 'Albums' },
+  {
+    accessorKey: 'genre_title',
+    header: 'Genre',
+    cell: (props) => <ArtistsTableGenreCell {...props} />,
+  },
+  { id: 'actions', header: 'Actions', cell: (props) => <ActionsCell {...props} /> },
+];
+
 function Artists() {
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
+  const { data } = useQuery(getArtistsQuery(pagination));
+
+  console.log(data);
+
   const onGenreSelect = (value) => {
     console.log(`Selected artist: ${value}`);
   };
@@ -56,6 +88,12 @@ function Artists() {
           <KpiCard key={kpi.id} {...kpi} />
         ))}
       </div>
+      <PrimaryTable
+        columns={columns}
+        rows={data}
+        pagination={pagination}
+        setPagination={setPagination}
+      />
     </>
   );
 }
