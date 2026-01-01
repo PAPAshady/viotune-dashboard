@@ -17,6 +17,7 @@ import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader
 import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
 import PlaylistsTablePlaylistCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTablePlaylistCell';
 import PlaylistsTableCreatorCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCreatorCell';
+import PlaylistsTableGenreCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableGenreCell';
 import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
 import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 
@@ -55,7 +56,11 @@ const columns = [
     cell: (props) => <PlaylistsTableCreatorCell {...props} />,
   },
   { accessorKey: 'total_plays', header: 'Plays' },
-  { accessorKey: 'genre_title', header: 'Genre', cell: ({ getValue }) => getValue() ?? '---' },
+  {
+    accessorKey: 'genre_title',
+    header: 'Genre',
+    cell: (props) => <PlaylistsTableGenreCell {...props} />,
+  },
   { accessorKey: 'totaltracks', header: 'Tracks' },
   {
     header: 'Actions',
