@@ -4,7 +4,7 @@ export const getPlaylists = async (pageIndex, pageSize) => {
   const from = pageIndex * pageSize;
   const to = from + pageSize - 1;
   const { data, error, count } = await supabase
-    .from('playlists_extended')
+    .from('playlists_extended_admin')
     .select('*', { count: 'exact' })
     .range(from, to)
     .order('created_at', { ascending: false });
