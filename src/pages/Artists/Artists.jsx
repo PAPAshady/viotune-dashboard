@@ -53,8 +53,6 @@ function Artists() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const { data } = useQuery(getArtistsQuery(pagination));
 
-  console.log(data);
-
   const onGenreSelect = (value) => {
     console.log(`Selected artist: ${value}`);
   };
