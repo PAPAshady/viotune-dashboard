@@ -27,7 +27,7 @@ function Header() {
       <Avatar className="md:size-10">
         <AvatarImage src={avatar} alt={userFullName} />
         <AvatarFallback>
-          <img src={defaultAvatar} alt="Avatar" className="object-cover" />
+          <img src={defaultAvatar} alt="Avatar" className="size-full object-cover" />
         </AvatarFallback>
       </Avatar>
     </div>
