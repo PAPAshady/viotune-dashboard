@@ -50,7 +50,7 @@ const columns = [
     cell: (props) => <PlaylistsTablePlaylistCell {...props} />,
   },
   {
-    accessorKey: 'user_id',
+    id: 'creator',
     header: 'Creator',
     cell: (props) => <PlaylistsTableCreatorCell {...props} />,
   },
