@@ -16,11 +16,12 @@ import {
 } from '@components/ui/select';
 import { Badge } from '@components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@components/ui/card';
+import { cn } from '@/lib/utils';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Pagination from '@/components/Pagination/Pagination';
 
-function PrimaryTable({ columns, rows, pagination, setPagination }) {
+function PrimaryTable({ columns, rows, pagination, setPagination, tableClassName }) {
   const rowCount = rows?.total;
   const pageCount = Math.ceil(rowCount / pagination.pageSize);
   const table = useReactTable({
@@ -54,7 +55,7 @@ function PrimaryTable({ columns, rows, pagination, setPagination }) {
       )}
       <CardContent>
         <div className="max-h-110 max-w-[calc(100dvw-50px)] overflow-x-auto overflow-y-auto md:max-w-[calc(100dvw-306px)]">
-          <Table className="min-w-187.5">
+          <Table className={cn('min-w-187.5', tableClassName)}>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>

@@ -145,6 +145,7 @@ function Playlists() {
         rows={data}
         pagination={pagination}
         setPagination={setPagination}
+        tableClassName="min-w-220"
       />
       <MostPlaysChart
         chartTitle="Most Played Playlists"
