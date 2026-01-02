@@ -86,7 +86,7 @@ function Users() {
 
   return (
     <>
-      <PageHeader title="Artists" description="Manage users, roles, and activity.">
+      <PageHeader title="Users" description="Manage users, roles, and activity.">
         <Button size={isMobile ? 'sm' : 'default'} variant="outline">
           Bulk Actions (0)
         </Button>
