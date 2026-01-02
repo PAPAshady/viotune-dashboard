@@ -5,7 +5,7 @@ import StatCard from '@/components/StatCard/StatCard';
 import TotalPlaysChart from '@/components/Charts/TotalPlaysChart/TotalPlaysChart';
 import UsersChart from '@/components/Charts/UsersChart/UsersChart';
 import SessionDurationChart from '@/components/Charts/SessionDurationChart/SessionDurationChart';
-import RecentActivityTable from '@/components/Tables/RecentActivityTable';
+import RecentActivityTable from '@/components/Tables/RecentActivityTable/RecentActivityTable';
 
 const stats = [
   { title: 'Songs', value: '12,847', icon: MusicIcon, progress: '+12.5' },
@@ -16,9 +16,8 @@ const stats = [
 
 function Dashboard() {
   return (
-    <div>
+    <>
       <PageHeader title="Dashboard" description="Welcome back! Here's your overview." />
-
       <div className="space-y-6">
         <div className="xs:grid-cols-2 grid grid-cols-1 gap-3 min-[1180px]:grid-cols-4! lg:grid-cols-3">
           {stats.map((stat) => (
@@ -32,7 +31,7 @@ function Dashboard() {
         </div>
         <RecentActivityTable />
       </div>
-    </div>
+    </>
   );
 }
 

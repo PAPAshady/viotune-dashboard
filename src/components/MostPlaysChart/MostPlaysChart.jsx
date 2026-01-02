@@ -1,9 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@components/ui/chart';
 import { BarChart, XAxis, YAxis, Bar, CartesianGrid } from 'recharts';
-import { useQuery } from '@tanstack/react-query';
 
-import { getMostPlayedSongsQuery } from '@/queries/songs';
 import useMediaQuery from '@hooks/useMediaQuery';
 
 const chartConfig = {
@@ -11,14 +9,13 @@ const chartConfig = {
   color: 'var(--chart-3)',
 };
 
-function MostPlayedSongsChart() {
+function MostPlaysChart({ chartTitle, data, yAxisDataKey, barDataKey }) {
   const isMobile = useMediaQuery('(max-width: 640px)');
-  const { data } = useQuery(getMostPlayedSongsQuery({ limit: 6 }));
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Top songs by Plays</CardTitle>
+        <CardTitle>{chartTitle}</CardTitle>
       </CardHeader>
       <CardContent className="px-2 md:ps-0 md:pe-6">
         <ChartContainer config={chartConfig} className="max-h-75 w-full">
@@ -26,7 +23,7 @@ function MostPlayedSongsChart() {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis type="number" />
             <YAxis
-              dataKey="title"
+              dataKey={yAxisDataKey}
               type="category"
               tick={{ fontSize: isMobile ? 10 : 13 }}
               width={isMobile ? 80 : 110}
@@ -34,7 +31,7 @@ function MostPlayedSongsChart() {
             <ChartTooltip content={<ChartTooltipContent />} />
             <Bar
               width={10}
-              dataKey="play_count"
+              dataKey={barDataKey}
               fill="oklch(62.3% 0.214 259.815)"
               barSize={isMobile ? 15 : 25}
             />
@@ -45,4 +42,4 @@ function MostPlayedSongsChart() {
   );
 }
 
-export default MostPlayedSongsChart;
+export default MostPlaysChart;

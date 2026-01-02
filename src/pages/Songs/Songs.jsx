@@ -1,17 +1,25 @@
 import { useState } from 'react';
 
 import { Button } from '@components/ui/button';
-import { UploadIcon, SearchIcon } from 'lucide-react';
+import { UploadIcon } from 'lucide-react';
 import { useIsMobile } from '@hooks/use-mobile';
-import { InputGroup, InputGroupInput, InputGroupAddon } from '@components/ui/input-group';
+import { useQuery } from '@tanstack/react-query';
 
+import { getSongsQuery, getMostPlayedSongsQuery } from '@/queries/songs';
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
-import SongsKpi from '@components/SongsKpi/SongsKpi';
-import SongsTable from '@components/Tables/SongsTable/SongsTable';
-import MostPlayedSongsChart from '@components/MostPlayedSongsChart/MostPlayedSongsChart';
+import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
+import { formatTime } from '@/utils';
+import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
+import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
+import SearchInput from '@components/SearchInput/SearchInput';
+import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
+import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
+import SongsTableSongCell from '@components/Tables/ColumnDefs/Cells/SongsTableSongCell';
+import TimeCell from '@/components/Tables/ColumnDefs/Cells/TimeCell';
+import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
 
 const artists = [
   { id: 1, name: 'Artist One' },
@@ -47,7 +55,37 @@ const kpiInfos = [
   { id: 4, title: 'Avg Plays per Songs', value: 1564 },
 ];
 
+const columns = [
+  {
+    id: 'select',
+    header: (props) => <CheckBoxHeader {...props} />,
+    cell: (props) => <CheckBoxCell {...props} />,
+  },
+  {
+    id: 'song',
+    header: 'Song',
+    cell: (props) => <SongsTableSongCell {...props} />,
+  },
+  { header: 'Artist', accessorKey: 'artist' },
+  { header: 'Genre', accessorKey: 'genre_name' },
+  { header: 'Plays', accessorKey: 'play_count' },
+  { header: 'Duration', accessorKey: 'duration', cell: ({ getValue }) => formatTime(getValue()) },
+  {
+    header: 'Uploaded At',
+    accessorKey: 'created_at',
+    cell: (props) => <TimeCell {...props} />,
+  },
+  {
+    header: 'Actions',
+    id: 'actions',
+    cell: (props) => <ActionsCell {...props} />,
+  },
+];
+
 function Songs() {
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
+  const { data } = useQuery(getSongsQuery(pagination));
+  const { data: chartData } = useQuery(getMostPlayedSongsQuery({ limit: 6 }));
   const [visibility, setVisibility] = useState();
   const isMobile = useIsMobile();
 
@@ -69,29 +107,19 @@ function Songs() {
   };
 
   return (
-    <div className="space-y-4 md:space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <PageHeader title="Songs" description="Manage and analyze all uploaded songs." />
-        <div className="flex-wra -mt-6 flex gap-2 sm:m-0 sm:justify-end">
-          <Button size={isMobile ? 'sm' : 'default'} variant="outline">
-            Bulk Actions (0)
-          </Button>
-          <Button
-            size={isMobile ? 'sm' : 'default'}
-            className="bg-blue-500 text-white hover:bg-blue-600"
-          >
-            <UploadIcon /> Upload Song
-          </Button>
-        </div>
-      </div>
-      <div className="sm:-mt-5">
-        <InputGroup>
-          <InputGroupInput placeholder="Search by song title or artist..." />
-          <InputGroupAddon>
-            <SearchIcon />
-          </InputGroupAddon>
-        </InputGroup>
-      </div>
+    <>
+      <PageHeader title="Songs" description="Manage and analyze all uploaded songs.">
+        <Button size={isMobile ? 'sm' : 'default'} variant="outline">
+          Bulk Actions (0)
+        </Button>
+        <Button
+          size={isMobile ? 'sm' : 'default'}
+          className="bg-blue-500 text-white hover:bg-blue-600"
+        >
+          <UploadIcon /> Upload Song
+        </Button>
+      </PageHeader>
+      <SearchInput placeholder="Search by song title or artist..." />
       <FilterBar>
         <FilterComboBox
           filterName="Artists"
@@ -122,14 +150,20 @@ function Songs() {
           onChange={onVisibilityChange}
         />
       </FilterBar>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:gap-4">
-        {kpiInfos.map((kpi) => (
-          <SongsKpi key={kpi.id} {...kpi} />
-        ))}
-      </div>
-      <SongsTable />
-      <MostPlayedSongsChart />
-    </div>
+      <KpiCardWrapper data={kpiInfos} />
+      <PrimaryTable
+        columns={columns}
+        rows={data}
+        pagination={pagination}
+        setPagination={setPagination}
+      />
+      <MostPlaysChart
+        chartTitle="Top songs by Plays"
+        data={chartData}
+        yAxisDataKey="title"
+        barDataKey="play_count"
+      />
+    </>
   );
 }
 

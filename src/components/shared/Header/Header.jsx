@@ -5,11 +5,15 @@ import { InputGroup, InputGroupInput, InputGroupAddon } from '@/components/ui/in
 import { useSidebar } from '@/components/ui/sidebar';
 
 import defaultAvatar from '@assets/images/default-avatar.png';
+import useAuth from '@/store/useAuth';
 
 function Header() {
   const { toggleSidebar } = useSidebar();
+  const avatar = useAuth((state) => state.user.user_metadata.avatar_url);
+  const userFullName = useAuth((state) => state.user.user_metadata.full_name);
+
   return (
-    <div className="border-secondary xs:px-6 xs:gap-3 bg-background sticky z-1 top-0 flex w-full items-center justify-between gap-2 border-b p-3.25">
+    <div className="border-secondary xs:px-6 xs:gap-3 bg-background sticky top-0 z-1 flex w-full items-center justify-between gap-2 border-b p-3.25">
       <button className="md:hidden">
         <MenuIcon onClick={toggleSidebar} size={20} />
       </button>
@@ -21,9 +25,9 @@ function Header() {
         </InputGroupAddon>
       </InputGroup>
       <Avatar className="md:size-10">
-        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+        <AvatarImage src={avatar} alt={userFullName} />
         <AvatarFallback>
-          <img src={defaultAvatar} alt="Avatar" />
+          <img src={defaultAvatar} alt="Avatar" className="size-full object-cover" />
         </AvatarFallback>
       </Avatar>
     </div>

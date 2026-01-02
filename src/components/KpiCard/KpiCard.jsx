@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@components/ui/card';
 
-function SongsKpi({ value, title }) {
+function KpiCard({ value, title }) {
   return (
     <Card>
       <CardContent className="p-4 md:p-2 lg:p-4">
@@ -13,4 +13,4 @@ function SongsKpi({ value, title }) {
   );
 }
 
-export default SongsKpi;
+export default KpiCard;
