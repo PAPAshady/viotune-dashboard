@@ -52,12 +52,12 @@ const columns = [
 function Artists() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const { data } = useQuery(getArtistsQuery(pagination));
+  const isMobile = useIsMobile();
 
   const onGenreSelect = (value) => {
     console.log(`Selected artist: ${value}`);
   };
 
-  const isMobile = useIsMobile();
   return (
     <>
       <PageHeader title="Artists" description="Manage Artists and their content.">

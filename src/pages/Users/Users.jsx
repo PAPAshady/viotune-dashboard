@@ -1,10 +1,100 @@
+import { useState } from 'react';
+
+import { useIsMobile } from '@hooks/use-mobile';
+import { PlusIcon } from 'lucide-react';
+import { Button } from '@components/ui/button';
+
+import SearchInput from '@components/SearchInput/SearchInput';
 import PageHeader from '@/components/shared/PageHeader/PageHeader';
+import FilterBar from '@components/FilterBar/FilterBar';
+import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
+import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
+
+const rolesOptions = [
+  { value: 'user', label: 'User' },
+  { value: 'admin', label: 'Admin' },
+  { value: 'super_admin', label: 'Super Admin' },
+];
+
+const statusOptions = [
+  { value: 'active', label: 'Active' },
+  { value: 'suspended', label: 'Suspended' },
+  { value: 'banned', label: 'Banned' },
+];
+
+const authProviderOptions = [
+  { value: 'email', label: 'Email' },
+  { value: 'google', label: 'Google' },
+  { value: 'github', label: 'Github' },
+];
+
+const kpiInfos = [
+  { id: 1, value: 2, title: 'Total Users' },
+  { id: 2, value: 200, title: 'Acvtive Users' },
+  { id: 3, value: 0, title: 'Suspended Users' },
+  { id: 4, value: 15, title: 'Banned Users' },
+];
 
 function Users() {
+  const [role, setRole] = useState();
+  const [status, setStatus] = useState();
+  const [authProvider, setAuthProvider] = useState();
+  const isMobile = useIsMobile();
+
+  const onRoleChange = (e) => {
+    const value = e.target.value;
+    setRole(value);
+  };
+
+  const onStatusChange = (e) => {
+    const value = e.target.value;
+    setStatus(value);
+  };
+
+  const onAuthProviderChange = (e) => {
+    const value = e.target.value;
+    setAuthProvider(value);
+  };
+
   return (
-    <div>
-      <PageHeader title="Users" description="Manage platform users." />
-    </div>
+    <>
+      <PageHeader title="Artists" description="Manage users, roles, and activity.">
+        <Button size={isMobile ? 'sm' : 'default'} variant="outline">
+          Bulk Actions (0)
+        </Button>
+        <Button
+          size={isMobile ? 'sm' : 'default'}
+          className="bg-blue-500 text-white hover:bg-blue-600"
+        >
+          <PlusIcon /> Add User
+        </Button>
+      </PageHeader>
+      <SearchInput placeholder="Search by email or username..." />
+      <FilterBar>
+        <FilterSelectBox
+          filterName="Roles"
+          placeholder="Select role"
+          options={rolesOptions}
+          value={role}
+          onChange={onRoleChange}
+        />
+        <FilterSelectBox
+          filterName="Status"
+          placeholder="Select status"
+          options={statusOptions}
+          value={status}
+          onChange={onStatusChange}
+        />
+        <FilterSelectBox
+          filterName="Auth provider"
+          placeholder="Select provider"
+          options={authProviderOptions}
+          value={authProvider}
+          onChange={onAuthProviderChange}
+        />
+      </FilterBar>
+      <KpiCardWrapper data={kpiInfos} />
+    </>
   );
 }
 
