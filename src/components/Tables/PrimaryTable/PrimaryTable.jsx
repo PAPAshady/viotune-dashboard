@@ -41,6 +41,7 @@ function PrimaryTable({ columns, rows, pagination, setPagination, tableClassName
   const from = (pagination.pageIndex + 1) * pagination.pageSize - pagination.pageSize + 1;
   const to = Math.min(pagination.pageIndex * pagination.pageSize + pagination.pageSize, rowCount);
 
+
   return (
     <Card>
       {!!numberOfSelectedRows && (

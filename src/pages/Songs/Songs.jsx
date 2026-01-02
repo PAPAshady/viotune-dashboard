@@ -18,7 +18,7 @@ import SearchInput from '@components/SearchInput/SearchInput';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
 import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
 import SongsTableSongCell from '@components/Tables/ColumnDefs/Cells/SongsTableSongCell';
-import SongsTableCreatedAtCell from '@components/Tables/ColumnDefs/Cells/SongsTableCreatedAtCell';
+import TimeCell from '@/components/Tables/ColumnDefs/Cells/TimeCell';
 import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
 
 const artists = [
@@ -73,7 +73,7 @@ const columns = [
   {
     header: 'Uploaded At',
     accessorKey: 'created_at',
-    cell: (props) => <SongsTableCreatedAtCell {...props} />,
+    cell: (props) => <TimeCell {...props} />,
   },
   {
     header: 'Actions',

@@ -3,12 +3,21 @@ import { useState } from 'react';
 import { useIsMobile } from '@hooks/use-mobile';
 import { PlusIcon } from 'lucide-react';
 import { Button } from '@components/ui/button';
+import { useQuery } from '@tanstack/react-query';
 
 import SearchInput from '@components/SearchInput/SearchInput';
 import PageHeader from '@/components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
+import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
+import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
+import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
+import UsersTableUserCell from '@components/Tables/ColumnDefs/Cells/UsersTableUserCell';
+import UsersTableRoleCell from '@components/Tables/ColumnDefs/Cells/UsersTableRoleCell';
+import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
+import { getUsersQuery } from '@/queries/users';
+import TimeCell from '@/components/Tables/ColumnDefs/Cells/TimeCell';
 
 const rolesOptions = [
   { value: 'user', label: 'User' },
@@ -35,11 +44,30 @@ const kpiInfos = [
   { id: 4, value: 15, title: 'Banned Users' },
 ];
 
+const columns = [
+  {
+    id: 'select',
+    header: (props) => <CheckBoxHeader {...props} />,
+    cell: (props) => <CheckBoxCell {...props} />,
+  },
+  { id: 'user', header: 'User', cell: (props) => <UsersTableUserCell {...props} /> },
+  { accessorKey: 'email', header: 'Email' },
+  { accessorKey: 'role', header: 'Role', cell: (props) => <UsersTableRoleCell {...props} /> },
+  {
+    accessorKey: 'created_at',
+    header: 'Created at',
+    cell: (props) => <TimeCell {...props} />,
+  },
+  { id: 'actions', cell: (props) => <ActionsCell {...props} /> },
+];
+
 function Users() {
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [role, setRole] = useState();
   const [status, setStatus] = useState();
   const [authProvider, setAuthProvider] = useState();
   const isMobile = useIsMobile();
+  const { data } = useQuery(getUsersQuery(pagination));
 
   const onRoleChange = (e) => {
     const value = e.target.value;
@@ -94,6 +122,12 @@ function Users() {
         />
       </FilterBar>
       <KpiCardWrapper data={kpiInfos} />
+      <PrimaryTable
+        columns={columns}
+        rows={data}
+        pagination={pagination}
+        setPagination={setPagination}
+      />
     </>
   );
 }
