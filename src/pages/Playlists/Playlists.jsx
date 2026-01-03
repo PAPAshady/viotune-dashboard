@@ -13,12 +13,12 @@ import FilterSearchBox from '@components/FilterSearchBox/FilterSearchBox';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import { getPlaylistsQuery, getMostPlayedPlaylistsQuery } from '@/queries/playlists';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
-import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
-import PlaylistsTablePlaylistCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTablePlaylistCell';
-import PlaylistsTableCreatorCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCreatorCell';
-import PlaylistsTableGenreCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableGenreCell';
-import PlaylistsTableVisibilityCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableVisibilityCell';
-import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
+import CheckBoxCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
+import PlaylistsTablePlaylistCell from '@/components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTablePlaylistCell';
+import PlaylistsTableCreatorCell from '@/components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableCreatorCell';
+import PlaylistsTableGenreCell from '@/components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableGenreCell';
+import PlaylistsTableVisibilityCell from '@/components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableVisibilityCell';
+import ActionsCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
 import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 

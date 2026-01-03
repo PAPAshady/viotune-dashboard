@@ -11,10 +11,10 @@ import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import { getArtistsQuery } from '@/queries/artists';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
-import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
-import ArtistsTableArtistCell from '@components/Tables/ColumnDefs/Cells/ArtistsTableArtistCell';
-import ArtistsTableGenreCell from '@components/Tables/ColumnDefs/Cells/ArtistsTableGenreCell';
-import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
+import CheckBoxCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
+import ArtistsTableArtistCell from '@/components/Tables/ColumnDefs/Cells/ArtistsTableCells/ArtistsTableArtistCell';
+import ArtistsTableGenreCell from '@/components/Tables/ColumnDefs/Cells/ArtistsTableCells/ArtistsTableGenreCell';
+import ActionsCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 

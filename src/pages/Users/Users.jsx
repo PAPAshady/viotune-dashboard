@@ -12,12 +12,12 @@ import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
-import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
-import UsersTableUserCell from '@components/Tables/ColumnDefs/Cells/UsersTableUserCell';
-import UsersTableRoleCell from '@components/Tables/ColumnDefs/Cells/UsersTableRoleCell';
-import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
-import TimeCell from '@components/Tables/ColumnDefs/Cells/TimeCell';
-import UsersTableProvidersCell from '@components/Tables/ColumnDefs/Cells/UsersTableProvidersCell';
+import CheckBoxCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
+import UsersTableUserCell from '@/components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableUserCell';
+import UsersTableRoleCell from '@/components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableRoleCell';
+import ActionsCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
+import TimeCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/TimeCell';
+import UsersTableProvidersCell from '@/components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableProvidersCell';
 import { getUsersQuery } from '@/queries/users';
 
 const rolesOptions = [

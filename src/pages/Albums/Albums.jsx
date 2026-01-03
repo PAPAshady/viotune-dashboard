@@ -13,10 +13,10 @@ import { getAlbumsQuery } from '@/queries/albums';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import SearchInput from '@components/SearchInput/SearchInput';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
-import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
-import AlbumsTableAlbumCell from '@components/Tables/ColumnDefs/Cells/AlbumsTableAlbumCell';
-import AlbumsTableArtistCell from '@components/Tables/ColumnDefs/Cells/AlbumsTableArtistCell';
-import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
+import CheckBoxCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
+import AlbumsTableAlbumCell from '@/components/Tables/ColumnDefs/Cells/AlbumsTableCells/AlbumsTableAlbumCell';
+import AlbumsTableArtistCell from '@/components/Tables/ColumnDefs/Cells/AlbumsTableCells/AlbumsTableArtistCell';
+import ActionsCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
 
 const artists = [
   { id: 1, name: 'Artist One' },
