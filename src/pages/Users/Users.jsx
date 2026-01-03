@@ -16,8 +16,9 @@ import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
 import UsersTableUserCell from '@components/Tables/ColumnDefs/Cells/UsersTableUserCell';
 import UsersTableRoleCell from '@components/Tables/ColumnDefs/Cells/UsersTableRoleCell';
 import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
+import TimeCell from '@components/Tables/ColumnDefs/Cells/TimeCell';
+import UsersTableProvidersCell from '@components/Tables/ColumnDefs/Cells/UsersTableProvidersCell';
 import { getUsersQuery } from '@/queries/users';
-import TimeCell from '@/components/Tables/ColumnDefs/Cells/TimeCell';
 
 const rolesOptions = [
   { value: 'user', label: 'User' },
@@ -51,14 +52,24 @@ const columns = [
     cell: (props) => <CheckBoxCell {...props} />,
   },
   { id: 'user', header: 'User', cell: (props) => <UsersTableUserCell {...props} /> },
-  { accessorKey: 'email', header: 'Email' },
-  { accessorKey: 'role', header: 'Role', cell: (props) => <UsersTableRoleCell {...props} /> },
   {
-    accessorKey: 'created_at',
-    header: 'Created at',
+    accessorKey: 'email',
+    header: 'Email',
+    cell: ({ getValue }) => <span className="text-xs">{getValue()}</span>,
+  },
+  { accessorKey: 'role', header: 'Role', cell: (props) => <UsersTableRoleCell {...props} /> },
+
+  {
+    accessorKey: 'last_sign_in_at',
+    header: 'Last Sign In',
     cell: (props) => <TimeCell {...props} />,
   },
-  { id: 'actions', cell: (props) => <ActionsCell {...props} /> },
+  {
+    accessorKey: 'providers',
+    header: 'Auth Providers',
+    cell: (props) => <UsersTableProvidersCell {...props} />,
+  },
+  { id: 'actions', cell: (props) => <ActionsCell {...props} />, header: 'Actions' },
 ];
 
 function Users() {
