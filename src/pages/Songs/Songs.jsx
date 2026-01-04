@@ -16,10 +16,10 @@ import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import SearchInput from '@components/SearchInput/SearchInput';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
-import CheckBoxCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
-import SongsTableSongCell from '@/components/Tables/ColumnDefs/Cells/SongsTableCells/SongsTableSongCell';
-import TimeCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/TimeCell';
-import ActionsCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
+import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
+import SongsTableSongCell from '@components/Tables/ColumnDefs/Cells/SongsTableCells/SongsTableSongCell';
+import TimeCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/TimeCell';
+import ActionsCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
 
 const artists = [
   { id: 1, name: 'Artist One' },
