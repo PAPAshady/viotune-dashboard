@@ -20,6 +20,10 @@ import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/
 import SongsTableSongCell from '@components/Tables/ColumnDefs/Cells/SongsTableCells/SongsTableSongCell';
 import TimeCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/TimeCell';
 import ActionsCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
+import SongsTableSongCellSkeleton from '@components/Tables/ColumnDefs/Cells/SongsTableCells/SongsTableSongCellSkeleton';
+import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
+import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
+import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
 
 const artists = [
   { id: 1, name: 'Artist One' },
@@ -60,31 +64,48 @@ const columns = [
     id: 'select',
     header: (props) => <CheckBoxHeader {...props} />,
     cell: (props) => <CheckBoxCell {...props} />,
+    meta: { skeleton: <CheckBoxSkeleton /> },
   },
   {
     id: 'song',
     header: 'Song',
     cell: (props) => <SongsTableSongCell {...props} />,
+    meta: { skeleton: <SongsTableSongCellSkeleton /> },
   },
-  { header: 'Artist', accessorKey: 'artist' },
-  { header: 'Genre', accessorKey: 'genre_name' },
-  { header: 'Plays', accessorKey: 'play_count' },
-  { header: 'Duration', accessorKey: 'duration', cell: ({ getValue }) => formatTime(getValue()) },
+  {
+    header: 'Artist',
+    accessorKey: 'artist',
+    meta: { skeleton: <TextSkeleton className="w-16" /> },
+  },
+  {
+    header: 'Genre',
+    accessorKey: 'genre_name',
+    meta: { skeleton: <TextSkeleton className="w-16" /> },
+  },
+  { header: 'Plays', accessorKey: 'play_count', meta: { skeleton: <TextSkeleton /> } },
+  {
+    header: 'Duration',
+    accessorKey: 'duration',
+    cell: ({ getValue }) => formatTime(getValue()),
+    meta: { skeleton: <TextSkeleton className="w-16" /> },
+  },
   {
     header: 'Uploaded At',
     accessorKey: 'created_at',
     cell: (props) => <TimeCell {...props} />,
+    meta: { skeleton: <TextSkeleton className="w-30 max-w-30" /> },
   },
   {
     header: 'Actions',
     id: 'actions',
     cell: (props) => <ActionsCell {...props} />,
+    meta: { skeleton: <ActionsCellSkeleton /> },
   },
 ];
 
 function Songs() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
-  const { data } = useQuery(getSongsQuery(pagination));
+  const { data, isLoading } = useQuery(getSongsQuery(pagination));
   const { data: chartData } = useQuery(getMostPlayedSongsQuery({ limit: 6 }));
   const [visibility, setVisibility] = useState();
   const isMobile = useIsMobile();
@@ -154,6 +175,7 @@ function Songs() {
       <PrimaryTable
         columns={columns}
         rows={data}
+        isLoading={isLoading}
         pagination={pagination}
         setPagination={setPagination}
       />
