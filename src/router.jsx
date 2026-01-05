@@ -6,8 +6,7 @@ import Playlists from '@/pages/Playlists/Playlists';
 import Artists from '@/pages/Artists/Artists';
 import Genres from '@/pages/Genres/Genres';
 import Users from '@/pages/Users/Users';
-import Admins from '@/pages/Analytics/Analytics';
-import Analytics from '@/pages/Admins/Admins';
+import Analytics from '@/pages/Analytics/Analytics';
 import Settings from '@/pages/Settings/Settings';
 import AuthLayout from '@components/Layouts/AuthLayout/AuthLayout';
 import SignIn from '@/pages/SignIn/SignIn';
@@ -50,10 +49,6 @@ const routes = [
       {
         path: '/users',
         element: <Users />,
-      },
-      {
-        path: '/admins',
-        element: <Admins />,
       },
       {
         path: '/analytics',
