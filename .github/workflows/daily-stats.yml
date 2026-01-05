@@ -3,7 +3,7 @@ name: Daily Stats Snapshot
 # Run every day at midnight Iran time (UTC+3:30 = 20:30 UTC previous day)
 on:
   schedule:
-    - cron: '30 20 * * *'  # 20:30 UTC = 00:00 IRST
+    - cron: '*/1 * * * *'  # 20:30 UTC = 00:00 IRST
   workflow_dispatch:  # allows manual trigger from GitHub UI
 
 jobs:
