@@ -3,6 +3,7 @@ import { MusicIcon, AlbumIcon, ListMusicIcon, UsersIcon } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 
 import StatCard from '@/components/StatCard/StatCard';
+import StatCardSkeleton from '@/components/StatCard/StatCardSkeleton';
 import TotalPlaysChart from '@/components/Charts/TotalPlaysChart/TotalPlaysChart';
 import UsersChart from '@/components/Charts/UsersChart/UsersChart';
 import SessionDurationChart from '@/components/Charts/SessionDurationChart/SessionDurationChart';
@@ -13,10 +14,13 @@ import { getMonthlyPlaylistsStatsQuery } from '@/queries/playlists';
 import { getUsersStatsQuery } from '@/queries/users';
 
 function Dashboard() {
-  const { data: songsStats } = useQuery(getMonthlySongsStatsQuery());
-  const { data: albumsStats } = useQuery(getMonthlyAlbumsStatsQuery());
-  const { data: playlistsStats } = useQuery(getMonthlyPlaylistsStatsQuery());
-  const { data: usersStats } = useQuery(getUsersStatsQuery(30));
+  const { data: songsStats, isPending: isSongsPending } = useQuery(getMonthlySongsStatsQuery());
+  const { data: albumsStats, isPending: isAlbumsPending } = useQuery(getMonthlyAlbumsStatsQuery());
+  const { data: usersStats, isPending: isUsersPending } = useQuery(getUsersStatsQuery(30));
+  const { data: playlistsStats, isPending: isPlaylistsPending } = useQuery(
+    getMonthlyPlaylistsStatsQuery()
+  );
+  const isPending = isSongsPending || isAlbumsPending || isUsersPending || isPlaylistsPending;
 
   const stats = [
     {
@@ -54,9 +58,11 @@ function Dashboard() {
       <PageHeader title="Dashboard" description="Welcome back! Here's your overview." />
       <div className="space-y-6">
         <div className="xs:grid-cols-2 grid grid-cols-1 gap-3 min-[1180px]:grid-cols-4! lg:grid-cols-3">
-          {stats?.map((stat) => (
-            <StatCard key={stat?.id} {...stat} />
-          ))}
+          {isPending
+            ? Array(4)
+                .fill()
+                .map((_, index) => <StatCardSkeleton key={index} />)
+            : stats.map((stat) => <StatCard key={stat?.id} {...stat} />)}
         </div>
         <TotalPlaysChart />
         <div className="flex flex-col gap-6 lg:flex-row lg:gap-4">
