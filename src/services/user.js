@@ -13,3 +13,9 @@ export const getUsers = async (pageIndex, pageSize) => {
   if (error) throw error;
   return { data: data.users, total: data.count };
 };
+
+export const getUsersStats = async (daysAgo) => {
+  const { data, error } = await supabase.functions.invoke(`get_users_stats?daysAgo=${daysAgo}`);
+  if (error) throw error;
+  return data;
+};

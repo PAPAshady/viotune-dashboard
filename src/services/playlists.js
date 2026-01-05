@@ -21,3 +21,21 @@ export const getMostPlayedPlaylists = async ({ limit = 5 }) => {
   if (error) throw error;
   return data;
 };
+
+export const getMonthlyPlaylistsStats = async () => {
+  const now = new Date();
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+  const { count: total, error: totalError } = await supabase
+    .from('playlists')
+    .select('*', { count: 'exact', head: true });
+  if (totalError) throw totalError;
+
+  const { count: total30DaysAgo, error: total30DaysAgoError } = await supabase
+    .from('playlists')
+    .select('*', { count: 'exact', head: true })
+    .lt('created_at', thirtyDaysAgo.toISOString());
+  if (total30DaysAgoError) throw total30DaysAgoError;
+
+  return { total, total30DaysAgo };
+};

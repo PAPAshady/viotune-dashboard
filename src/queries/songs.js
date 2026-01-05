@@ -1,6 +1,6 @@
 import { queryOptions, keepPreviousData } from '@tanstack/react-query';
 
-import { getSongs, getMostPlayedSongs } from '@/services/songs';
+import { getSongs, getMostPlayedSongs, getMonthlySongsStats } from '@/services/songs';
 
 export const getSongsQuery = ({ pageIndex, pageSize }) =>
   queryOptions({
@@ -14,3 +14,6 @@ export const getMostPlayedSongsQuery = (options) =>
     queryKey: ['songs', 'most-played', options],
     queryFn: () => getMostPlayedSongs(options),
   });
+
+export const getMonthlySongsStatsQuery = () =>
+  queryOptions({ queryKey: ['songs', 'monthly-stats'], queryFn: getMonthlySongsStats });
