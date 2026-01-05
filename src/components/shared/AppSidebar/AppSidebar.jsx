@@ -14,7 +14,6 @@ import {
   MicVocalIcon,
   TagIcon,
   UsersIcon,
-  UserCogIcon,
   ChartColumnIcon,
   SettingsIcon,
 } from 'lucide-react';
