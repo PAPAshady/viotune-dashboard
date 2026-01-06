@@ -8,48 +8,42 @@ import TotalPlaysChart from '@/components/Charts/TotalPlaysChart/TotalPlaysChart
 import UsersChart from '@/components/Charts/UsersChart/UsersChart';
 import SessionDurationChart from '@/components/Charts/SessionDurationChart/SessionDurationChart';
 import RecentActivityTable from '@/components/Tables/RecentActivityTable/RecentActivityTable';
-import { getMonthlySongsStatsQuery } from '@/queries/songs';
-import { getMonthlyAlbumsStatsQuery } from '@/queries/albums';
-import { getMonthlyPlaylistsStatsQuery } from '@/queries/playlists';
-import { getUsersStatsQuery } from '@/queries/users';
+
+import { getCurrentStatsQuery, getStatsByDaysAgoQuery } from '@/queries/stats';
 
 function Dashboard() {
-  const { data: songsStats, isPending: isSongsPending } = useQuery(getMonthlySongsStatsQuery());
-  const { data: albumsStats, isPending: isAlbumsPending } = useQuery(getMonthlyAlbumsStatsQuery());
-  const { data: usersStats, isPending: isUsersPending } = useQuery(getUsersStatsQuery(30));
-  const { data: playlistsStats, isPending: isPlaylistsPending } = useQuery(
-    getMonthlyPlaylistsStatsQuery()
-  );
-  const isPending = isSongsPending || isAlbumsPending || isUsersPending || isPlaylistsPending;
+  const { data: currentStats, isPending: isCurrentStatsPending } = useQuery(getCurrentStatsQuery());
+  const { data: prevStats, isPending: isPrevStatsPending } = useQuery(getStatsByDaysAgoQuery(30));
+  const isPending = isCurrentStatsPending || isPrevStatsPending;
 
   const stats = [
     {
       id: 1,
       title: 'Songs',
       icon: MusicIcon,
-      total: songsStats?.total,
-      total30DaysAgo: songsStats?.total30DaysAgo,
+      total: currentStats?.songs,
+      prevTotal: prevStats?.total_songs,
     },
     {
       id: 2,
       title: 'Albums',
       icon: AlbumIcon,
-      total: albumsStats?.total,
-      total30DaysAgo: albumsStats?.total30DaysAgo,
+      total: currentStats?.albums,
+      prevTotal: prevStats?.total_albums,
     },
     {
       id: 3,
       title: 'Playlists',
       icon: ListMusicIcon,
-      total: playlistsStats?.total,
-      total30DaysAgo: playlistsStats?.total30DaysAgo,
+      total: currentStats?.playlists,
+      prevTotal: prevStats?.total_playlists,
     },
     {
       id: 4,
       title: 'Users',
       icon: UsersIcon,
-      total: usersStats?.total,
-      total30DaysAgo: usersStats?.totalBefore,
+      total: currentStats?.users,
+      prevTotal: prevStats?.total_users,
     },
   ];
 

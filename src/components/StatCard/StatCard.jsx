@@ -3,10 +3,10 @@ import { Card, CardContent } from '@/components/ui/card';
 
 import { cn } from '@/lib/utils';
 
-function StatCard({ title, total, total30DaysAgo, icon }) {
+function StatCard({ title, total, prevTotal, icon }) {
   const Icon = icon;
-  const diff = total - total30DaysAgo;
-  const progress = total30DaysAgo === 0 ? 100 : Number(((diff / total30DaysAgo) * 100).toFixed(1));
+  const diff = total - prevTotal;
+  const progress = prevTotal === 0 ? 100 : Number(((diff / prevTotal) * 100).toFixed(1));
 
   return (
     <Card>

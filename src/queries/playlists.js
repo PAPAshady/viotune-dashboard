@@ -1,10 +1,6 @@
 import { queryOptions, keepPreviousData } from '@tanstack/react-query';
 
-import {
-  getPlaylists,
-  getMostPlayedPlaylists,
-  getMonthlyPlaylistsStats,
-} from '@/services/playlists';
+import { getPlaylists, getMostPlayedPlaylists } from '@/services/playlists';
 
 export const getPlaylistsQuery = ({ pageIndex, pageSize }) =>
   queryOptions({
@@ -18,6 +14,3 @@ export const getMostPlayedPlaylistsQuery = (options) =>
     queryKey: ['playlists', 'most-played', options],
     queryFn: () => getMostPlayedPlaylists(options),
   });
-
-export const getMonthlyPlaylistsStatsQuery = () =>
-  queryOptions({ queryKey: ['playlists', 'monthly-stats'], queryFn: getMonthlyPlaylistsStats });
