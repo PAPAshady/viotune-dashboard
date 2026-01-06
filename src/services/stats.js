@@ -31,3 +31,14 @@ export const getStatsByDaysAgo = async (daysAgo) => {
 
   return data;
 };
+
+export const getStatsSince = async (daysAgo) => {
+  const sinceDate = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000).toISOString();
+  const { data, error } = await supabase
+    .from('stats_snapshots')
+    .select('*')
+    .gte('created_at', sinceDate)
+    .order('created_at', { ascending: true });
+  if (error) throw error;
+  return data;
+};
