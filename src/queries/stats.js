@@ -1,6 +1,11 @@
 import { queryOptions } from '@tanstack/react-query';
 
-import { getCurrentStats, getStatsByDaysAgo, getStatsSince } from '@/services/stats';
+import {
+  getCurrentStats,
+  getStatsByDaysAgo,
+  getStatsSince,
+  getPlaysStatsSince,
+} from '@/services/stats';
 
 export const getCurrentStatsQuery = () =>
   queryOptions({ queryKey: ['stats', 'current'], queryFn: getCurrentStats });
@@ -10,3 +15,9 @@ export const getStatsByDaysAgoQuery = (daysAgo) =>
 
 export const getStatsSinceQuery = (since) =>
   queryOptions({ queryKey: ['stats', { since }], queryFn: () => getStatsSince(since) });
+
+export const getPlaysStatsSinceQuery = (since) =>
+  queryOptions({
+    queryKey: ['stats', 'plays', { since }],
+    queryFn: () => getPlaysStatsSince(since),
+  });

@@ -20,16 +20,10 @@ import {
 } from '@/components/ui/select';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { useQuery } from '@tanstack/react-query';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
-
-const chartData = [
-  { month: 'January', users: 530 },
-  { month: 'February', users: 180 },
-  { month: 'March', users: 490 },
-  { month: 'April', users: 160 },
-  { month: 'May', users: 400 },
-];
+import { getPlaysStatsSinceQuery } from '@/queries/stats';
 
 const chartConfig = {
   label: 'Plays',
@@ -38,25 +32,35 @@ const chartConfig = {
 
 function TotalPlaysChart() {
   const isTablet = useMediaQuery('(min-width: 1024px)');
-  const [range, setRange] = useState('last-3-months');
+  const [range, setRange] = useState(90);
+  const { data } = useQuery(getPlaysStatsSinceQuery(range));
 
   const handleChange = (value) => {
     if (!value) return;
     setRange(value);
-    console.log(value);
   };
+
+  const chartData = data?.map((item) => {
+    return {
+      ...item,
+      dateLable: new Date(item.created_at).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      }),
+    };
+  });
 
   return (
     <Card>
       <CardHeader className="xs:px-6 px-3">
         <CardTitle>Plays over time</CardTitle>
-        <CardDescription>Total for the {range.replace(/-/g, ' ')}</CardDescription>
+        <CardDescription>Total for the last {range} days</CardDescription>
         <CardAction>
           {isTablet ? (
             <ToggleGroup type="single" variant="outline" value={range} onValueChange={handleChange}>
-              <ToggleGroupItem value="last-3-months">Last 3 months</ToggleGroupItem>
-              <ToggleGroupItem value="last-30-days">Last 30 days</ToggleGroupItem>
-              <ToggleGroupItem value="last-7-days">Last 7 days</ToggleGroupItem>
+              <ToggleGroupItem value={90}>Last 3 months</ToggleGroupItem>
+              <ToggleGroupItem value={30}>Last 30 days</ToggleGroupItem>
+              <ToggleGroupItem value={7}>Last 7 days</ToggleGroupItem>
             </ToggleGroup>
           ) : (
             <Select onValueChange={handleChange} value={range}>
@@ -66,9 +70,9 @@ function TotalPlaysChart() {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Select a time range</SelectLabel>
-                  <SelectItem value="last-3-months">Last 3 months</SelectItem>
-                  <SelectItem value="last-30-days">Last 30 days</SelectItem>
-                  <SelectItem value="last-7-days">Last 7 days</SelectItem>
+                  <SelectItem value={90}>Last 3 months</SelectItem>
+                  <SelectItem value={30}>Last 30 days</SelectItem>
+                  <SelectItem value={7}>Last 7 days</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -90,12 +94,12 @@ function TotalPlaysChart() {
             </defs>
 
             <Area
-              dataKey="users"
+              dataKey="total_plays"
               type="monotone"
               stroke="var(--primary)"
               fill="url(#usersGradient)" // use gradient for chart
             />
-            <XAxis dataKey="month" />
+            <XAxis dataKey="dateLable" />
             <YAxis hide={!isTablet} />
             <ChartTooltip content={<ChartTooltipContent />} />
             <CartesianGrid vertical={false} />
