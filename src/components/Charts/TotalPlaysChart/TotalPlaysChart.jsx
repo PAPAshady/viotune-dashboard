@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 import {
   Card,
@@ -24,6 +24,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
 import { getPlaysStatsSinceQuery } from '@/queries/stats';
+import { addDateLabelToChartData } from '@/utils';
 
 const chartConfig = {
   label: 'Plays',
@@ -40,15 +41,7 @@ function TotalPlaysChart() {
     setRange(value);
   };
 
-  const chartData = data?.map((item) => {
-    return {
-      ...item,
-      dateLable: new Date(item.created_at).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-      }),
-    };
-  });
+  const chartData = useMemo(() => addDateLabelToChartData(data), [data]);
 
   return (
     <Card>
@@ -99,7 +92,7 @@ function TotalPlaysChart() {
               stroke="var(--primary)"
               fill="url(#usersGradient)" // use gradient for chart
             />
-            <XAxis dataKey="dateLable" />
+            <XAxis dataKey="dateLabel" />
             <YAxis hide={!isTablet} />
             <ChartTooltip content={<ChartTooltipContent />} />
             <CartesianGrid vertical={false} />

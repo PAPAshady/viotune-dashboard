@@ -5,6 +5,7 @@ import {
   getStatsByDaysAgo,
   getStatsSince,
   getPlaysStatsSince,
+  getUsersStatsSince,
 } from '@/services/stats';
 
 export const getCurrentStatsQuery = () =>
@@ -20,4 +21,10 @@ export const getPlaysStatsSinceQuery = (since) =>
   queryOptions({
     queryKey: ['stats', 'plays', { since }],
     queryFn: () => getPlaysStatsSince(since),
+  });
+
+export const getUsersStatsSinceQuery = (since) =>
+  queryOptions({
+    queryKey: ['stats', 'users', { since }],
+    queryFn: () => getUsersStatsSince(since),
   });

@@ -34,3 +34,16 @@ export function getPagination(currentPage, totalPages, siblingCount = 1, boundar
 
   return pages;
 }
+
+// Adds a human-readable date label (e.g. "Jan 6") to each chart data item
+// based on its `created_at` timestamp. Keeps the original date intact.
+export const addDateLabelToChartData = (chartData) =>
+  chartData?.map((item) => {
+    return {
+      ...item,
+      dateLabel: new Date(item.created_at).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      }),
+    };
+  });

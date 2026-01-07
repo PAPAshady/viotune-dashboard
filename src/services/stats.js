@@ -53,3 +53,14 @@ export const getPlaysStatsSince = async (daysAgo) => {
   if (error) throw error;
   return data;
 };
+
+export const getUsersStatsSince = async (daysAgo) => {
+  const sinceDate = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000).toISOString();
+  const { data, error } = await supabase
+    .from('stats_snapshots')
+    .select('total_users, created_at')
+    .gte('created_at', sinceDate)
+    .order('created_at', { ascending: true });
+  if (error) throw error;
+  return data;
+};
