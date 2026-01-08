@@ -18,6 +18,7 @@ import {
   SelectLabel,
   SelectItem,
 } from '@components/ui/select';
+import { Spinner } from '@components/ui/spinner';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { useQuery } from '@tanstack/react-query';
 
@@ -34,7 +35,7 @@ const chartConfig = {
 
 function UsersChart() {
   const [range, setRange] = useState(90);
-  const { data } = useQuery(getUsersStatsSinceQuery(range));
+  const { data, isPending } = useQuery(getUsersStatsSinceQuery(range));
   const isTablet = useMediaQuery('(min-width: 768px)');
 
   const handleChange = (value) => {
@@ -67,13 +68,19 @@ function UsersChart() {
       </CardHeader>
       <CardContent className="px-2 md:ps-0 md:pe-6">
         <ChartContainer config={chartConfig} className="max-h-50 min-h-42 w-full">
-          <LineChart data={chartData}>
-            <Line type="monotone" dataKey="total_users" />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <CartesianGrid vertical={false} />
-            <XAxis dataKey="dateLabel" />
-            <YAxis hide={!isTablet} />
-          </LineChart>
+          {isPending ? (
+            <div className="flex size-full items-center justify-center">
+              <Spinner className="xs:size-13 size-10" />
+            </div>
+          ) : (
+            <LineChart data={chartData}>
+              <Line type="monotone" dataKey="total_users" />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey="dateLabel" />
+              <YAxis hide={!isTablet} />
+            </LineChart>
+          )}
         </ChartContainer>
       </CardContent>
     </Card>
