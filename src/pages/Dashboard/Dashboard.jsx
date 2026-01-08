@@ -1,5 +1,5 @@
 import PageHeader from '@/components/shared/PageHeader/PageHeader';
-import { MusicIcon, AlbumIcon, ListMusicIcon, UsersIcon } from 'lucide-react';
+import { MusicIcon, DiscIcon, ListMusicIcon, UsersIcon } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 
 import StatCard from '@/components/StatCard/StatCard';
@@ -27,7 +27,7 @@ function Dashboard() {
     {
       id: 2,
       title: 'Albums',
-      icon: AlbumIcon,
+      icon: DiscIcon,
       total: currentStats?.albums,
       prevTotal: prevStats?.total_albums,
     },
