@@ -64,3 +64,22 @@ export const getUsersStatsSince = async (daysAgo) => {
   if (error) throw error;
   return data;
 };
+
+export const getRecentActivities = async ({ limit = 5 } = {}) => {
+  const { data, error } = await supabase
+    .from('activity_log')
+    .select(
+      // exclude actor_id because we already get it from inner join
+      ` id,
+        created_at,
+        entity_type,
+        entity_id,
+        action,
+        metadata,
+        actor:users!inner(id ,email, full_name, avatar, role)`
+    )
+    .limit(limit)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data;
+};

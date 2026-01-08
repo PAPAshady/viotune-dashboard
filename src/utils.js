@@ -47,3 +47,26 @@ export const addDateLabelToChartData = (chartData) =>
       }),
     };
   });
+
+export const timeAgo = (timestamp) => {
+  const now = new Date();
+  const past = new Date(timestamp);
+  const diff = (now - past) / 1000; // difference in seconds
+
+  if (diff < 60) return 'just now';
+
+  const units = [
+    { name: 'year', seconds: 31536000 },
+    { name: 'month', seconds: 2592000 },
+    { name: 'day', seconds: 86400 },
+    { name: 'hour', seconds: 3600 },
+    { name: 'minute', seconds: 60 },
+  ];
+
+  for (let unit of units) {
+    const amount = Math.floor(diff / unit.seconds);
+    if (amount >= 1) {
+      return `${amount} ${unit.name}${amount > 1 ? 's' : ''} ago`;
+    }
+  }
+};
