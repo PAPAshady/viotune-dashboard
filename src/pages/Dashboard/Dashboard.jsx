@@ -1,28 +1,62 @@
 import PageHeader from '@/components/shared/PageHeader/PageHeader';
 import { MusicIcon, AlbumIcon, ListMusicIcon, UsersIcon } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 
 import StatCard from '@/components/StatCard/StatCard';
+import StatCardSkeleton from '@/components/StatCard/StatCardSkeleton';
 import TotalPlaysChart from '@/components/Charts/TotalPlaysChart/TotalPlaysChart';
 import UsersChart from '@/components/Charts/UsersChart/UsersChart';
 import SessionDurationChart from '@/components/Charts/SessionDurationChart/SessionDurationChart';
 import RecentActivityTable from '@/components/Tables/RecentActivityTable/RecentActivityTable';
 
-const stats = [
-  { title: 'Songs', value: '12,847', icon: MusicIcon, progress: '+12.5' },
-  { title: 'Albums', value: '3,428', icon: AlbumIcon, progress: '-8.2' },
-  { title: 'Playlists', value: '8,942', icon: ListMusicIcon, progress: '+15.3' },
-  { title: 'Users', value: '124,583', icon: UsersIcon, progress: '-23.1' },
-];
+import { getCurrentStatsQuery, getStatsByDaysAgoQuery } from '@/queries/stats';
 
 function Dashboard() {
+  const { data: currentStats, isPending: isCurrentStatsPending } = useQuery(getCurrentStatsQuery());
+  const { data: prevStats, isPending: isPrevStatsPending } = useQuery(getStatsByDaysAgoQuery(30));
+  const isPending = isCurrentStatsPending || isPrevStatsPending;
+
+  const stats = [
+    {
+      id: 1,
+      title: 'Songs',
+      icon: MusicIcon,
+      total: currentStats?.songs,
+      prevTotal: prevStats?.total_songs,
+    },
+    {
+      id: 2,
+      title: 'Albums',
+      icon: AlbumIcon,
+      total: currentStats?.albums,
+      prevTotal: prevStats?.total_albums,
+    },
+    {
+      id: 3,
+      title: 'Playlists',
+      icon: ListMusicIcon,
+      total: currentStats?.playlists,
+      prevTotal: prevStats?.total_playlists,
+    },
+    {
+      id: 4,
+      title: 'Users',
+      icon: UsersIcon,
+      total: currentStats?.users,
+      prevTotal: prevStats?.total_users,
+    },
+  ];
+
   return (
     <>
       <PageHeader title="Dashboard" description="Welcome back! Here's your overview." />
       <div className="space-y-6">
         <div className="xs:grid-cols-2 grid grid-cols-1 gap-3 min-[1180px]:grid-cols-4! lg:grid-cols-3">
-          {stats.map((stat) => (
-            <StatCard key={stat.title} {...stat} />
-          ))}
+          {isPending
+            ? Array(4)
+                .fill()
+                .map((_, index) => <StatCardSkeleton key={index} />)
+            : stats.map((stat) => <StatCard key={stat?.id} {...stat} />)}
         </div>
         <TotalPlaysChart />
         <div className="flex flex-col gap-6 lg:flex-row lg:gap-4">

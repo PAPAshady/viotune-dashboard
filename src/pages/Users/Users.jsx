@@ -12,12 +12,18 @@ import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
-import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
-import UsersTableUserCell from '@components/Tables/ColumnDefs/Cells/UsersTableUserCell';
-import UsersTableRoleCell from '@components/Tables/ColumnDefs/Cells/UsersTableRoleCell';
-import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
+import CheckBoxCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
+import UsersTableUserCell from '@/components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableUserCell';
+import UsersTableRoleCell from '@/components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableRoleCell';
+import ActionsCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
+import TimeCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/TimeCell';
+import UsersTableProvidersCell from '@/components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableProvidersCell';
+import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
+import UsersTableUserCellSkeleton from '@components/Tables/ColumnDefs/Cells/UsersTableCells/Skeleton/UsersTableUserCellSkeleton';
+import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
+import UsersTableProvidersCellSkeleton from '@components/Tables/ColumnDefs/Cells/UsersTableCells/Skeleton/UsersTableProvidersCellSkeleton';
+import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
 import { getUsersQuery } from '@/queries/users';
-import TimeCell from '@/components/Tables/ColumnDefs/Cells/TimeCell';
 
 const rolesOptions = [
   { value: 'user', label: 'User' },
@@ -49,16 +55,45 @@ const columns = [
     id: 'select',
     header: (props) => <CheckBoxHeader {...props} />,
     cell: (props) => <CheckBoxCell {...props} />,
+    meta: { skeleton: <CheckBoxSkeleton /> },
   },
-  { id: 'user', header: 'User', cell: (props) => <UsersTableUserCell {...props} /> },
-  { accessorKey: 'email', header: 'Email' },
-  { accessorKey: 'role', header: 'Role', cell: (props) => <UsersTableRoleCell {...props} /> },
   {
-    accessorKey: 'created_at',
-    header: 'Created at',
-    cell: (props) => <TimeCell {...props} />,
+    id: 'user',
+    header: 'User',
+    cell: (props) => <UsersTableUserCell {...props} />,
+    meta: { skeleton: <UsersTableUserCellSkeleton /> },
   },
-  { id: 'actions', cell: (props) => <ActionsCell {...props} /> },
+  {
+    accessorKey: 'email',
+    header: 'Email',
+    cell: ({ getValue }) => <span className="text-xs">{getValue()}</span>,
+    meta: { skeleton: <TextSkeleton className="w-30 max-w-none" /> },
+  },
+  {
+    accessorKey: 'role',
+    header: 'Role',
+    cell: (props) => <UsersTableRoleCell {...props} />,
+    meta: { skeleton: <TextSkeleton className="h-5 w-30" /> },
+  },
+
+  {
+    accessorKey: 'last_sign_in_at',
+    header: 'Last Sign In',
+    cell: (props) => <TimeCell {...props} />,
+    meta: { skeleton: <TextSkeleton className="w-30 max-w-none" /> },
+  },
+  {
+    accessorKey: 'providers',
+    header: 'Auth Providers',
+    cell: (props) => <UsersTableProvidersCell {...props} />,
+    meta: { skeleton: <UsersTableProvidersCellSkeleton /> },
+  },
+  {
+    id: 'actions',
+    cell: (props) => <ActionsCell {...props} />,
+    header: 'Actions',
+    meta: { skeleton: <ActionsCellSkeleton /> },
+  },
 ];
 
 function Users() {
@@ -67,7 +102,7 @@ function Users() {
   const [status, setStatus] = useState();
   const [authProvider, setAuthProvider] = useState();
   const isMobile = useIsMobile();
-  const { data } = useQuery(getUsersQuery(pagination));
+  const { data, isLoading } = useQuery(getUsersQuery(pagination));
 
   const onRoleChange = (e) => {
     const value = e.target.value;
@@ -125,6 +160,7 @@ function Users() {
       <PrimaryTable
         columns={columns}
         rows={data}
+        isLoading={isLoading}
         pagination={pagination}
         setPagination={setPagination}
       />

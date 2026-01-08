@@ -13,10 +13,14 @@ import { getAlbumsQuery } from '@/queries/albums';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import SearchInput from '@components/SearchInput/SearchInput';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
-import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/CheckBoxCell';
-import AlbumsTableAlbumCell from '@components/Tables/ColumnDefs/Cells/AlbumsTableAlbumCell';
-import AlbumsTableArtistCell from '@components/Tables/ColumnDefs/Cells/AlbumsTableArtistCell';
-import ActionsCell from '@components/Tables/ColumnDefs/Cells/ActionsCell';
+import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
+import AlbumsTableAlbumCell from '@components/Tables/ColumnDefs/Cells/AlbumsTableCells/AlbumsTableAlbumCell';
+import AlbumsTableArtistCell from '@components/Tables/ColumnDefs/Cells/AlbumsTableCells/AlbumsTableArtistCell';
+import ActionsCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
+import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
+import AlbumsTableAlbumCellSkeleton from '@components/Tables/ColumnDefs/Cells/AlbumsTableCells/Skeleton/AlbumsTableAlbumCellSkeleton';
+import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
+import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
 
 const artists = [
   { id: 1, name: 'Artist One' },
@@ -43,29 +47,38 @@ const columns = [
     id: 'select',
     header: (props) => <CheckBoxHeader {...props} />,
     cell: (props) => <CheckBoxCell {...props} />,
+    meta: { skeleton: <CheckBoxSkeleton /> },
   },
   {
     id: 'album',
     header: 'Album',
     cell: (props) => <AlbumsTableAlbumCell {...props} />,
+    meta: { skeleton: <AlbumsTableAlbumCellSkeleton /> },
   },
   {
     accessorKey: 'artist',
     header: 'Artist',
     cell: (props) => <AlbumsTableArtistCell {...props} />,
+    meta: { skeleton: <TextSkeleton className="w-16" /> },
   },
-  { accessorKey: 'totaltracks', header: 'Tracks' },
-  { accessorKey: 'play_count', header: 'Plays' },
-  { accessorKey: 'genre_title', header: 'Genre' },
+  { accessorKey: 'totaltracks', header: 'Tracks', meta: { skeleton: <TextSkeleton /> } },
+  { accessorKey: 'play_count', header: 'Plays', meta: { skeleton: <TextSkeleton /> } },
+  {
+    accessorKey: 'genre_title',
+    header: 'Genre',
+    meta: { skeleton: <TextSkeleton className="w-16" /> },
+  },
   {
     accessorKey: 'release_date',
     header: 'Release Date',
     cell: ({ getValue }) => getValue().replace(/-/g, '/'),
+    meta: { skeleton: <TextSkeleton className="w-30 max-w-30" /> },
   },
   {
     header: 'Actions',
     id: 'actions',
     cell: (props) => <ActionsCell {...props} />,
+    meta: { skeleton: <ActionsCellSkeleton /> },
   },
 ];
 
@@ -74,7 +87,7 @@ function Albums() {
   const isMobile = useIsMobile();
   const [visibility, setVisibility] = useState();
   const [releaseYear, setReleaseYear] = useState();
-  const { data } = useQuery(getAlbumsQuery(pagination));
+  const { data, isLoading } = useQuery(getAlbumsQuery(pagination));
 
   const onArtistSelect = (value) => {
     console.log(`Selected artist: ${value}`);
@@ -130,6 +143,7 @@ function Albums() {
       <PrimaryTable
         columns={columns}
         rows={data}
+        isLoading={isLoading}
         pagination={pagination}
         setPagination={setPagination}
       />

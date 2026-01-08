@@ -1,7 +1,7 @@
 import supabase from './supabase';
 
 export const getMe = async (userId) => {
-  const { data, error } = await supabase.from('users').select('*').eq('auth_id', userId).single();
+  const { data, error } = await supabase.from('users').select('*').eq('id', userId).single();
   if (error) throw error;
   return data;
 };
@@ -12,4 +12,10 @@ export const getUsers = async (pageIndex, pageSize) => {
   const { data, error } = await supabase.functions.invoke(`get_users?from=${from}&to=${to}`);
   if (error) throw error;
   return { data: data.users, total: data.count };
+};
+
+export const getUsersStats = async (daysAgo) => {
+  const { data, error } = await supabase.functions.invoke(`get_users_stats?daysAgo=${daysAgo}`);
+  if (error) throw error;
+  return data;
 };

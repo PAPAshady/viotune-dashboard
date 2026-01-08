@@ -23,7 +23,12 @@ function GenreCard({ title, cover, description, tags, songsCount, playlistsCount
   return (
     <Card className="flex flex-col">
       <div className="relative aspect-video overflow-hidden">
-        <img src={cover || defaultCover} className="size-full object-cover" />
+        <img
+          src={cover || defaultCover}
+          loading="lazy"
+          alt={title}
+          className="size-full object-cover"
+        />
         <div className="absolute inset-0 size-full">
           <div className="flex flex-wrap justify-end gap-1 pe-3 pt-3">
             <Badge variant="secondary" className="flex items-center border border-white">

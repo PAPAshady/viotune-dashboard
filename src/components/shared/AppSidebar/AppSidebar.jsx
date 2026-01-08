@@ -14,7 +14,6 @@ import {
   MicVocalIcon,
   TagIcon,
   UsersIcon,
-  UserCogIcon,
   ChartColumnIcon,
   SettingsIcon,
 } from 'lucide-react';
@@ -30,9 +29,8 @@ const sidebarLinks = [
   { id: 5, title: 'Artists', icon: <MicVocalIcon />, href: '/artists' },
   { id: 6, title: 'Genres', icon: <TagIcon />, href: '/genres' },
   { id: 7, title: 'Users', icon: <UsersIcon />, href: '/users' },
-  { id: 8, title: 'Admins', icon: <UserCogIcon />, href: '/admins' },
-  { id: 9, title: 'Analytics', icon: <ChartColumnIcon />, href: '/analytics' },
-  { id: 10, title: 'Settings', icon: <SettingsIcon />, href: '/settings' },
+  { id: 8, title: 'Analytics', icon: <ChartColumnIcon />, href: '/analytics' },
+  { id: 9, title: 'Settings', icon: <SettingsIcon />, href: '/settings' },
 ];
 
 function AppSidebar() {
