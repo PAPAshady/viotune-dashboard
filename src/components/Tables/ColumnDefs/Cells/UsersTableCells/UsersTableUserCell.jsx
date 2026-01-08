@@ -3,12 +3,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
 import defaultAvatar from '@assets/images/default-avatar.png';
 
 function UsersTableUserCell({ row }) {
-  const { avatar_url, full_name } = row.original;
+  const { avatar, full_name } = row.original;
 
   return (
     <div className="flex items-center gap-1.5">
       <Avatar className="md:size-9">
-        <AvatarImage src={avatar_url} alt={full_name} className="object-cover" />
+        <AvatarImage src={avatar} alt={full_name} className="object-cover" />
         <AvatarFallback>
           <img src={defaultAvatar} className="size-full object-cover" />
         </AvatarFallback>
