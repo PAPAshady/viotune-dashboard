@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { Spinner } from '@components/ui/spinner';
 import { useQuery } from '@tanstack/react-query';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
@@ -34,7 +35,7 @@ const chartConfig = {
 function TotalPlaysChart() {
   const isTablet = useMediaQuery('(min-width: 1024px)');
   const [range, setRange] = useState(90);
-  const { data } = useQuery(getPlaysStatsSinceQuery(range));
+  const { data, isPending } = useQuery(getPlaysStatsSinceQuery(range));
 
   const handleChange = (value) => {
     if (!value) return;
@@ -77,26 +78,32 @@ function TotalPlaysChart() {
           config={chartConfig}
           className="max-h-70 min-h-42 w-full min-[1300px]:max-h-75"
         >
-          <AreaChart data={chartData}>
-            {/* define gradient for chart */}
-            <defs>
-              <linearGradient id="usersGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
-              </linearGradient>
-            </defs>
+          {isPending ? (
+            <div className="flex size-full items-center justify-center">
+              <Spinner className="xs:size-13 size-10" />
+            </div>
+          ) : (
+            <AreaChart data={chartData}>
+              {/* define gradient for chart */}
+              <defs>
+                <linearGradient id="usersGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
 
-            <Area
-              dataKey="total_plays"
-              type="monotone"
-              stroke="var(--primary)"
-              fill="url(#usersGradient)" // use gradient for chart
-            />
-            <XAxis dataKey="dateLabel" />
-            <YAxis hide={!isTablet} />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <CartesianGrid vertical={false} />
-          </AreaChart>
+              <Area
+                dataKey="total_plays"
+                type="monotone"
+                stroke="var(--primary)"
+                fill="url(#usersGradient)" // use gradient for chart
+              />
+              <XAxis dataKey="dateLabel" />
+              <YAxis hide={!isTablet} />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <CartesianGrid vertical={false} />
+            </AreaChart>
+          )}
         </ChartContainer>
       </CardContent>
     </Card>

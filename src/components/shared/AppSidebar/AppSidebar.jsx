@@ -18,8 +18,8 @@ import {
   SettingsIcon,
 } from 'lucide-react';
 
-import logo from '@/assets/images/logo/logo.png';
 import SidebarItem from './SidebarItem';
+import Logo from '@/components/Logo/Logo';
 
 const sidebarLinks = [
   { id: 1, title: 'Dashboard', icon: <LayoutDashboardIcon />, href: '/' },
@@ -38,7 +38,7 @@ function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="border-b">
         <div className="flex items-center gap-3 px-4 py-2.25 md:py-2.75">
-          <img src={logo} className="size-7 object-cover" alt="" />
+          <Logo size="md" />
           <p className="text-xl font-semibold">Viotune</p>
         </div>
       </SidebarHeader>
