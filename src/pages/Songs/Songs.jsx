@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { Button } from '@components/ui/button';
-import { UploadIcon } from 'lucide-react';
 import { useIsMobile } from '@hooks/use-mobile';
 import { useQuery } from '@tanstack/react-query';
 
@@ -24,6 +23,8 @@ import SongsTableSongCellSkeleton from '@components/Tables/ColumnDefs/Cells/Song
 import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
 import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
 import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
+import Dialog from '@/components/Dialogs/Dialog';
+import SongsDialog from '@/components/Dialogs/SongsDialog';
 
 const artists = [
   { id: 1, name: 'Artist One' },
@@ -133,12 +134,16 @@ function Songs() {
         <Button size={isMobile ? 'sm' : 'default'} variant="outline">
           Bulk Actions (0)
         </Button>
-        <Button
-          size={isMobile ? 'sm' : 'default'}
-          className="bg-blue-500 text-white hover:bg-blue-600"
+
+        {/* Upload new son dialog */}
+        <Dialog
+          triggerTitle="Upload Song"
+          dialogTitle="Add New Song"
+          dialogDescription="Upload and configure a new song"
         >
-          <UploadIcon /> Upload Song
-        </Button>
+          <SongsDialog />
+        </Dialog>
+        
       </PageHeader>
       <SearchInput placeholder="Search by song title or artist..." />
       <FilterBar>
