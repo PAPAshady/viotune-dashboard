@@ -21,3 +21,9 @@ export const getMostPlayedSongs = async ({ limit = 5 }) => {
   if (error) throw error;
   return data;
 };
+
+export const getZeroPlayedSongsCount = async () => {
+  const { data, error } = await supabase.rpc('get_zero_play_songs');
+  if (error) throw error;
+  return data;
+};

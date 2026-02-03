@@ -4,7 +4,12 @@ import { Button } from '@components/ui/button';
 import { useIsMobile } from '@hooks/use-mobile';
 import { useQuery } from '@tanstack/react-query';
 
-import { getSongsQuery, getMostPlayedSongsQuery } from '@/queries/songs';
+import {
+  getSongsQuery,
+  getMostPlayedSongsQuery,
+  getZeroPlayedSongsCountQuery,
+} from '@/queries/songs';
+import { getCurrentStatsQuery } from '@/queries/stats';
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
@@ -50,13 +55,6 @@ const visibilityOptions = [
   { value: 'public', label: 'Public' },
   { value: 'private', label: 'Private' },
   { value: 'draft', label: 'Draft' },
-];
-
-const kpiInfos = [
-  { id: 1, title: 'Total Songs', value: 1564 },
-  { id: 2, title: 'Total Song Plays', value: 164_770 },
-  { id: 3, title: 'Songs with Zero Plays', value: 15 },
-  { id: 4, title: 'Avg Plays per Songs', value: 1564 },
 ];
 
 const columns = [
@@ -107,8 +105,24 @@ function Songs() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const { data, isLoading } = useQuery(getSongsQuery(pagination));
   const { data: chartData } = useQuery(getMostPlayedSongsQuery({ limit: 6 }));
+  const { data: statsData, isPending: isStatsPending } = useQuery(getCurrentStatsQuery());
+  const { data: zeroPlayedSongsCount, isPending: isZeroPlayedSongsPending } = useQuery(
+    getZeroPlayedSongsCountQuery()
+  );
   const [visibility, setVisibility] = useState();
   const isMobile = useIsMobile();
+  const isKpiLoading = isStatsPending || isZeroPlayedSongsPending;
+
+  const kpiInfos = [
+    { id: 1, title: 'Total Songs', value: statsData?.songs ?? 0 },
+    { id: 2, title: 'Total Song Plays', value: statsData?.plays ?? 0 },
+    { id: 3, title: 'Songs with Zero Plays', value: zeroPlayedSongsCount ?? 0 },
+    {
+      id: 4,
+      title: 'Avg Plays per Songs',
+      value: statsData?.songs ? (statsData.plays / statsData.songs).toFixed(1) : 0,
+    },
+  ];
 
   const onArtistSelect = (value) => {
     console.log(`Selected artist: ${value}`);
@@ -167,7 +181,7 @@ function Songs() {
           onChange={onVisibilityChange}
         />
       </FilterBar>
-      <KpiCardWrapper data={kpiInfos} />
+      <KpiCardWrapper data={kpiInfos} isPending={isKpiLoading} />
       <PrimaryTable
         columns={columns}
         rows={data}
