@@ -93,7 +93,7 @@ function TotalPlaysChart() {
               </defs>
 
               <Area
-                dataKey="total_plays"
+                dataKey="today_plays"
                 type="monotone"
                 stroke="var(--primary)"
                 fill="url(#usersGradient)" // use gradient for chart
