@@ -23,7 +23,6 @@ import SongsTableSongCellSkeleton from '@components/Tables/ColumnDefs/Cells/Song
 import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
 import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
 import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
-import Dialog from '@/components/Dialogs/Dialog';
 import SongsDialog from '@/components/Dialogs/SongsDialog';
 
 const artists = [
@@ -134,16 +133,8 @@ function Songs() {
         <Button size={isMobile ? 'sm' : 'default'} variant="outline">
           Bulk Actions (0)
         </Button>
-
         {/* Upload new son dialog */}
-        <Dialog
-          triggerTitle="Upload Song"
-          dialogTitle="Add New Song"
-          dialogDescription="Upload and configure a new song"
-        >
-          <SongsDialog />
-        </Dialog>
-        
+        <SongsDialog />
       </PageHeader>
       <SearchInput placeholder="Search by song title or artist..." />
       <FilterBar>
