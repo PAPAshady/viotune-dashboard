@@ -97,6 +97,7 @@ function TotalPlaysChart() {
                 type="monotone"
                 stroke="var(--primary)"
                 fill="url(#usersGradient)" // use gradient for chart
+                name='Plays'
               />
               <XAxis dataKey="dateLabel" />
               <YAxis hide={!isTablet} />
