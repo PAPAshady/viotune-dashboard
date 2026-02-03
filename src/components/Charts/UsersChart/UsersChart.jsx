@@ -74,7 +74,7 @@ function UsersChart() {
             </div>
           ) : (
             <LineChart data={chartData}>
-              <Line type="monotone" dataKey="total_users" />
+              <Line type="monotone" dataKey="today_users" name="Users" />
               <ChartTooltip content={<ChartTooltipContent />} />
               <CartesianGrid vertical={false} />
               <XAxis dataKey="dateLabel" />
