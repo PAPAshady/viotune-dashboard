@@ -73,7 +73,7 @@ function FilterComboBox({
                     ))
                 ) : (
                   <>
-                  {/* show an empty option at the start of the list so user can select nothing */}
+                    {/* show an empty option at the start of the list so user can select nothing */}
                     <CommandItem value="" onSelect={onSelectHandler}>
                       {comboBoxPlaceholder}
                     </CommandItem>
@@ -87,7 +87,7 @@ function FilterComboBox({
                         <div className="flex items-center gap-2">
                           <Avatar>
                             <AvatarImage
-                              src={option.image}
+                              src={option.image || option.cover}
                               alt={option[valueKey]}
                               className="object-cover"
                             />

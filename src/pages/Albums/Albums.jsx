@@ -9,7 +9,7 @@ import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
-import { getAlbumsQuery } from '@/queries/albums';
+import { getPeginatedAlbumsQuery } from '@/queries/albums';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import SearchInput from '@components/SearchInput/SearchInput';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
@@ -87,7 +87,7 @@ function Albums() {
   const isMobile = useIsMobile();
   const [visibility, setVisibility] = useState();
   const [releaseYear, setReleaseYear] = useState();
-  const { data, isLoading } = useQuery(getAlbumsQuery(pagination));
+  const { data, isLoading } = useQuery(getPeginatedAlbumsQuery(pagination));
 
   const onArtistSelect = (value) => {
     console.log(`Selected artist: ${value}`);
