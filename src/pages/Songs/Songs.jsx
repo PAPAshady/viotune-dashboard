@@ -12,6 +12,7 @@ import {
 import { getArtistsQuery } from '@/queries/artists';
 import { getCurrentStatsQuery } from '@/queries/stats';
 import { getAllAlbumsQuery } from '@/queries/albums';
+import { getGenresQuery } from '@/queries/genres';
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
@@ -31,13 +32,6 @@ import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/
 import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
 import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
 import SongsDialog from '@/components/Dialogs/SongsDialog';
-
-const genres = [
-  { id: 1, title: 'Rock' },
-  { id: 2, title: 'Pop' },
-  { id: 3, title: 'Jazz' },
-  { id: 5, title: 'Classical' },
-];
 
 const visibilityOptions = [
   { value: 'public', label: 'Public' },
@@ -99,6 +93,7 @@ function Songs() {
   );
   const { data: artists, isPending: isArtistsPending } = useQuery(getArtistsQuery());
   const { data: albums, isPending: isAlbumsPending } = useQuery(getAllAlbumsQuery());
+  const { data: genres, isPending: isGenresPending } = useQuery(getGenresQuery());
   const [visibility, setVisibility] = useState();
   const isMobile = useIsMobile();
   const isKpiLoading = isStatsPending || isZeroPlayedSongsPending;
@@ -162,6 +157,7 @@ function Songs() {
           filterName="Genres"
           placeholder="Select a genre"
           options={genres}
+          isPending={isGenresPending}
           valueKey="title"
           onSelect={onGenreSelect}
         />
