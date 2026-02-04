@@ -7,8 +7,8 @@ import { Badge } from '@components/ui/badge';
 import { ChevronDownIcon, XIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-function FilterBar({ children }) {
-  const hasActiveFilters = false; // Replace with actual logic to determine if filters are active
+function FilterBar({ children, filters, onClearAll }) {
+  const activeFilters = Object.values(filters).filter((filter) => Boolean(filter)).length;
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -19,16 +19,12 @@ function FilterBar({ children }) {
               className={cn('transition-transform duration-200', isOpen && 'rotate-180')}
             />
             Filters
-            {hasActiveFilters && (
-              <Badge className="ml-1 text-white" variant="outline">
-                1
-              </Badge>
-            )}
+            {!!activeFilters && <Badge className="ml-1">{activeFilters}</Badge>}
           </Button>
         </CollapsibleTrigger>
-        {hasActiveFilters && (
-          <Button variant="outline">
-            <XIcon /> Clear all
+        {!!activeFilters && (
+          <Button variant="outline" onClick={onClearAll}>
+            <XIcon /> Clear all filters
           </Button>
         )}
       </div>

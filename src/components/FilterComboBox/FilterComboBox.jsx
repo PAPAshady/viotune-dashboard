@@ -23,16 +23,15 @@ function FilterComboBox({
   options,
   isPending,
   valueKey = 'title',
-  onSelect,
+  onChange,
+  value,
 }) {
   const [open, setOpen] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState('');
   const comboBoxPlaceholder = placeholder ?? 'Select...';
 
   const onSelectHandler = (id) => {
-    setSelectedItemId(id);
     setOpen(false);
-    onSelect?.(id);
+    onChange?.(id);
   };
 
   return (
@@ -47,8 +46,8 @@ function FilterComboBox({
             className={cn('w-full justify-between')}
           >
             {/* show the selected value. if nothing is selected, show the placeholder */}
-            {selectedItemId
-              ? options.find((option) => option.id === selectedItemId)?.[valueKey]
+            {value
+              ? options.find((option) => option.id === value)?.[valueKey]
               : comboBoxPlaceholder}
             <ChevronsUpDown className="opacity-50" />
           </Button>
@@ -82,7 +81,7 @@ function FilterComboBox({
                         value={option.id}
                         key={option.id}
                         onSelect={onSelectHandler}
-                        className={cn(selectedItemId === option.id && 'bg-accent/50')}
+                        className={cn(value === option.id && 'bg-accent/50')}
                       >
                         <div className="flex items-center gap-2">
                           <Avatar>
@@ -98,7 +97,7 @@ function FilterComboBox({
                         <Check
                           className={cn(
                             'ml-auto',
-                            selectedItemId === option.id ? 'opacity-100' : 'opacity-0'
+                            value === option.id ? 'opacity-100' : 'opacity-0'
                           )}
                         />
                       </CommandItem>

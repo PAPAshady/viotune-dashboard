@@ -45,21 +45,33 @@ function Songs() {
   const debouncedSearchValue = useDebounce(searchValue);
   const isMobile = useIsMobile();
   const isKpiLoading = isStatsPending || isZeroPlayedSongsPending;
-  const [artistFilter, setArtistFilter] = useState(null);
-  const [albumFilter, setAlbumFilter] = useState(null);
-  const [genreFilter, setGenreFilter] = useState(null);
-  const [statusFilter, setStatusFilter] = useState(null);
+  const [artistId, setArtistId] = useState(null);
+  const [albumId, setAlbumId] = useState(null);
+  const [genreId, setGenreId] = useState(null);
+  const [status, setStatus] = useState(null);
+
+  const filters = { artistId, albumId, genreId, status };
 
   const { data, isLoading } = useQuery(
     getSongsQuery({
       ...pagination,
+      ...filters,
       search: debouncedSearchValue,
-      artistId: artistFilter,
-      albumId: albumFilter,
-      genreId: genreFilter,
-      status: statusFilter,
     })
   );
+
+  // if no filter is selected, set to null instead if empty string
+  const onArtistSelect = (selectedArtistId) => setArtistId(selectedArtistId || null);
+  const onAlbumSelect = (selectedAlbumId) => setAlbumId(selectedAlbumId || null);
+  const onGenreSelect = (selectedGenreId) => setGenreId(selectedGenreId || null);
+  const onStatusSelect = (e) => setStatus(e.target.value || null);
+
+  const clearFilters = () => {
+    setArtistId(null);
+    setAlbumId(null);
+    setGenreId(null);
+    setStatus(null);
+  };
 
   const kpiInfos = [
     { id: 1, title: 'Total Songs', value: statsData?.songs ?? 0 },
@@ -71,12 +83,6 @@ function Songs() {
       value: statsData?.songs ? (statsData.plays / statsData.songs).toFixed(1) : 0,
     },
   ];
-
-  // if no filter is selected, set to null instead if empty string
-  const onArtistSelect = (selectedArtistId) => setArtistFilter(selectedArtistId || null);
-  const onAlbumSelect = (selectedAlbumId) => setAlbumFilter(selectedAlbumId || null);
-  const onGenreSelect = (selectedGenreId) => setGenreFilter(selectedGenreId || null);
-  const onStatusSelect = (e) => setStatusFilter(e.target.value || null);
 
   return (
     <>
@@ -92,14 +98,15 @@ function Songs() {
         onChange={(e) => setSearchValue(e.target.value)}
         placeholder="Search by song title or artist..."
       />
-      <FilterBar>
+      <FilterBar filters={filters} onClearAll={clearFilters}>
         <FilterComboBox
           filterName="Artists"
           placeholder="Select an artist"
           options={artists}
           isPending={isArtistsPending}
           valueKey="name"
-          onSelect={onArtistSelect}
+          value={artistId}
+          onChange={onArtistSelect}
         />
         <FilterComboBox
           filterName="Albums"
@@ -107,7 +114,8 @@ function Songs() {
           options={albums}
           isPending={isAlbumsPending}
           valueKey="title"
-          onSelect={onAlbumSelect}
+          onChange={onAlbumSelect}
+          value={albumId}
         />
         <FilterComboBox
           filterName="Genres"
@@ -115,13 +123,14 @@ function Songs() {
           options={genres}
           isPending={isGenresPending}
           valueKey="title"
-          onSelect={onGenreSelect}
+          onChange={onGenreSelect}
+          value={genreId}
         />
         <FilterSelectBox
           filterName="Status"
           placeholder="Select status"
           options={statusOptions}
-          value={statusFilter}
+          value={status}
           onChange={onStatusSelect}
         />
       </FilterBar>
