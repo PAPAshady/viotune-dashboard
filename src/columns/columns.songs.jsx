@@ -7,6 +7,8 @@ import SongsTableSongCellSkeleton from '@components/Tables/ColumnDefs/Cells/Song
 import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
 import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
 import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
+import StatusCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/StatusCell';
+import StatusCellSkeleton from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/StatusCellSkeleton';
 import { formatTime } from '@/utils';
 
 export default [
@@ -38,6 +40,12 @@ export default [
     accessorKey: 'duration',
     cell: ({ getValue }) => formatTime(getValue()),
     meta: { skeleton: <TextSkeleton className="w-16" /> },
+  },
+  {
+    header: 'Status',
+    accessorKey: 'status',
+    cell: (props) => <StatusCell {...props} />,
+    meta: { skeleton: <StatusCellSkeleton /> },
   },
   {
     header: 'Uploaded At',
