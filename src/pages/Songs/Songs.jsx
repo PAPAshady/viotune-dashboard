@@ -93,6 +93,8 @@ function Songs() {
         {/* Upload new son dialog */}
         <SongsDialog />
       </PageHeader>
+      <KpiCardWrapper data={kpiInfos} isPending={isKpiLoading} />
+
       <SearchInput
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
@@ -134,7 +136,6 @@ function Songs() {
           onChange={onStatusSelect}
         />
       </FilterBar>
-      <KpiCardWrapper data={kpiInfos} isPending={isKpiLoading} />
       <PrimaryTable
         columns={columns}
         rows={data}
