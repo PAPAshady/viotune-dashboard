@@ -9,18 +9,10 @@ import SearchInput from '@components/SearchInput/SearchInput';
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
-import { getArtistsQuery } from '@/queries/artists';
-import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
-import CheckBoxCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
-import ArtistsTableArtistCell from '@/components/Tables/ColumnDefs/Cells/ArtistsTableCells/ArtistsTableArtistCell';
-import ArtistsTableGenreCell from '@/components/Tables/ColumnDefs/Cells/ArtistsTableCells/ArtistsTableGenreCell';
-import ActionsCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
+import { getPaginatedArtistsQuery } from '@/queries/artists';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
-import CheckBoxSkeleton from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
-import ArtistsTableArtistCellSkeleton from '@components/Tables/ColumnDefs/Cells/ArtistsTableCells/Skeleton/ArtistsTableArtistCellSkeleton';
-import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
-import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
+import columns from '@/columns/columns.artists.jsx';
 
 const genre = [
   { id: 1, title: 'Genre One' },
@@ -36,46 +28,9 @@ const kpiInfos = [
   { id: 4, value: 15, title: 'Artists with Zero Songs' },
 ];
 
-const columns = [
-  {
-    id: 'select',
-    header: (props) => <CheckBoxHeader {...props} />,
-    cell: (props) => <CheckBoxCell {...props} />,
-    meta: { skeleton: <CheckBoxSkeleton /> },
-  },
-  {
-    id: 'Artist',
-    header: 'Artist',
-    cell: (props) => <ArtistsTableArtistCell {...props} />,
-    meta: { skeleton: <ArtistsTableArtistCellSkeleton /> },
-  },
-  {
-    accessorKey: 'songs_count',
-    header: 'Songs',
-    meta: { skeleton: <TextSkeleton className="w-12" /> },
-  },
-  {
-    accessorKey: 'albums_count',
-    header: 'Albums',
-    meta: { skeleton: <TextSkeleton className="w-12" /> },
-  },
-  {
-    accessorKey: 'genre_title',
-    header: 'Genre',
-    cell: (props) => <ArtistsTableGenreCell {...props} />,
-    meta: { skeleton: <TextSkeleton className="w-20" /> },
-  },
-  {
-    id: 'actions',
-    header: 'Actions',
-    cell: (props) => <ActionsCell {...props} />,
-    meta: { skeleton: <ActionsCellSkeleton /> },
-  },
-];
-
 function Artists() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
-  const { data, isLoading } = useQuery(getArtistsQuery(pagination));
+  const { data, isLoading } = useQuery(getPaginatedArtistsQuery(pagination));
   const isMobile = useIsMobile();
 
   const onGenreSelect = (value) => {

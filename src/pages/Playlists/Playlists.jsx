@@ -12,19 +12,9 @@ import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import FilterSearchBox from '@components/FilterSearchBox/FilterSearchBox';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import { getPlaylistsQuery, getMostPlayedPlaylistsQuery } from '@/queries/playlists';
-import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
-import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
-import PlaylistsTablePlaylistCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTablePlaylistCell';
-import PlaylistsTableCreatorCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableCreatorCell';
-import PlaylistsTableGenreCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableGenreCell';
-import PlaylistsTableVisibilityCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableVisibilityCell';
-import ActionsCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
 import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
-import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
-import PlaylistsTablePlaylistCellSkeleton from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/Skeleton/PlaylistsTablePlaylistCellSkeleton';
-import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
-import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
+import columns from '@/columns/columns.playlists.jsx';
 
 const kpiInfos = [
   { id: 1, value: 2, title: 'Total Playlists' },
@@ -42,55 +32,6 @@ const visibilityOptions = [
 const typeOptions = [
   { value: 'private', label: 'User playlists' },
   { value: 'public', label: 'Admin playlists' },
-];
-
-const columns = [
-  {
-    id: 'select',
-    header: (props) => <CheckBoxHeader {...props} />,
-    cell: (props) => <CheckBoxCell {...props} />,
-    meta: { skeleton: <CheckBoxSkeleton /> },
-  },
-  {
-    id: 'playlist',
-    header: 'Playlist',
-    cell: (props) => <PlaylistsTablePlaylistCell {...props} />,
-    meta: { skeleton: <PlaylistsTablePlaylistCellSkeleton /> },
-  },
-  {
-    id: 'creator',
-    header: 'Creator',
-    cell: (props) => <PlaylistsTableCreatorCell {...props} />,
-    meta: { skeleton: <TextSkeleton className="max-w-none" /> },
-  },
-  {
-    accessorKey: 'is_public',
-    header: 'Visibility',
-    cell: (props) => <PlaylistsTableVisibilityCell {...props} />,
-    meta: { skeleton: <TextSkeleton /> },
-  },
-  {
-    accessorKey: 'total_plays',
-    header: 'Plays',
-    meta: { skeleton: <TextSkeleton className="max-w-12" /> },
-  },
-  {
-    accessorKey: 'genre_title',
-    header: 'Genre',
-    cell: (props) => <PlaylistsTableGenreCell {...props} />,
-    meta: { skeleton: <TextSkeleton /> },
-  },
-  {
-    accessorKey: 'totaltracks',
-    header: 'Tracks',
-    meta: { skeleton: <TextSkeleton className="max-w-16" /> },
-  },
-  {
-    header: 'Actions',
-    id: 'actions',
-    cell: (props) => <ActionsCell {...props} />,
-    meta: { skeleton: <ActionsCellSkeleton /> },
-  },
 ];
 
 function Playlists() {
