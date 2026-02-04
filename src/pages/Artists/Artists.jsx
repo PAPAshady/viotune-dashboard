@@ -9,7 +9,7 @@ import SearchInput from '@components/SearchInput/SearchInput';
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
-import { getArtistsQuery } from '@/queries/artists';
+import { getPaginatedArtistsQuery } from '@/queries/artists';
 import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
 import CheckBoxCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
 import ArtistsTableArtistCell from '@/components/Tables/ColumnDefs/Cells/ArtistsTableCells/ArtistsTableArtistCell';
@@ -75,7 +75,7 @@ const columns = [
 
 function Artists() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
-  const { data, isLoading } = useQuery(getArtistsQuery(pagination));
+  const { data, isLoading } = useQuery(getPaginatedArtistsQuery(pagination));
   const isMobile = useIsMobile();
 
   const onGenreSelect = (value) => {
