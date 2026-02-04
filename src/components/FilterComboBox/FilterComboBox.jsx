@@ -73,6 +73,7 @@ function FilterComboBox({
                     ))
                 ) : (
                   <>
+                  {/* show an empty option at the start of the list so user can select nothing */}
                     <CommandItem value="" onSelect={onSelectHandler}>
                       {comboBoxPlaceholder}
                     </CommandItem>
