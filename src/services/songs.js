@@ -1,14 +1,30 @@
 import supabase from './supabase';
 
-export const getSongs = async ({ pageIndex, pageSize, search }) => {
+export const getSongs = async ({
+  pageIndex,
+  pageSize,
+  search,
+  artistId,
+  albumId,
+  genreId,
+  status,
+}) => {
   const from = pageIndex * pageSize;
   const to = from + pageSize - 1;
-  const { data, error, count } = await supabase
+  let query = supabase
     .from('songs_extended')
     .select('*', { count: 'exact' })
     .range(from, to)
     .or(`title.ilike.%${search}%,artist.ilike.%${search}%`)
     .order('created_at', { ascending: false });
+
+  if (artistId) query.eq('artist_id', artistId);
+  if (albumId) query.eq('album_id', albumId);
+  if (genreId) query.eq('genre_id', genreId);
+  if (status) query.eq('status', status);
+
+  const { data, error, count } = await query;
+
   if (error) throw error;
   return { data, total: count };
 };

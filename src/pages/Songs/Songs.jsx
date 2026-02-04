@@ -25,8 +25,8 @@ import SongsDialog from '@/components/Dialogs/SongsDialog';
 import columns from '@/columns/columns.songs.jsx';
 import useDebounce from '@/hooks/useDebounce';
 
-const visibilityOptions = [
-  { value: 'all', label: 'All' },
+const statusOptions = [
+  { value: '', label: 'All' },
   { value: 'draft', label: 'Draft' },
   { value: 'published', label: 'Published' },
 ];
@@ -43,12 +43,23 @@ function Songs() {
   const { data: genres, isPending: isGenresPending } = useQuery(getGenresQuery());
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
-  const [visibility, setVisibility] = useState();
-  const { data, isLoading } = useQuery(
-    getSongsQuery({ ...pagination, search: debouncedSearchValue })
-  );
   const isMobile = useIsMobile();
   const isKpiLoading = isStatsPending || isZeroPlayedSongsPending;
+  const [artistFilter, setArtistFilter] = useState(null);
+  const [albumFilter, setAlbumFilter] = useState(null);
+  const [genreFilter, setGenreFilter] = useState(null);
+  const [statusFilter, setStatusFilter] = useState(null);
+
+  const { data, isLoading } = useQuery(
+    getSongsQuery({
+      ...pagination,
+      search: debouncedSearchValue,
+      artistId: artistFilter,
+      albumId: albumFilter,
+      genreId: genreFilter,
+      status: statusFilter,
+    })
+  );
 
   const kpiInfos = [
     { id: 1, title: 'Total Songs', value: statsData?.songs ?? 0 },
@@ -61,22 +72,11 @@ function Songs() {
     },
   ];
 
-  const onArtistSelect = (value) => {
-    console.log(`Selected artist: ${value}`);
-  };
-
-  const onAlbumSelect = (value) => {
-    console.log(`Selected album: ${value}`);
-  };
-
-  const onGenreSelect = (value) => {
-    console.log(`Selected genre: ${value}`);
-  };
-
-  const onVisibilityChange = (e) => {
-    const value = e.target.value;
-    setVisibility(value);
-  };
+  // if no filter is selected, set to null instead if empty string
+  const onArtistSelect = (selectedArtistId) => setArtistFilter(selectedArtistId || null);
+  const onAlbumSelect = (selectedAlbumId) => setAlbumFilter(selectedAlbumId || null);
+  const onGenreSelect = (selectedGenreId) => setGenreFilter(selectedGenreId || null);
+  const onStatusSelect = (e) => setStatusFilter(e.target.value || null);
 
   return (
     <>
@@ -118,11 +118,11 @@ function Songs() {
           onSelect={onGenreSelect}
         />
         <FilterSelectBox
-          filterName="Visibility"
-          placeholder="Select visibility"
-          options={visibilityOptions}
-          value={visibility}
-          onChange={onVisibilityChange}
+          filterName="Status"
+          placeholder="Select status"
+          options={statusOptions}
+          value={statusFilter}
+          onChange={onStatusSelect}
         />
       </FilterBar>
       <KpiCardWrapper data={kpiInfos} isPending={isKpiLoading} />

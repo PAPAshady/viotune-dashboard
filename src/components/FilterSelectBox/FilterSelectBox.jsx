@@ -8,7 +8,7 @@ function FilterSelectBox({ filterName, placeholder, options, value, onChange }) 
       <NativeSelect value={value} onChange={onChange} className="bg-[#192134]! font-semibold">
         <NativeSelectOption value="">{placeholder}</NativeSelectOption>
         {options.map((option) => (
-          <NativeSelectOption key={option.value} value={option.value}>
+          <NativeSelectOption key={option.label} value={option.value}>
             {option.label}
           </NativeSelectOption>
         ))}

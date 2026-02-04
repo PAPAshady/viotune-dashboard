@@ -26,13 +26,13 @@ function FilterComboBox({
   onSelect,
 }) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('');
+  const [selectedItemId, setSelectedItemId] = useState('');
   const comboBoxPlaceholder = placeholder ?? 'Select...';
 
-  const onSelectHandler = (currentValue) => {
-    setValue(currentValue);
+  const onSelectHandler = (id) => {
+    setSelectedItemId(id);
     setOpen(false);
-    onSelect?.(currentValue);
+    onSelect?.(id);
   };
 
   return (
@@ -47,8 +47,8 @@ function FilterComboBox({
             className={cn('w-full justify-between')}
           >
             {/* show the selected value. if nothing is selected, show the placeholder */}
-            {value
-              ? options.find((option) => option[valueKey] === value)?.[valueKey]
+            {selectedItemId
+              ? options.find((option) => option.id === selectedItemId)?.[valueKey]
               : comboBoxPlaceholder}
             <ChevronsUpDown className="opacity-50" />
           </Button>
@@ -79,10 +79,10 @@ function FilterComboBox({
                     </CommandItem>
                     {options.map((option) => (
                       <CommandItem
-                        value={option[valueKey]}
+                        value={option.id}
                         key={option.id}
                         onSelect={onSelectHandler}
-                        className={cn(value === option[valueKey] && 'bg-accent/50')}
+                        className={cn(selectedItemId === option.id && 'bg-accent/50')}
                       >
                         <div className="flex items-center gap-2">
                           <Avatar>
@@ -98,7 +98,7 @@ function FilterComboBox({
                         <Check
                           className={cn(
                             'ml-auto',
-                            value === option[valueKey] ? 'opacity-100' : 'opacity-0'
+                            selectedItemId === option.id ? 'opacity-100' : 'opacity-0'
                           )}
                         />
                       </CommandItem>
