@@ -23,16 +23,16 @@ import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import SearchInput from '@components/SearchInput/SearchInput';
 import SongsDialog from '@/components/Dialogs/SongsDialog';
 import columns from '@/columns/columns.songs.jsx';
+import useDebounce from '@/hooks/useDebounce';
 
 const visibilityOptions = [
-  { value: 'public', label: 'Public' },
-  { value: 'private', label: 'Private' },
+  { value: 'all', label: 'All' },
   { value: 'draft', label: 'Draft' },
+  { value: 'published', label: 'Published' },
 ];
 
 function Songs() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
-  const { data, isLoading } = useQuery(getSongsQuery(pagination));
   const { data: chartData } = useQuery(getMostPlayedSongsQuery({ limit: 6 }));
   const { data: statsData, isPending: isStatsPending } = useQuery(getCurrentStatsQuery());
   const { data: zeroPlayedSongsCount, isPending: isZeroPlayedSongsPending } = useQuery(
@@ -41,7 +41,12 @@ function Songs() {
   const { data: artists, isPending: isArtistsPending } = useQuery(getArtistsQuery());
   const { data: albums, isPending: isAlbumsPending } = useQuery(getAllAlbumsQuery());
   const { data: genres, isPending: isGenresPending } = useQuery(getGenresQuery());
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearchValue = useDebounce(searchValue);
   const [visibility, setVisibility] = useState();
+  const { data, isLoading } = useQuery(
+    getSongsQuery({ ...pagination, search: debouncedSearchValue })
+  );
   const isMobile = useIsMobile();
   const isKpiLoading = isStatsPending || isZeroPlayedSongsPending;
 
@@ -82,7 +87,11 @@ function Songs() {
         {/* Upload new son dialog */}
         <SongsDialog />
       </PageHeader>
-      <SearchInput placeholder="Search by song title or artist..." />
+      <SearchInput
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        placeholder="Search by song title or artist..."
+      />
       <FilterBar>
         <FilterComboBox
           filterName="Artists"

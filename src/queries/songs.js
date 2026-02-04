@@ -2,10 +2,10 @@ import { queryOptions, keepPreviousData } from '@tanstack/react-query';
 
 import { getSongs, getMostPlayedSongs, getZeroPlayedSongsCount } from '@/services/songs';
 
-export const getSongsQuery = ({ pageIndex, pageSize }) =>
+export const getSongsQuery = (options) =>
   queryOptions({
-    queryKey: ['songs', { pageIndex, pageSize }],
-    queryFn: () => getSongs(pageIndex, pageSize),
+    queryKey: ['songs', options],
+    queryFn: () => getSongs(options),
     placeholderData: keepPreviousData, // don't have 0 rows flash while changing pages/loading next page
   });
 
