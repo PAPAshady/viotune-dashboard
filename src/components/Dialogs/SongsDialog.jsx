@@ -3,7 +3,6 @@ import { Input } from '@components/ui/input';
 import { NativeSelect, NativeSelectOption } from '@components/ui/native-select';
 import Dialog from '@/components/Dialogs/Dialog';
 
-
 function SongsDialog() {
   return (
     <Dialog
@@ -11,7 +10,7 @@ function SongsDialog() {
       dialogTitle="Add New Song"
       dialogDescription="Upload and configure a new song"
     >
-      <FieldGroup className="gap-4 sm:gap-6">
+      <FieldGroup className="gap-4">
         <Field>
           <FieldLabel>Song Title</FieldLabel>
           <Input placeholder="Enter Song Name" />
@@ -71,6 +70,13 @@ function SongsDialog() {
             <Input type="file" />
           </Field>
         </div>
+        <Field className="w-1/2">
+          <FieldLabel>Status</FieldLabel>
+          <NativeSelect className="bg-[#192134]! font-semibold">
+            <NativeSelectOption value="published">Published</NativeSelectOption>
+            <NativeSelectOption value="draft">Draft</NativeSelectOption>
+          </NativeSelect>
+        </Field>
       </FieldGroup>
     </Dialog>
   );

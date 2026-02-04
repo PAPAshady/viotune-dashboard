@@ -90,7 +90,7 @@ function Songs() {
         <Button size={isMobile ? 'sm' : 'default'} variant="outline">
           Bulk Actions (0)
         </Button>
-        {/* Upload new son dialog */}
+        {/* Upload new song dialog */}
         <SongsDialog />
       </PageHeader>
       <KpiCardWrapper data={kpiInfos} isPending={isKpiLoading} />
