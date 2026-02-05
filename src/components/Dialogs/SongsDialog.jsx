@@ -8,12 +8,14 @@ import { useMutation } from '@tanstack/react-query';
 
 import schema from '@/schemas/songs.schema';
 import { uploadSongMutation } from '@/queries/songs';
+import { getFileUrl, uploadFile } from '@/services/storage';
+import supabase from '@/services/supabase';
+import queryClient from '@/QueryClient';
 
 function SongsDialog({ genres, artists, albums }) {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
@@ -23,42 +25,78 @@ function SongsDialog({ genres, artists, albums }) {
   const submitHandler = async ({
     title,
     audioFile,
-    cover,
+    cover: coverFile,
     genre,
     artist,
     album,
     releaseDate,
     trackNumber,
-    lyricsFile,
     status,
   }) => {
-    const [artistId, artistName] = artist ? artist.split('|') : [null, null];
+    const [artistId, artistName] = artist ? artist.split('|') : [null, 'Unknown artist'];
     const [album_id, albumTitle] = album ? album.split('|') : [null, null];
+    const uploadedAt = new Date().toISOString();
 
-    console.log({
-      title,
-      album: albumTitle,
-      album_id,
-      track_number: trackNumber,
-      artist_id: artistId,
-      release_date: releaseDate,
-      artist: artistName,
-      status,
-      genre_id: genre,
-    });
+    try {
+      // upload audio file to storage
+      const { data: audioFileData, error: audioFileError } = await uploadFile(
+        'songs',
+        `${title}-${artistName}-${uploadedAt}`,
+        audioFile[0]
+      );
 
-    await mutateAsync({
-      title,
-      album: albumTitle,
-      album_id,
-      track_number: +trackNumber || null,
-      artist_id: artistId,
-      release_date: releaseDate,
-      artist: artistName,
-      status,
-      genre_id: genre,
-    });
+      if (audioFileError) throw audioFileError;
 
+      let cover = null;
+
+      // uploade song cover image if exists
+      if (coverFile.length) {
+        const { data: coverFileData, error: coverFileError } = await uploadFile(
+          'song-covers',
+          `${title}-${artistName}-${uploadedAt}`,
+          coverFile[0]
+        );
+
+        if (coverFileError) throw coverFileError;
+        cover = getFileUrl('song-covers', coverFileData.path);
+      }
+
+      // audio file is now accessible via song_url
+      const song_url = getFileUrl('songs', audioFileData.path);
+
+      // upload song data to database
+      const { data: song, error: songMetaDataError } = await mutateAsync({
+        title,
+        album: albumTitle,
+        album_id,
+        track_number: +trackNumber || null,
+        artist_id: artistId,
+        release_date: releaseDate,
+        artist: artistName,
+        status,
+        genre_id: genre,
+        song_url,
+        cover,
+      });
+
+      if (songMetaDataError) throw songMetaDataError;
+
+      // calculate the song duration and insert it into database
+      const { error: songDurationError } = await supabase.functions.invoke('get-song-duration', {
+        method: 'POST',
+        body: JSON.stringify({
+          bucket: 'songs',
+          path: audioFileData.path,
+          song_id: song.id,
+        }),
+      });
+
+      if (songDurationError) throw songDurationError;
+
+      queryClient.invalidateQueries(['songs']);
+    } catch (err) {
+      console.log('Error uploading song:', err);
+    }
   };
 
   return (

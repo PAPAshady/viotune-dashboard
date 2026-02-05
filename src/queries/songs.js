@@ -1,12 +1,6 @@
-import { queryOptions, mutationOptions, keepPreviousData } from '@tanstack/react-query';
+import { queryOptions, keepPreviousData } from '@tanstack/react-query';
 
-import {
-  getSongs,
-  getMostPlayedSongs,
-  getZeroPlayedSongsCount,
-  uploadSong,
-} from '@/services/songs';
-import queryClient from '@/QueryClient';
+import { getSongs, getMostPlayedSongs, getZeroPlayedSongsCount } from '@/services/songs';
 
 export const getSongsQuery = (options) =>
   queryOptions({
@@ -25,11 +19,4 @@ export const getZeroPlayedSongsCountQuery = () =>
   queryOptions({
     queryKey: ['songs', 'zero-played-count'],
     queryFn: getZeroPlayedSongsCount,
-  });
-
-export const uploadSongMutation = () =>
-  mutationOptions({
-    queryKey: ['songs'],
-    mutationFn: uploadSong,
-    onSuccess: () => queryClient.invalidateQueries(['songs']),
   });

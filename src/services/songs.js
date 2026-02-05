@@ -45,9 +45,5 @@ export const getZeroPlayedSongsCount = async () => {
   return data;
 };
 
-export const uploadSong = async (songData) => {
-  const { data, error } = await supabase.from('songs').insert(songData).select().single();
-  console.log(data, error);
-  if (error) throw error;
-  return data;
-};
+export const uploadSong = async (songData) =>
+  await supabase.from('songs').insert(songData).select().single();
