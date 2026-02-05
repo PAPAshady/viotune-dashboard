@@ -38,7 +38,7 @@ const schema = z.object({
   status: z.enum(['published', 'draft'], { message: 'Status is required' }),
 });
 
-function SongsDialog() {
+function SongsDialog({ genres, artists, albums }) {
   const {
     register,
     handleSubmit,
@@ -47,12 +47,16 @@ function SongsDialog() {
     resolver: zodResolver(schema),
   });
 
+  const submitHandler = async (data) => {
+    console.log(data);
+  };
+
   return (
     <Dialog
       triggerTitle="Upload Song"
       dialogTitle="Add New Song"
       dialogDescription="Upload and configure a new song"
-      onSubmit={handleSubmit((data) => console.log('Form submitted:', data))}
+      onSubmit={handleSubmit(submitHandler)}
     >
       <FieldGroup className="gap-4">
         <Field>
@@ -107,9 +111,11 @@ function SongsDialog() {
             className="bg-[#192134]! font-semibold"
           >
             <NativeSelectOption value="">Select Genre</NativeSelectOption>
-            <NativeSelectOption value="pop">Pop</NativeSelectOption>
-            <NativeSelectOption value="rock">Rock</NativeSelectOption>
-            <NativeSelectOption value="jazz">Jazz</NativeSelectOption>
+            {genres?.map((genre) => (
+              <NativeSelectOption key={genre.id} value={genre.id}>
+                {genre.title}
+              </NativeSelectOption>
+            ))}
           </NativeSelect>
         </Field>
         <Field>
@@ -124,9 +130,11 @@ function SongsDialog() {
             className="bg-[#192134]! font-semibold"
           >
             <NativeSelectOption value="">Select Artist</NativeSelectOption>
-            <NativeSelectOption value="NF">NF</NativeSelectOption>
-            <NativeSelectOption value="Eminem">Eminem</NativeSelectOption>
-            <NativeSelectOption value="Rihanna">Rihanna</NativeSelectOption>
+            {artists?.map((artist) => (
+              <NativeSelectOption key={artist.id} value={artist.id}>
+                {artist.name}
+              </NativeSelectOption>
+            ))}
           </NativeSelect>
         </Field>
         <Field>
@@ -141,9 +149,11 @@ function SongsDialog() {
             className="bg-[#192134]! font-semibold"
           >
             <NativeSelectOption value="">Select Album</NativeSelectOption>
-            <NativeSelectOption value="Album One">Album One</NativeSelectOption>
-            <NativeSelectOption value="Album Two">Album Two</NativeSelectOption>
-            <NativeSelectOption value="Album Three">Album Three</NativeSelectOption>
+            {albums?.map((album) => (
+              <NativeSelectOption key={album.id} value={album.id}>
+                {album.title} - {album.artist}
+              </NativeSelectOption>
+            ))}
           </NativeSelect>
         </Field>
         <Field>

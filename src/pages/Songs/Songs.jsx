@@ -91,7 +91,7 @@ function Songs() {
           Bulk Actions (0)
         </Button>
         {/* Upload new song dialog */}
-        <SongsDialog />
+        <SongsDialog genres={genres} artists={artists} albums={albums} />
       </PageHeader>
       <KpiCardWrapper data={kpiInfos} isPending={isKpiLoading} />
 
