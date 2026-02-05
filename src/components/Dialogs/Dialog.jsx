@@ -26,21 +26,23 @@ function Dialog({ triggerTitle, dialogTitle, dialogDescription, onSubmit, childr
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{dialogTitle}</DialogTitle>
-          <DialogDescription>{dialogDescription}</DialogDescription>
-        </DialogHeader>
-        <div className="max-h-100 overflow-y-auto px-2" style={{ scrollbarWidth: 'thin' }}>
-          {children}
-        </div>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="secondary">Close</Button>
-          </DialogClose>
-          <Button className="bg-blue-500 text-white hover:bg-blue-600" onClick={onSubmit}>
-            Submit
-          </Button>
-        </DialogFooter>
+        <form className="space-y-4" onSubmit={onSubmit}>
+          <DialogHeader>
+            <DialogTitle>{dialogTitle}</DialogTitle>
+            <DialogDescription>{dialogDescription}</DialogDescription>
+          </DialogHeader>
+          <div className="max-h-100 overflow-y-auto px-2" style={{ scrollbarWidth: 'thin' }}>
+            {children}
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="secondary">Close</Button>
+            </DialogClose>
+            <Button className="bg-blue-500 text-white hover:bg-blue-600" type="submit">
+              Submit
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </DialogWrapper>
   );
