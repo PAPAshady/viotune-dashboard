@@ -15,7 +15,6 @@ import { Checkbox } from '@components/ui/checkbox';
 import { Button } from '@components/ui/button';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { Link } from 'react-router';
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import supabase from '@/services/supabase';
@@ -26,6 +25,7 @@ import githubLogo from '@assets/icons/github.svg';
 import OAuthButton from '@components/OAuthButton/OAuthButton';
 import AuthInput from '@components/AuthInput/AuthInput';
 import { getMe } from '@/services/user';
+import schema from '@/schemas/auth.schema';
 
 const OAuthProviders = [
   {
@@ -37,14 +37,6 @@ const OAuthProviders = [
     iconUrl: githubLogo,
   },
 ];
-
-const schema = z.object({
-  email: z.email({ message: 'Please enter a valid email address' }),
-  password: z
-    .string()
-    .min(6, { message: 'Password must be at least 6 characters' })
-    .max(12, { message: 'Password must be at most 12 characters' }),
-});
 
 function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
