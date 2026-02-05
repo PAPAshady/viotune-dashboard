@@ -67,121 +67,120 @@ function SongsDialog() {
             placeholder="Enter Song Name"
           />
         </Field>
-        <div className="flex flex-col gap-6 sm:flex-row sm:gap-3">
-          <Field>
-            {errors.audioFile ? (
-              <FieldError>{errors.audioFile.message}</FieldError>
-            ) : (
-              <FieldLabel>Audio File</FieldLabel>
-            )}
-            <Input
-              aria-invalid={!!errors.audioFile}
-              {...register('audioFile')}
-              type="file"
-              accept=".mp3, .wav, .aac, .m4a, .mpeg"
-            />
-          </Field>
-          <Field>
-            {errors.cover ? (
-              <FieldError>{errors.cover.message}</FieldError>
-            ) : (
-              <FieldLabel>Cover Image (optional)</FieldLabel>
-            )}
-            <Input
-              aria-invalid={!!errors.cover}
-              {...register('cover')}
-              type="file"
-              accept=".jpg, .jpeg, .png"
-            />
-          </Field>
-        </div>
-        <div className="flex flex-col gap-6 sm:flex-row sm:gap-3">
-          <Field>
-            {errors.genre ? (
-              <FieldError>{errors.genre.message}</FieldError>
-            ) : (
-              <FieldLabel>Genre</FieldLabel>
-            )}
-            <NativeSelect
-              aria-invalid={!!errors.genre}
-              {...register('genre')}
-              className="bg-[#192134]! font-semibold"
-            >
-              <NativeSelectOption value="">Select Genre</NativeSelectOption>
-              <NativeSelectOption value="pop">Pop</NativeSelectOption>
-              <NativeSelectOption value="rock">Rock</NativeSelectOption>
-              <NativeSelectOption value="jazz">Jazz</NativeSelectOption>
-            </NativeSelect>
-          </Field>
-          <Field>
-            {errors.artist ? (
-              <FieldError>{errors.artist.message}</FieldError>
-            ) : (
-              <FieldLabel>Artist (optional)</FieldLabel>
-            )}
-            <NativeSelect
-              aria-invalid={!!errors.artist}
-              {...register('artist')}
-              className="bg-[#192134]! font-semibold"
-            >
-              <NativeSelectOption value="">Select Artist</NativeSelectOption>
-              <NativeSelectOption value="NF">NF</NativeSelectOption>
-              <NativeSelectOption value="Eminem">Eminem</NativeSelectOption>
-              <NativeSelectOption value="Rihanna">Rihanna</NativeSelectOption>
-            </NativeSelect>
-          </Field>
-        </div>
-        <div className="flex flex-col gap-6 sm:flex-row sm:gap-3">
-          <Field>
-            {errors.album ? (
-              <FieldError>{errors.album.message}</FieldError>
-            ) : (
-              <FieldLabel>Album (optional)</FieldLabel>
-            )}
-            <NativeSelect
-              aria-invalid={!!errors.album}
-              {...register('album')}
-              className="bg-[#192134]! font-semibold"
-            >
-              <NativeSelectOption value="">Select Album</NativeSelectOption>
-              <NativeSelectOption value="Album One">Album One</NativeSelectOption>
-              <NativeSelectOption value="Album Two">Album Two</NativeSelectOption>
-              <NativeSelectOption value="Album Three">Album Three</NativeSelectOption>
-            </NativeSelect>
-          </Field>
-          <Field>
-            {errors.releaseDate ? (
-              <FieldError>{errors.releaseDate.message}</FieldError>
-            ) : (
-              <FieldLabel>Release Date</FieldLabel>
-            )}
-            <Input aria-invalid={!!errors.releaseDate} {...register('releaseDate')} type="date" />
-          </Field>
-        </div>
-        <div className="flex flex-col gap-6 sm:flex-row sm:gap-3">
-          <Field>
-            {errors.trackNumber ? (
-              <FieldError>{errors.trackNumber.message}</FieldError>
-            ) : (
-              <FieldLabel>Track Number (optional)</FieldLabel>
-            )}
-            <Input
-              aria-invalid={!!errors.trackNumber}
-              {...register('trackNumber')}
-              type="number"
-              placeholder="Enter Track Number"
-            />
-          </Field>
-          <Field>
-            {errors.lyricsFile ? (
-              <FieldError>{errors.lyricsFile.message}</FieldError>
-            ) : (
-              <FieldLabel>Lyrics File (optional)</FieldLabel>
-            )}
-            <Input aria-invalid={!!errors.lyricsFile} {...register('lyricsFile')} type="file" />
-          </Field>
-        </div>
-        <Field className="w-1/2">
+        <Field>
+          {errors.audioFile ? (
+            <FieldError>{errors.audioFile.message}</FieldError>
+          ) : (
+            <FieldLabel>Audio File</FieldLabel>
+          )}
+          <Input
+            aria-invalid={!!errors.audioFile}
+            {...register('audioFile')}
+            type="file"
+            className="cursor-pointer"
+            accept=".mp3, .wav, .aac, .m4a, .mpeg"
+          />
+        </Field>
+        <Field>
+          {errors.cover ? (
+            <FieldError>{errors.cover.message}</FieldError>
+          ) : (
+            <FieldLabel>Cover Image (optional)</FieldLabel>
+          )}
+          <Input
+            aria-invalid={!!errors.cover}
+            {...register('cover')}
+            type="file"
+            className="cursor-pointer"
+            accept=".jpg, .jpeg, .png"
+          />
+        </Field>
+        <Field>
+          {errors.genre ? (
+            <FieldError>{errors.genre.message}</FieldError>
+          ) : (
+            <FieldLabel>Genre</FieldLabel>
+          )}
+          <NativeSelect
+            aria-invalid={!!errors.genre}
+            {...register('genre')}
+            className="bg-[#192134]! font-semibold"
+          >
+            <NativeSelectOption value="">Select Genre</NativeSelectOption>
+            <NativeSelectOption value="pop">Pop</NativeSelectOption>
+            <NativeSelectOption value="rock">Rock</NativeSelectOption>
+            <NativeSelectOption value="jazz">Jazz</NativeSelectOption>
+          </NativeSelect>
+        </Field>
+        <Field>
+          {errors.artist ? (
+            <FieldError>{errors.artist.message}</FieldError>
+          ) : (
+            <FieldLabel>Artist (optional)</FieldLabel>
+          )}
+          <NativeSelect
+            aria-invalid={!!errors.artist}
+            {...register('artist')}
+            className="bg-[#192134]! font-semibold"
+          >
+            <NativeSelectOption value="">Select Artist</NativeSelectOption>
+            <NativeSelectOption value="NF">NF</NativeSelectOption>
+            <NativeSelectOption value="Eminem">Eminem</NativeSelectOption>
+            <NativeSelectOption value="Rihanna">Rihanna</NativeSelectOption>
+          </NativeSelect>
+        </Field>
+        <Field>
+          {errors.album ? (
+            <FieldError>{errors.album.message}</FieldError>
+          ) : (
+            <FieldLabel>Album (optional)</FieldLabel>
+          )}
+          <NativeSelect
+            aria-invalid={!!errors.album}
+            {...register('album')}
+            className="bg-[#192134]! font-semibold"
+          >
+            <NativeSelectOption value="">Select Album</NativeSelectOption>
+            <NativeSelectOption value="Album One">Album One</NativeSelectOption>
+            <NativeSelectOption value="Album Two">Album Two</NativeSelectOption>
+            <NativeSelectOption value="Album Three">Album Three</NativeSelectOption>
+          </NativeSelect>
+        </Field>
+        <Field>
+          {errors.releaseDate ? (
+            <FieldError>{errors.releaseDate.message}</FieldError>
+          ) : (
+            <FieldLabel>Release Date</FieldLabel>
+          )}
+          <Input aria-invalid={!!errors.releaseDate} {...register('releaseDate')} type="date" />
+        </Field>
+        <Field>
+          {errors.trackNumber ? (
+            <FieldError>{errors.trackNumber.message}</FieldError>
+          ) : (
+            <FieldLabel>Track Number (optional)</FieldLabel>
+          )}
+          <Input
+            aria-invalid={!!errors.trackNumber}
+            {...register('trackNumber')}
+            type="number"
+            placeholder="Enter Track Number"
+          />
+        </Field>
+        <Field>
+          {errors.lyricsFile ? (
+            <FieldError>{errors.lyricsFile.message}</FieldError>
+          ) : (
+            <FieldLabel>Lyrics File (optional)</FieldLabel>
+          )}
+          <Input
+            aria-invalid={!!errors.lyricsFile}
+            {...register('lyricsFile')}
+            type="file"
+            className="cursor-pointer"
+          />
+        </Field>
+        <Field>
           {errors.status ? (
             <FieldError>{errors.status.message}</FieldError>
           ) : (
