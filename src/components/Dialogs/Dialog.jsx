@@ -12,7 +12,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@components/ui/button';
 import { UploadIcon } from 'lucide-react';
 
-function Dialog({ triggerTitle, dialogTitle, dialogDescription, onSubmit, children }) {
+function Dialog({ triggerTitle, dialogTitle, dialogDescription, onSubmit, isPending, children }) {
   const isMobile = useIsMobile();
 
   return (
@@ -38,8 +38,12 @@ function Dialog({ triggerTitle, dialogTitle, dialogDescription, onSubmit, childr
             <DialogClose asChild>
               <Button variant="secondary">Close</Button>
             </DialogClose>
-            <Button className="bg-blue-500 text-white hover:bg-blue-600" type="submit">
-              Submit
+            <Button
+              className="bg-blue-500 text-white hover:bg-blue-600"
+              disabled={isPending}
+              type="submit"
+            >
+              {isPending ? 'Uploading...' : 'Submit'}
             </Button>
           </DialogFooter>
         </form>

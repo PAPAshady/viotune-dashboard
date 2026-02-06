@@ -26,8 +26,8 @@ export default z.object({
   genre: z.string().min(1, { message: 'Genre is required' }),
   artist: z.string().optional(),
   album: z.string().optional(),
-  releaseDate: z.iso.date({ message: 'Use a valid date' }),
-  trackNumber: z.string().optional(),
+  release_date: z.iso.date({ message: 'Use a valid date' }),
+  track_number: z.string().optional(),
   lyricsFile: z.instanceof(FileList).optional(),
   status: z.enum(['published', 'draft'], { message: 'Status is required' }),
 });

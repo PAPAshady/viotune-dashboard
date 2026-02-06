@@ -1,4 +1,5 @@
 import supabase from './supabase';
+import { uploadFile, getFileUrl } from './storage';
 
 export const getSongs = async ({
   pageIndex,
@@ -45,5 +46,78 @@ export const getZeroPlayedSongsCount = async () => {
   return data;
 };
 
-export const uploadSong = async (songData) =>
-  await supabase.from('songs').insert(songData).select().single();
+export const uploadSong = async ({
+  title,
+  audioFile,
+  cover: coverFile,
+  genre,
+  artist,
+  album,
+  release_date,
+  track_number,
+  status,
+}) => {
+  // since we send artist and album data in a string format, we have to sperate them.
+  const [artist_id, artistName] = artist ? artist.split('|') : [null, 'Unknown artist'];
+  const [album_id, albumTitle] = album ? album.split('|') : [null, null];
+  const uploadedAt = new Date().toISOString();
+
+  // upload audio file to storage
+  const { data: audioFileData, error: audioFileError } = await uploadFile(
+    'songs',
+    `${title}-${artistName}-${uploadedAt}`,
+    audioFile[0]
+  );
+
+  if (audioFileError) throw audioFileError;
+
+  let cover = null;
+
+  // uploade song cover image if exists
+  if (coverFile.length) {
+    const { data: coverFileData, error: coverFileError } = await uploadFile(
+      'song-covers',
+      `${title}-${artistName}-${uploadedAt}`,
+      coverFile[0]
+    );
+
+    if (coverFileError) throw coverFileError;
+    cover = getFileUrl('song-covers', coverFileData.path);
+  }
+
+  // audio file is now accessible via song_url
+  const song_url = getFileUrl('songs', audioFileData.path);
+
+  // upload song data to database
+  const { data: song, error: songMetaDataError } = await supabase
+    .from('songssss')
+    .insert({
+      title,
+      album: albumTitle,
+      album_id,
+      track_number: +track_number || null,
+      artist_id,
+      release_date,
+      artist: artistName,
+      status,
+      genre_id: genre,
+      song_url,
+      cover,
+    })
+    .select()
+    .single();
+
+  if (songMetaDataError) throw songMetaDataError;
+
+  // calculate the song duration and insert it into database
+  const { error: songDurationError } = await supabase.functions.invoke('get-song-duration', {
+    method: 'POST',
+    body: JSON.stringify({
+      bucket: 'songs',
+      path: audioFileData.path,
+      song_id: song.id,
+    }),
+  });
+
+  if (songDurationError) throw songDurationError;
+};
