@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert';
+import { AlertCircleIcon } from 'lucide-react';
 
 import Dialog from '@/components/Dialogs/Dialog';
 import schema from '@/schemas/songs.schema';
@@ -22,7 +24,7 @@ function SongsDialog({ genres, artists, albums }) {
   } = useForm({
     resolver: zodResolver(schema),
   });
-  const { mutateAsync, isPending } = useMutation(uploadSongMutation());
+  const { mutateAsync, isPending, isError } = useMutation(uploadSongMutation());
 
   const submitHandler = async (data) => {
     await mutateAsync(data, {
@@ -34,11 +36,13 @@ function SongsDialog({ genres, artists, albums }) {
         });
         setOpen(false);
       },
-      onError: () =>
-        toast.error('Upload failed', {
+      onError: (err) => {
+        (toast.error('Upload failed', {
           description: 'Something went wrong while uploading the song.',
           duration: 6000,
         }),
+          console.error('Error while uploading song => ', err));
+      },
     });
   };
 
@@ -60,6 +64,16 @@ function SongsDialog({ genres, artists, albums }) {
       open={open}
       onOpenChange={setOpen}
     >
+      {isError && (
+        <Alert variant="destructive" className="relative -ms-1 mb-4 w-full overflow-hidden">
+          <div className="absolute size-full bg-red-500/10"></div>
+          <AlertCircleIcon />
+          <AlertTitle>Upload failed</AlertTitle>
+          <AlertDescription>
+            Something went wrong while uploading the song. Please try again.
+          </AlertDescription>
+        </Alert>
+      )}
       <FieldGroup className="gap-4">
         <Field>
           {errors.title ? (
