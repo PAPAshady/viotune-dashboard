@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { FieldGroup, Field, FieldLabel, FieldError } from '@components/ui/field';
 import { Input } from '@components/ui/input';
@@ -17,6 +17,7 @@ function SongsDialog({ genres, artists, albums }) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
@@ -33,8 +34,21 @@ function SongsDialog({ genres, artists, albums }) {
         });
         setOpen(false);
       },
+      onError: () =>
+        toast.error('Upload failed', {
+          description: 'Something went wrong while uploading the song.',
+          duration: 6000,
+        }),
     });
   };
+
+  // reset form values after dialog is closed
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      !open && reset();
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [open, reset]);
 
   return (
     <Dialog
