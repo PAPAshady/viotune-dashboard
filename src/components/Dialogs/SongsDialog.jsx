@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import { FieldGroup, Field, FieldLabel, FieldError } from '@components/ui/field';
 import { Input } from '@components/ui/input';
@@ -6,7 +6,6 @@ import { NativeSelect, NativeSelectOption } from '@components/ui/native-select';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
 import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert';
 import { AlertCircleIcon } from 'lucide-react';
 
@@ -19,40 +18,36 @@ function SongsDialog({ genres, artists, albums }) {
   const {
     register,
     handleSubmit,
-    reset,
+    reset: resetFields,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
   });
-  const { mutateAsync, isPending, isError } = useMutation(uploadSongMutation());
+  const {
+    mutateAsync,
+    isPending,
+    isError,
+    reset: resetMutation,
+  } = useMutation(uploadSongMutation());
 
   const submitHandler = async (data) => {
     await mutateAsync(data, {
-      onSuccess: () => {
-        toast.success('Song uploaded successfully', {
-          description: 'Your song is now added to the library and ready to be streamed.',
-          position: 'top-right',
-          closeButton: true,
-        });
-        setOpen(false);
-      },
-      onError: (err) => {
-        (toast.error('Upload failed', {
-          description: 'Something went wrong while uploading the song.',
-          duration: 6000,
-        }),
-          console.error('Error while uploading song => ', err));
-      },
+      onSuccess: () => setOpen(false),
     });
   };
 
-  // reset form values after dialog is closed
+  const onDialogClose = useCallback(() => {
+    if (!open) {
+      resetFields();
+      resetMutation();
+    }
+  }, [open, resetFields, resetMutation]);
+
+  // reset form values/states after dialog is closed
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      !open && reset();
-    }, 500);
+    const timeout = setTimeout(onDialogClose, 500);
     return () => clearTimeout(timeout);
-  }, [open, reset]);
+  }, [open, onDialogClose]);
 
   return (
     <Dialog

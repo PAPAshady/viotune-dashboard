@@ -1,4 +1,5 @@
 import { queryOptions, mutationOptions, keepPreviousData } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import {
   getSongs,
@@ -31,5 +32,19 @@ export const uploadSongMutation = () =>
   mutationOptions({
     queryKey: ['songs'],
     mutationFn: uploadSong,
-    onSuccess: () => queryClient.invalidateQueries(['songs']),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['songs']);
+      toast.success('Song uploaded successfully', {
+        description: 'Your song is now added to the library and ready to be streamed.',
+        position: 'top-right',
+      });
+    },
+    onError: (err) => {
+      toast.error('Upload failed', {
+        description: 'Something went wrong while uploading the song.',
+        duration: 6000,
+        position: 'top-right',
+      });
+      console.error('Error while uploading song => ', err);
+    },
   });
