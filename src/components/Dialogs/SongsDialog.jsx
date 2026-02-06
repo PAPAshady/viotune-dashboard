@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { FieldGroup, Field, FieldLabel, FieldError } from '@components/ui/field';
 import { Input } from '@components/ui/input';
 import { NativeSelect, NativeSelectOption } from '@components/ui/native-select';
@@ -10,6 +12,7 @@ import schema from '@/schemas/songs.schema';
 import { uploadSongMutation } from '@/queries/songs';
 
 function SongsDialog({ genres, artists, albums }) {
+  const [open, setOpen] = useState(true);
   const {
     register,
     handleSubmit,
@@ -20,7 +23,7 @@ function SongsDialog({ genres, artists, albums }) {
   const { mutateAsync, isPending } = useMutation(uploadSongMutation());
 
   const submitHandler = async (data) => {
-    await mutateAsync(data);
+    await mutateAsync(data, { onSuccess: () => setOpen(false) });
   };
 
   return (
@@ -30,6 +33,8 @@ function SongsDialog({ genres, artists, albums }) {
       dialogDescription="Upload and configure a new song"
       onSubmit={handleSubmit(submitHandler)}
       isPending={isPending}
+      open={open}
+      onOpenChange={setOpen}
     >
       <FieldGroup className="gap-4">
         <Field>

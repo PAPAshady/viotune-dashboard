@@ -12,11 +12,19 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@components/ui/button';
 import { UploadIcon } from 'lucide-react';
 
-function Dialog({ triggerTitle, dialogTitle, dialogDescription, onSubmit, isPending, children }) {
+function Dialog({
+  triggerTitle,
+  dialogTitle,
+  dialogDescription,
+  onSubmit,
+  isPending,
+  children,
+  ...props
+}) {
   const isMobile = useIsMobile();
 
   return (
-    <DialogWrapper>
+    <DialogWrapper {...props}>
       <DialogTrigger asChild>
         <Button
           size={isMobile ? 'sm' : 'default'}
