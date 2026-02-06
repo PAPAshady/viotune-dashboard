@@ -142,6 +142,7 @@ function Songs() {
         isLoading={isLoading}
         pagination={pagination}
         setPagination={setPagination}
+        tableClassName="min-w-235"
       />
       <MostPlaysChart
         chartTitle="Top songs by Plays"

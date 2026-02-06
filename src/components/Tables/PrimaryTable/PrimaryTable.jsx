@@ -57,7 +57,9 @@ function PrimaryTable({ columns, rows, isLoading, pagination, setPagination, tab
         </CardHeader>
       )}
       <CardContent>
-        <div className="max-h-110 max-w-[calc(100dvw-50px)] overflow-x-auto overflow-y-auto md:max-w-[calc(100dvw-306px)]">
+        <div
+          className="max-h-110 max-w-[calc(100dvw-50px)] overflow-auto md:max-w-[calc(100dvw-306px)]"
+        >
           <Table className={cn('min-w-187.5', tableClassName)}>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
