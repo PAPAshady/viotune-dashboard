@@ -3,16 +3,17 @@ import { useState } from 'react';
 import { FieldGroup, Field, FieldLabel, FieldError } from '@components/ui/field';
 import { Input } from '@components/ui/input';
 import { NativeSelect, NativeSelectOption } from '@components/ui/native-select';
-import Dialog from '@/components/Dialogs/Dialog';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
+import Dialog from '@/components/Dialogs/Dialog';
 import schema from '@/schemas/songs.schema';
 import { uploadSongMutation } from '@/queries/songs';
 
 function SongsDialog({ genres, artists, albums }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const {
     register,
     handleSubmit,
@@ -23,7 +24,16 @@ function SongsDialog({ genres, artists, albums }) {
   const { mutateAsync, isPending } = useMutation(uploadSongMutation());
 
   const submitHandler = async (data) => {
-    await mutateAsync(data, { onSuccess: () => setOpen(false) });
+    await mutateAsync(data, {
+      onSuccess: () => {
+        toast.success('Song uploaded successfully', {
+          description: 'Your song is now added to the library and ready to be streamed.',
+          position: 'top-right',
+          closeButton: true,
+        });
+        setOpen(false);
+      },
+    });
   };
 
   return (
