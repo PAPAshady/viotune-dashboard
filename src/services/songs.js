@@ -90,7 +90,7 @@ export const uploadSong = async ({
 
   // upload song data to database
   const { data: song, error: songMetaDataError } = await supabase
-    .from('songssss')
+    .from('songs')
     .insert({
       title,
       album: albumTitle,
