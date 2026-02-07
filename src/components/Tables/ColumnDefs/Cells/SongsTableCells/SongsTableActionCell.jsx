@@ -12,7 +12,7 @@ import { MoreHorizontalIcon, PencilIcon, EyeOffIcon } from 'lucide-react';
 
 import DeleteSongDialog from '@/components/Dialogs/Songs/DeleteSongDialog';
 
-function SongsTableActionCell() {
+function SongsTableActionCell({ row }) {
   const [open, setOpen] = useState(false);
 
   const closeDropDown = () => setOpen(false);
@@ -34,7 +34,7 @@ function SongsTableActionCell() {
           Hide / Draft
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DeleteSongDialog onDropDownClose={closeDropDown} />
+        <DeleteSongDialog onDropDownClose={closeDropDown} song={row.original} />
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -6,6 +6,7 @@ import {
   getMostPlayedSongs,
   getZeroPlayedSongsCount,
   uploadSong,
+  deleteSong,
 } from '@/services/songs';
 import queryClient from '@/QueryClient';
 
@@ -42,6 +43,27 @@ export const uploadSongMutation = () =>
     onError: (err) => {
       toast.error('Upload failed', {
         description: 'Something went wrong while uploading the song.',
+        duration: 6000,
+        position: 'top-right',
+      });
+      console.error('Error while uploading song => ', err);
+    },
+  });
+
+export const deleteSongMutation = () =>
+  mutationOptions({
+    queryKey: ['songs'],
+    mutationFn: deleteSong,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['songs']);
+      toast.success('Song deleted successfully', {
+        description: 'You song no longer exists in the library.',
+        position: 'top-right',
+      });
+    },
+    onError: (err) => {
+      toast.error('Upload failed', {
+        description: 'Something went wrong while deleting the song.',
         duration: 6000,
         position: 'top-right',
       });

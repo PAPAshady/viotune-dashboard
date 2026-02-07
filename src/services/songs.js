@@ -1,5 +1,5 @@
 import supabase from './supabase';
-import { uploadFile, getFileUrl } from './storage';
+import { uploadFile, getFileUrl, listFiles, deleteFiles } from './storage';
 
 export const getSongs = async ({
   pageIndex,
@@ -120,4 +120,45 @@ export const uploadSong = async ({
   });
 
   if (songDurationError) throw songDurationError;
+};
+
+export const deleteSong = async (data) => {
+  // find the audio file in storage
+  const { data: audioListingData, error: audioListingError } = await listFiles(
+    'songs',
+    undefined,
+    1,
+    undefined,
+    `${data.title}-${data.artist}`
+  );
+
+  if (audioListingError) throw audioListingError;
+
+  // finde song cover file in storage
+  const { data: coverListingData, error: coverListingError } = await listFiles(
+    'song-covers',
+    undefined,
+    1,
+    undefined,
+    `${data.title}-${data.artist}`
+  );
+
+  if (coverListingError) throw coverListingError;
+
+  // delete audio file from storage
+  const { error: audioDeleteError } = await deleteFiles('songs', [audioListingData[0].name]);
+  if (audioDeleteError) throw audioDeleteError;
+
+  if (coverListingData.length) {
+    // delete cover file from storage if exists
+    const { error: coverDeleteError } = await deleteFiles('song-covers', [
+      coverListingData[0].name,
+    ]);
+    if (coverDeleteError) throw coverDeleteError;
+  }
+
+  // remove song metadata from database
+  const { error: songMetadataError } = await supabase.from('songs').delete().eq('id', data.id);
+
+  if (songMetadataError) throw songMetadataError;
 };
