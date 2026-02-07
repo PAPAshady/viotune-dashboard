@@ -21,7 +21,7 @@ import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import SearchInput from '@components/SearchInput/SearchInput';
-import SongsDialog from '@/components/Dialogs/SongsDialog';
+import UploadSongDialog from '@/components/Dialogs/UploadSongDialog';
 import columns from '@/columns/columns.songs.jsx';
 import useDebounce from '@/hooks/useDebounce';
 
@@ -91,7 +91,7 @@ function Songs() {
           Bulk Actions (0)
         </Button>
         {/* Upload new song dialog */}
-        <SongsDialog genres={genres} artists={artists} albums={albums} />
+        <UploadSongDialog genres={genres} artists={artists} albums={albums} />
       </PageHeader>
       <KpiCardWrapper data={kpiInfos} isPending={isKpiLoading} />
 

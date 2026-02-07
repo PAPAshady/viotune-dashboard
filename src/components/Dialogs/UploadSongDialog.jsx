@@ -13,7 +13,7 @@ import Dialog from '@/components/Dialogs/Dialog';
 import schema from '@/schemas/songs.schema';
 import { uploadSongMutation } from '@/queries/songs';
 
-function SongsDialog({ genres, artists, albums }) {
+function UploadSongDialog({ genres, artists, albums }) {
   const [open, setOpen] = useState(false);
   const {
     register,
@@ -223,4 +223,4 @@ function SongsDialog({ genres, artists, albums }) {
   );
 }
 
-export default SongsDialog;
+export default UploadSongDialog;
