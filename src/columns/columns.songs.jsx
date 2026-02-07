@@ -9,6 +9,7 @@ import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCe
 import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
 import StatusCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/StatusCell';
 import StatusCellSkeleton from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/StatusCellSkeleton';
+import SongsTableActionCell from '@/components/Tables/ColumnDefs/Cells/SongsTableCells/SongsTableActionCell';
 import { formatTime } from '@/utils';
 
 export default [
@@ -56,7 +57,7 @@ export default [
   {
     header: 'Actions',
     id: 'actions',
-    cell: (props) => <ActionsCell {...props} />,
+    cell: (props) => <SongsTableActionCell {...props} />,
     meta: { skeleton: <ActionsCellSkeleton /> },
   },
 ];
