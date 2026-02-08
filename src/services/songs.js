@@ -49,7 +49,7 @@ export const getZeroPlayedSongsCount = async () => {
 export const uploadSong = async ({
   title,
   audioFile,
-  cover: coverFile,
+  cover,
   genre,
   artist,
   album,
@@ -60,6 +60,7 @@ export const uploadSong = async ({
   // since we send artist and album data in a string format, we have to sperate them.
   const [artist_id, artistName] = artist ? artist.split('|') : [null, 'Unknown artist'];
   const [album_id, albumTitle] = album ? album.split('|') : [null, null];
+  const coverExists = !!cover.length;
   const uploadedAt = new Date().toISOString();
 
   // upload audio file to storage
@@ -71,22 +72,26 @@ export const uploadSong = async ({
 
   if (audioFileError) throw audioFileError;
 
-  let cover = null;
+  let cover_path = null;
 
   // uploade song cover image if exists
-  if (coverFile.length) {
+  if (coverExists) {
     const { data: coverFileData, error: coverFileError } = await uploadFile(
       'song-covers',
       `${title}-${artistName}-${uploadedAt}`,
-      coverFile[0]
+      cover[0]
     );
 
     if (coverFileError) throw coverFileError;
-    cover = getFileUrl('song-covers', coverFileData.path);
+    cover_path = coverFileData.path;
   }
 
+  const audio_path = audioFileData.path;
+
   // audio file is now accessible via song_url
-  const song_url = getFileUrl('songs', audioFileData.path);
+  const song_url = getFileUrl('songs', audio_path);
+  // cover image file is now accessible via cover_url
+  const cover_url = coverExists ? getFileUrl('song-covers', cover_path) : null;
 
   // upload song data to database
   const { data: song, error: songMetaDataError } = await supabase
@@ -102,7 +107,9 @@ export const uploadSong = async ({
       status,
       genre_id: genre,
       song_url,
-      cover,
+      cover: cover_url,
+      audio_path,
+      cover_path,
     })
     .select()
     .single();
@@ -114,7 +121,7 @@ export const uploadSong = async ({
     method: 'POST',
     body: JSON.stringify({
       bucket: 'songs',
-      path: audioFileData.path,
+      path: audio_path,
       song_id: song.id,
     }),
   });
@@ -123,37 +130,13 @@ export const uploadSong = async ({
 };
 
 export const deleteSong = async (data) => {
-  // find the audio file in storage
-  const { data: audioListingData, error: audioListingError } = await listFiles(
-    'songs',
-    undefined,
-    1,
-    undefined,
-    `${data.title}-${data.artist}`
-  );
-
-  if (audioListingError) throw audioListingError;
-
-  // finde song cover file in storage
-  const { data: coverListingData, error: coverListingError } = await listFiles(
-    'song-covers',
-    undefined,
-    1,
-    undefined,
-    `${data.title}-${data.artist}`
-  );
-
-  if (coverListingError) throw coverListingError;
-
   // delete audio file from storage
-  const { error: audioDeleteError } = await deleteFiles('songs', [audioListingData[0].name]);
+  const { error: audioDeleteError } = await deleteFiles('songs', [data.audio_path]);
   if (audioDeleteError) throw audioDeleteError;
 
-  if (coverListingData.length) {
-    // delete cover file from storage if exists
-    const { error: coverDeleteError } = await deleteFiles('song-covers', [
-      coverListingData[0].name,
-    ]);
+  // delete cover file from storage if exists
+  if (data.cover_path) {
+    const { error: coverDeleteError } = await deleteFiles('song-covers', [data.cover_path]);
     if (coverDeleteError) throw coverDeleteError;
   }
 
