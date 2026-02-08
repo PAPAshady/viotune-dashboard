@@ -147,7 +147,6 @@ export const deleteSong = async (data) => {
 };
 
 export const toggleSongStatus = async (song) => {
-  console.log(song);
   const newStatus = song.status === 'published' ? 'draft' : 'published';
   const { data, error } = await supabase
     .from('songs')

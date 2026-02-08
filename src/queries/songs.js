@@ -87,5 +87,12 @@ export const toggleSongStatusMutation = () =>
 
       toast.success(message, { description, position: 'top-right' });
     },
-    onError: (err) => console.log(err),
+    onError: (err) => {
+      toast.error("Couldn't update song's visibility", {
+        description: 'Something went wrong while changing the song visibilty. Please try again.',
+        duration: 6000,
+        position: 'top-right',
+      });
+      console.error('Error while changing song status => ', err);
+    },
   });
