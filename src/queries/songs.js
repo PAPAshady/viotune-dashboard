@@ -7,6 +7,7 @@ import {
   getZeroPlayedSongsCount,
   uploadSong,
   deleteSong,
+  toggleSongStatus,
 } from '@/services/songs';
 import queryClient from '@/QueryClient';
 
@@ -69,4 +70,22 @@ export const deleteSongMutation = () =>
       });
       console.error('Error while uploading song => ', err);
     },
+  });
+
+export const toggleSongStatusMutation = () =>
+  mutationOptions({
+    queryKey: ['songs'],
+    mutationFn: toggleSongStatus,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['songs']);
+
+      const isPublished = data.status === 'published';
+      const message = isPublished ? 'Song published' : 'Song moved to draft';
+      const description = isPublished
+        ? 'This song is now public and visible to everyone.'
+        : 'This song is no longer public and has been moved back to drafts.';
+
+      toast.success(message, { description, position: 'top-right' });
+    },
+    onError: (err) => console.log(err),
   });

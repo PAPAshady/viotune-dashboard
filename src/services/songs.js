@@ -145,3 +145,18 @@ export const deleteSong = async (data) => {
 
   if (songMetadataError) throw songMetadataError;
 };
+
+export const toggleSongStatus = async (song) => {
+  console.log(song);
+  const newStatus = song.status === 'published' ? 'draft' : 'published';
+  console.log(newStatus);
+  const { data, error } = await supabase
+    .from('songs')
+    .update({ status: newStatus })
+    .eq('id', song.id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
