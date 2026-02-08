@@ -11,6 +11,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@components/ui/button';
 import { UploadIcon } from 'lucide-react';
+import { Spinner } from '@components/ui/spinner';
 
 function Dialog({
   triggerTitle,
@@ -51,7 +52,14 @@ function Dialog({
               disabled={isPending}
               type="submit"
             >
-              {isPending ? 'Uploading...' : 'Submit'}
+              {isPending ? (
+                <>
+                  <Spinner />
+                  Uploading
+                </>
+              ) : (
+                'Upload'
+              )}
             </Button>
           </DialogFooter>
         </form>

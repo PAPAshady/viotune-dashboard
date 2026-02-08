@@ -11,6 +11,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Spinner } from '@/components/ui/spinner';
 import { Trash2Icon } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 
@@ -20,7 +21,7 @@ function DeleteSongDialog({ song, onDropDownClose }) {
   const { mutateAsync, isPending } = useMutation(deleteSongMutation());
 
   const deleteSongHandler = async (e) => {
-    e.preventDefault() // prevent the dropdown to close right after a click.
+    e.preventDefault(); // prevent the dropdown to close right after a click.
     await mutateAsync(song);
     onDropDownClose();
   };
@@ -47,8 +48,15 @@ function DeleteSongDialog({ song, onDropDownClose }) {
           <AlertDialogCancel variant="outline" onClick={onDropDownClose}>
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction variant="destructive" onClick={deleteSongHandler}>
-            {isPending ? 'Deleting...' : 'Delete'}
+          <AlertDialogAction disabled={isPending} variant="destructive" onClick={deleteSongHandler}>
+            {isPending ? (
+              <>
+                <Spinner />
+                Deleting...
+              </>
+            ) : (
+              'Delete'
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
