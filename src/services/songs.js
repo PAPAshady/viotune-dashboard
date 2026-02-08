@@ -1,5 +1,5 @@
 import supabase from './supabase';
-import { uploadFile, getFileUrl, listFiles, deleteFiles } from './storage';
+import { uploadFile, getFileUrl, deleteFiles } from './storage';
 
 export const getSongs = async ({
   pageIndex,
