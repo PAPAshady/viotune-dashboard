@@ -14,9 +14,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@components/ui/select';
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@components/ui/card';
 import { cn } from '@/lib/utils';
+import { MusicIcon } from 'lucide-react';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Pagination from '@/components/Pagination/Pagination';
@@ -26,6 +36,7 @@ const mockData = Array(5).fill();
 
 function PrimaryTable({ columns, rows, isLoading, pagination, setPagination, tableClassName }) {
   const rowCount = rows?.total;
+  const isEmpty = !isLoading && !rowCount;
   const pageCount = Math.ceil(rowCount / pagination.pageSize);
   const table = useReactTable({
     data: rows?.data ?? mockData,
@@ -57,9 +68,7 @@ function PrimaryTable({ columns, rows, isLoading, pagination, setPagination, tab
         </CardHeader>
       )}
       <CardContent>
-        <div
-          className="max-h-110 max-w-[calc(100dvw-50px)] overflow-auto md:max-w-[calc(100dvw-306px)]"
-        >
+        <div className="max-h-110 max-w-[calc(100dvw-50px)] overflow-auto md:max-w-[calc(100dvw-306px)]">
           <Table className={cn('min-w-187.5', tableClassName)}>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -93,6 +102,22 @@ function PrimaryTable({ columns, rows, isLoading, pagination, setPagination, tab
               ))}
             </TableBody>
           </Table>
+          {isEmpty && (
+            <div className="flex justify-center">
+              <Empty>
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <MusicIcon />
+                  </EmptyMedia>
+                  <EmptyTitle>No results found</EmptyTitle>
+                  <EmptyDescription>
+                    We coundn't find anything that matches your search. <br /> Try adjusting your
+                    keywords or filters.
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
+            </div>
+          )}
         </div>
       </CardContent>
       <CardFooter className="overflow-hidden px-2 sm:px-6">
