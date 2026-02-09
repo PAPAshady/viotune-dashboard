@@ -16,7 +16,6 @@ import {
 } from '@components/ui/select';
 import {
   Empty,
-  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
@@ -26,11 +25,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@components/ui/card';
 import { cn } from '@/lib/utils';
-import { MusicIcon } from 'lucide-react';
+import { MusicIcon, TrashIcon, XIcon } from 'lucide-react';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Pagination from '@/components/Pagination/Pagination';
 import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
+import { Separator } from '@/components/ui/separator';
 
 const mockData = Array(5).fill();
 
@@ -58,13 +58,25 @@ function PrimaryTable({ columns, rows, isLoading, pagination, setPagination, tab
   return (
     <Card>
       {!!numberOfSelectedRows && (
-        <CardHeader className="flex items-center gap-2">
-          <Badge variant="secondary">
+        <CardHeader className="bg-red flex flex-wrap items-center gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => table.toggleAllPageRowsSelected(false)}
+          >
+            <XIcon />
+          </Button>
+          <Badge variant="secondary" className="text-sm">
             {numberOfSelectedRows} row{numberOfSelectedRows > 1 && 's'} selected
           </Badge>
-          <span className="text-muted-foreground text-sm">
+          <span className="text-muted-foreground hidden text-sm sm:block">
             Actions will apply to selected row{numberOfSelectedRows > 1 && 's'}
           </span>
+          <Separator orientation="vertical" className="mx-1 h-6! w-1" />
+          <Button size="sm" className="text-sm!" variant="destructive">
+          <TrashIcon />
+            Delete
+          </Button>
         </CardHeader>
       )}
       <CardContent>

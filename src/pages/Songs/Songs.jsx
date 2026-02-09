@@ -1,7 +1,5 @@
 import { useState } from 'react';
 
-import { Button } from '@components/ui/button';
-import { useIsMobile } from '@hooks/use-mobile';
 import { useQuery } from '@tanstack/react-query';
 
 import {
@@ -43,7 +41,6 @@ function Songs() {
   const { data: genres, isPending: isGenresPending } = useQuery(getGenresQuery());
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
-  const isMobile = useIsMobile();
   const isKpiLoading = isStatsPending || isZeroPlayedSongsPending;
   const [artistId, setArtistId] = useState(null);
   const [albumId, setAlbumId] = useState(null);
@@ -87,9 +84,6 @@ function Songs() {
   return (
     <>
       <PageHeader title="Songs" description="Manage and analyze all uploaded songs.">
-        <Button size={isMobile ? 'sm' : 'default'} variant="outline">
-          Bulk Actions (0)
-        </Button>
         {/* Upload new song dialog */}
         <UploadSongDialog genres={genres} artists={artists} albums={albums} />
       </PageHeader>
