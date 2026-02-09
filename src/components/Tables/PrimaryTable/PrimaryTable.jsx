@@ -25,16 +25,26 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@components/ui/card';
 import { cn } from '@/lib/utils';
-import { MusicIcon, TrashIcon, XIcon } from 'lucide-react';
+import { MusicIcon , XIcon } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Pagination from '@/components/Pagination/Pagination';
 import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
-import { Separator } from '@/components/ui/separator';
+import BulkDeleteRowsDialog from '@/components/Dialogs/BulkDeleteRowsDialog';
 
 const mockData = Array(5).fill();
 
-function PrimaryTable({ columns, rows, isLoading, pagination, setPagination, tableClassName }) {
+function PrimaryTable({
+  columns,
+  rows,
+  isLoading,
+  pagination,
+  setPagination,
+  onBulkDelete,
+  bulkDeletePending,
+  tableClassName,
+}) {
   const rowCount = rows?.total;
   const isEmpty = !isLoading && !rowCount;
   const pageCount = Math.ceil(rowCount / pagination.pageSize);
@@ -73,10 +83,11 @@ function PrimaryTable({ columns, rows, isLoading, pagination, setPagination, tab
             Actions will apply to selected row{numberOfSelectedRows > 1 && 's'}
           </span>
           <Separator orientation="vertical" className="mx-1 h-6! w-1" />
-          <Button size="sm" className="text-sm!" variant="destructive">
-          <TrashIcon />
-            Delete
-          </Button>
+          {/* show bulk delete dialog */}
+          <BulkDeleteRowsDialog
+            onDelete={() => onBulkDelete(table.getSelectedRowModel().rows)}
+            isPending={bulkDeletePending}
+          />
         </CardHeader>
       )}
       <CardContent>

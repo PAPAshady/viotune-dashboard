@@ -8,6 +8,7 @@ import {
   uploadSong,
   deleteSong,
   toggleSongStatus,
+  deleteSongs,
 } from '@/services/songs';
 import queryClient from '@/QueryClient';
 
@@ -58,7 +59,7 @@ export const deleteSongMutation = () =>
     onSuccess: () => {
       queryClient.invalidateQueries(['songs']);
       toast.success('Song deleted successfully', {
-        description: 'You song no longer exists in the library.',
+        description: 'Your song no longer exists in the library.',
         position: 'top-right',
       });
     },
@@ -69,6 +70,27 @@ export const deleteSongMutation = () =>
         position: 'top-right',
       });
       console.error('Error while uploading song => ', err);
+    },
+  });
+
+export const deleteSongsMutation = () =>
+  mutationOptions({
+    queryKey: ['songs'],
+    mutationFn: deleteSongs,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['songs']);
+      toast.success('All songs deleted successfully', {
+        description: 'Your songs no longer exist in the library.',
+        position: 'top-right',
+      });
+    },
+    onError: (err) => {
+      toast.error('Upload failed', {
+        description: 'Something went wrong while deleting songs.',
+        duration: 6000,
+        position: 'top-right',
+      });
+      console.error('Error while deleting songs => ', err);
     },
   });
 

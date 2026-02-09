@@ -146,6 +146,27 @@ export const deleteSong = async (data) => {
   if (songMetadataError) throw songMetadataError;
 };
 
+export const deleteSongs = async (songsRows) => {
+  const audioPaths = songsRows.map((row) => row.original.audio_path);
+  const coverPaths = songsRows.map((row) => row.original.cover_path);
+  const songIds = songsRows.map((row) => row.original.id);
+
+  // delete audio files
+  const { error: audiosDeleteError } = await deleteFiles('songs', audioPaths);
+  if (audiosDeleteError) throw audiosDeleteError;
+
+  // delete cover files
+  const { error: coversDeleteErrors } = await deleteFiles('song-covers', coverPaths);
+  if (coversDeleteErrors) throw coversDeleteErrors;
+
+  // remove songs metadata from database
+  const { data, error } = await supabase.from('songs').delete().in('id', songIds).select();
+
+  if (error) throw error;
+
+  return data;
+};
+
 export const toggleSongStatus = async (song) => {
   const newStatus = song.status === 'published' ? 'draft' : 'published';
   const { data, error } = await supabase

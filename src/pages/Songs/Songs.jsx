@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import {
   getSongsQuery,
   getMostPlayedSongsQuery,
   getZeroPlayedSongsCountQuery,
 } from '@/queries/songs';
+import { deleteSongsMutation } from '@/queries/songs';
 import { getArtistsQuery } from '@/queries/artists';
 import { getCurrentStatsQuery } from '@/queries/stats';
 import { getAllAlbumsQuery } from '@/queries/albums';
@@ -36,6 +37,7 @@ function Songs() {
   const { data: zeroPlayedSongsCount, isPending: isZeroPlayedSongsPending } = useQuery(
     getZeroPlayedSongsCountQuery()
   );
+  const bulkDeleteMutation = useMutation(deleteSongsMutation());
   const { data: artists, isPending: isArtistsPending } = useQuery(getArtistsQuery());
   const { data: albums, isPending: isAlbumsPending } = useQuery(getAllAlbumsQuery());
   const { data: genres, isPending: isGenresPending } = useQuery(getGenresQuery());
@@ -137,6 +139,8 @@ function Songs() {
         pagination={pagination}
         setPagination={setPagination}
         tableClassName="min-w-235"
+        onBulkDelete={bulkDeleteMutation.mutateAsync}
+        bulkDeletePending={bulkDeleteMutation.isPending}
       />
       <MostPlaysChart
         chartTitle="Top songs by Plays"
