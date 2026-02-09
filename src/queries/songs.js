@@ -1,5 +1,5 @@
 import { queryOptions, mutationOptions, keepPreviousData } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { toast } from '@/utils';
 
 import {
   getSongs,
@@ -39,14 +39,11 @@ export const uploadSongMutation = () =>
       queryClient.invalidateQueries(['songs']);
       toast.success('Song uploaded successfully', {
         description: 'Your song is now added to the library and ready to be streamed.',
-        position: 'top-right',
       });
     },
     onError: (err) => {
       toast.error('Upload failed', {
         description: 'Something went wrong while uploading the song.',
-        duration: 6000,
-        position: 'top-right',
       });
       console.error('Error while uploading song => ', err);
     },
@@ -60,14 +57,11 @@ export const deleteSongMutation = () =>
       queryClient.invalidateQueries(['songs']);
       toast.success('Song deleted successfully', {
         description: 'Your song no longer exists in the library.',
-        position: 'top-right',
       });
     },
     onError: (err) => {
       toast.error('Upload failed', {
         description: 'Something went wrong while deleting the song.',
-        duration: 6000,
-        position: 'top-right',
       });
       console.error('Error while uploading song => ', err);
     },
@@ -81,14 +75,11 @@ export const deleteSongsMutation = () =>
       queryClient.invalidateQueries(['songs']);
       toast.success('All songs deleted successfully', {
         description: 'Your songs no longer exist in the library.',
-        position: 'top-right',
       });
     },
     onError: (err) => {
       toast.error('Upload failed', {
         description: 'Something went wrong while deleting songs.',
-        duration: 6000,
-        position: 'top-right',
       });
       console.error('Error while deleting songs => ', err);
     },
@@ -107,13 +98,11 @@ export const toggleSongStatusMutation = () =>
         ? 'This song is now public and visible to everyone.'
         : 'This song is no longer public and has been moved back to drafts.';
 
-      toast.success(message, { description, position: 'top-right' });
+      toast.success(message, { description });
     },
     onError: (err) => {
       toast.error("Couldn't update song's visibility", {
         description: 'Something went wrong while changing the song visibilty. Please try again.',
-        duration: 6000,
-        position: 'top-right',
       });
       console.error('Error while changing song status => ', err);
     },
