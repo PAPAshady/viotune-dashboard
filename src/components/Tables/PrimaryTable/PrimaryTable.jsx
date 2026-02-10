@@ -8,19 +8,12 @@ import {
   TableRow,
 } from '@components/ui/table';
 
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from '@/components/ui/empty';
 import { Card, CardContent } from '@components/ui/card';
 import { cn } from '@/lib/utils';
-import { MusicIcon } from 'lucide-react';
 
 import PrimaryTableHeader from '@components/Tables/PrimaryTableHeader/PrimaryTableHeader';
 import PrimaryTableFooter from '@components/Tables/PrimaryTableFooter/PrimaryTableFooter';
+import PrimaryTableEmpty from '@components/Tables/PrimaryTableEmpty';
 
 const mockData = Array(5).fill();
 
@@ -89,22 +82,7 @@ function PrimaryTable({
               ))}
             </TableBody>
           </Table>
-          {isEmpty && (
-            <div className="flex justify-center">
-              <Empty>
-                <EmptyHeader>
-                  <EmptyMedia variant="icon">
-                    <MusicIcon />
-                  </EmptyMedia>
-                  <EmptyTitle>No results found</EmptyTitle>
-                  <EmptyDescription>
-                    We coundn't find anything that matches your search. <br /> Try adjusting your
-                    keywords or filters.
-                  </EmptyDescription>
-                </EmptyHeader>
-              </Empty>
-            </div>
-          )}
+          {isEmpty && <PrimaryTableEmpty />} {/* show empty state */}
         </div>
       </CardContent>
       <PrimaryTableFooter table={table} isLoading={isLoading} />
