@@ -7,13 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '@components/ui/table';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@components/ui/select';
+
 import {
   Empty,
   EmptyDescription,
@@ -21,17 +15,12 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@/components/ui/empty';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@components/ui/badge';
-import { Card, CardContent, CardFooter, CardHeader } from '@components/ui/card';
+import { Card, CardContent } from '@components/ui/card';
 import { cn } from '@/lib/utils';
-import { MusicIcon , XIcon } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import { MusicIcon } from 'lucide-react';
 
-import useMediaQuery from '@/hooks/useMediaQuery';
-import Pagination from '@/components/Pagination/Pagination';
-import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
-import BulkDeleteRowsDialog from '@/components/Dialogs/BulkDeleteRowsDialog';
+import PrimaryTableHeader from '@components/Tables/PrimaryTableHeader/PrimaryTableHeader';
+import PrimaryTableFooter from '@components/Tables/PrimaryTableFooter/PrimaryTableFooter';
 
 const mockData = Array(5).fill();
 
@@ -47,7 +36,6 @@ function PrimaryTable({
 }) {
   const rowCount = rows?.total;
   const isEmpty = !isLoading && !rowCount;
-  const pageCount = Math.ceil(rowCount / pagination.pageSize);
   const table = useReactTable({
     data: rows?.data ?? mockData,
     columns,
@@ -58,38 +46,14 @@ function PrimaryTable({
     onPaginationChange: setPagination,
     getRowId: (row) => row?.id,
   });
-  const isCompactLayout = useMediaQuery('(min-width: 360px)');
-  const paginationSiblingCount = isCompactLayout ? 1 : 0; // show no sibling pages on small screens due to limited space
-  const paginationBoundryCount = 1;
-  const numberOfSelectedRows = Object.keys(table.getState().rowSelection).length;
-  const from = (pagination.pageIndex + 1) * pagination.pageSize - pagination.pageSize + 1;
-  const to = Math.min(pagination.pageIndex * pagination.pageSize + pagination.pageSize, rowCount);
 
   return (
     <Card>
-      {!!numberOfSelectedRows && (
-        <CardHeader className="bg-red flex flex-wrap items-center gap-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => table.toggleAllPageRowsSelected(false)}
-          >
-            <XIcon />
-          </Button>
-          <Badge variant="secondary" className="text-sm">
-            {numberOfSelectedRows} row{numberOfSelectedRows > 1 && 's'} selected
-          </Badge>
-          <span className="text-muted-foreground hidden text-sm sm:block">
-            Actions will apply to selected row{numberOfSelectedRows > 1 && 's'}
-          </span>
-          <Separator orientation="vertical" className="mx-1 h-6! w-1" />
-          {/* show bulk delete dialog */}
-          <BulkDeleteRowsDialog
-            onDelete={() => onBulkDelete(table.getSelectedRowModel().rows)}
-            isPending={bulkDeletePending}
-          />
-        </CardHeader>
-      )}
+      <PrimaryTableHeader
+        table={table}
+        onBulkDelete={onBulkDelete}
+        bulkDeletePending={bulkDeletePending}
+      />
       <CardContent>
         <div className="max-h-110 max-w-[calc(100dvw-50px)] overflow-auto md:max-w-[calc(100dvw-306px)]">
           <Table className={cn('min-w-187.5', tableClassName)}>
@@ -143,48 +107,7 @@ function PrimaryTable({
           )}
         </div>
       </CardContent>
-      <CardFooter className="overflow-hidden px-2 sm:px-6">
-        <div className="flex w-full flex-wrap items-center gap-4">
-          {isLoading ? (
-            <TextSkeleton className="me-auto w-45 max-w-none" />
-          ) : (
-            <p className="text-muted-foreground me-auto text-sm">
-              Showing <span className="font-semibold">{from}</span> to{' '}
-              <span className="font-semibold">{to}</span> of{' '}
-              <span className="font-semibold">{rowCount}</span> rows
-            </p>
-          )}
-
-          {!isLoading && (
-            <>
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground text-sm">Rows per page : </span>
-                <Select value={pagination.pageSize.toString()} onValueChange={table.setPageSize}>
-                  <SelectTrigger className="w-20!">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[5, 10, 25, 50].map((pageSize) => (
-                      <SelectItem key={pageSize} value={pageSize.toString()}>
-                        {pageSize}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              {pageCount > 1 && (
-                <Pagination
-                  pageNumber={pagination.pageIndex + 1}
-                  pageCount={pageCount}
-                  siblingCount={paginationSiblingCount}
-                  boundryCount={paginationBoundryCount}
-                  setPageIndex={table.setPageIndex}
-                />
-              )}
-            </>
-          )}
-        </div>
-      </CardFooter>
+      <PrimaryTableFooter table={table} isLoading={isLoading} />
     </Card>
   );
 }
