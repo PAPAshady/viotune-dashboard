@@ -1,5 +1,5 @@
 import { queryOptions, mutationOptions, keepPreviousData } from '@tanstack/react-query';
-import { toast } from '@/utils';
+import { toast } from 'sonner';
 
 import {
   getSongs,

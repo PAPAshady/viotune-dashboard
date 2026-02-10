@@ -1,5 +1,3 @@
-import { toast as newToast } from 'sonner';
-
 // an utility function to convert milliseconds into currect time format
 export const formatTime = (time) => {
   const hours = Math.floor(time / 3600);
@@ -71,12 +69,4 @@ export const timeAgo = (timestamp) => {
       return `${amount} ${unit.name}${amount > 1 ? 's' : ''} ago`;
     }
   }
-};
-
-export const toast = ({ type, title, position = 'top-right', duration = 6000, ...options }) => {
-  newToast[type](title, {
-    position,
-    duration,
-    ...options,
-  });
 };
