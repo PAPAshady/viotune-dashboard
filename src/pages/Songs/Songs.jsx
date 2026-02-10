@@ -20,7 +20,7 @@ import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import SearchInput from '@components/SearchInput/SearchInput';
-import UploadSongDialog from '@/components/Dialogs/UploadSongDialog';
+import UploadSongDialog from '@/components/Dialogs/Songs/UploadSongDialog';
 import columns from '@/columns/columns.songs.jsx';
 import useDebounce from '@/hooks/useDebounce';
 
