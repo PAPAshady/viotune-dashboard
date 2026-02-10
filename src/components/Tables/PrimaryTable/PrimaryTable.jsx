@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 
 import PrimaryTableHeader from '@components/Tables/PrimaryTableHeader/PrimaryTableHeader';
 import PrimaryTableFooter from '@components/Tables/PrimaryTableFooter/PrimaryTableFooter';
-import PrimaryTableEmpty from '@components/Tables/PrimaryTableEmpty';
+import PrimaryTableEmpty from '@components/Tables/PrimaryTableEmpty/PrimaryTableEmpty';
 
 const mockData = Array(5).fill();
 
