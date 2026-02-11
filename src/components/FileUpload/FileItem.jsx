@@ -1,6 +1,8 @@
 import { FileHeadphone, X } from 'lucide-react';
 import { Button } from '@components/ui/button';
 
+import { formatFileSize } from '@/utils';
+
 function FileItem({ file, onRemove }) {
   const isAudio = file.type.includes('audio');
   return (
@@ -14,7 +16,7 @@ function FileItem({ file, onRemove }) {
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
         <span className="truncate text-sm font-medium">{file.name}</span>
-        <span className="text-muted-foreground truncate text-xs">{file.size}</span>
+        <span className="text-muted-foreground truncate text-xs">{formatFileSize(file.size)}</span>
       </div>
       <Button size="sm" variant="ghost" onClick={onRemove}>
         <X />
