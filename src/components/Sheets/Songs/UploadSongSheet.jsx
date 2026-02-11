@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import {
   Sheet,
@@ -30,37 +30,65 @@ import { Spinner } from '@/components/ui/spinner';
 
 import FileUploadZone from '@/components/FileUpload/FileUploadZone';
 import FileItem from '@/components/FileUpload/FileItem';
+import UploadedFileItem from '@/components/FileUpload/UploadedFileItem';
 import schema from '@/schemas/songs.schema';
 import { uploadSongMutation } from '@/queries/songs';
+import useSongSheet from '@/store/songSheet.store';
 
 function UploadSongSheet({ genres, albums, artists }) {
-  const [open, setOpen] = useState(false);
+  const open = useSongSheet((state) => state.open);
+  const setOpen = useSongSheet((state) => state.setOpen);
+  const closeSheet = useSongSheet((state) => state.closeSheet);
+  const isEditMode = useSongSheet((state) => state.isEditMode);
+  const song = useSongSheet((state) => state.song); // selected song to edit
+
+  // fill out the form with dynamic default values in case user wants to edit a song.
+  const defaultValues = isEditMode
+    ? {
+        ...song,
+        album: `${song.album_id}|${song.album}`,
+        artist: `${song.artist_id}|${song.artist}`,
+        genre: song.genre_id,
+        audioFile: song.song_url,
+      }
+    : {};
+
   const {
     register,
-    formState: { errors },
+    formState: { errors, dirtyFields, isDirty },
     handleSubmit,
     watch,
     setValue,
+    getValues,
     reset: resetFields,
-  } = useForm({ resolver: zodResolver(schema) });
+  } = useForm({ resolver: zodResolver(schema), values: defaultValues });
   const { mutateAsync, isPending, reset: resetMutation } = useMutation(uploadSongMutation());
 
-  const audioFile = watch('audioFile')?.[0];
-  const coverFile = watch('cover')?.[0];
+  const cover = watch('cover');
+  const audio = watch('audioFile');
 
   const submitHandler = async (data) => {
-    await mutateAsync(data, {
-      onSuccess: () => setOpen(false),
-    });
+    if (isEditMode) {
+      const modifiedFields = Object.keys(dirtyFields).reduce((acc, key) => {
+        acc[key] = data[key];
+        return acc;
+      }, {});
+      console.log(modifiedFields);
+    } else {
+      await mutateAsync(data, {
+        onSuccess: closeSheet,
+      });
+    }
   };
 
-  // reset form values and mutation states when sheet is closed
+  //, form values and mutation states when sheet is closed
   useEffect(() => {
     if (!open) {
+      closeSheet();
       resetFields();
       resetMutation();
     }
-  }, [open, resetFields, resetMutation]);
+  }, [open, resetFields, resetMutation, closeSheet]);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -73,8 +101,12 @@ function UploadSongSheet({ genres, albums, artists }) {
       <SheetContent>
         <form className="flex h-full flex-col" onSubmit={handleSubmit(submitHandler)}>
           <SheetHeader className="border-b">
-            <SheetTitle>Add New Song</SheetTitle>
-            <SheetDescription>Upload and configure a new song</SheetDescription>
+            <SheetTitle>{isEditMode ? `Edit "${song.title}"` : 'Upload New Song'}</SheetTitle>
+            <SheetDescription>
+              {isEditMode
+                ? `You are editing "${song.title}" song.`
+                : 'Upload and configure a new song'}
+            </SheetDescription>
           </SheetHeader>
           <div className="w-full grow overflow-y-auto p-4 pb-10" style={{ scrollbarWidth: 'thin' }}>
             <FieldGroup>
@@ -86,8 +118,15 @@ function UploadSongSheet({ genres, albums, artists }) {
                   validFileTypes={['.mp3', '.mpeg', '.wav', '.m4a']}
                   {...register('audioFile')}
                 />
-                {audioFile && (
-                  <FileItem file={audioFile} onRemove={() => setValue('audioFile', null)} />
+                {audio instanceof FileList && audio.length > 0 && (
+                  <FileItem file={audio} onRemove={() => setValue('audioFile', null)} />
+                )}
+                {typeof audio === 'string' && (
+                  <UploadedFileItem
+                    fileType="audio"
+                    name={song.audio_path}
+                    onRemove={() => setValue('audioFile', null, { shouldDirty: true })}
+                  />
                 )}
               </Field>
               <Field>
@@ -149,8 +188,16 @@ function UploadSongSheet({ genres, albums, artists }) {
                   validFileTypes={['.jpg', '.jpeg', '.png']}
                   {...register('cover')}
                 />
-                {coverFile && (
-                  <FileItem file={coverFile} onRemove={() => setValue('cover', null)} />
+                {typeof cover === 'string' && (
+                  <UploadedFileItem
+                    fileType="image"
+                    name={getValues('cover_path')}
+                    url={cover}
+                    onRemove={() => setValue('cover', null, { shouldDirty: true })}
+                  />
+                )}
+                {cover instanceof FileList && cover.length > 0 && (
+                  <FileItem file={cover[0]} onRemove={() => setValue('cover', null)} />
                 )}
               </Field>
               <Field>
@@ -208,14 +255,17 @@ function UploadSongSheet({ genres, albums, artists }) {
               </SheetClose>
               <Button
                 className="bg-blue-500 text-white hover:bg-blue-600"
-                disabled={isPending}
+                disabled={isPending || !isDirty}
                 type="submit"
+                size="sm"
               >
                 {isPending ? (
                   <>
                     <Spinner />
                     Uploading
                   </>
+                ) : isEditMode ? (
+                  'Save changes'
                 ) : (
                   'Upload'
                 )}
