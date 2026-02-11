@@ -25,10 +25,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import { useMutation } from '@tanstack/react-query';
+import { Spinner } from '@/components/ui/spinner';
 
 import FileUploadZone from '@/components/FileUpload/FileUploadZone';
 import FileItem from '@/components/FileUpload/FileItem';
 import schema from '@/schemas/songs.schema';
+import { uploadSongMutation } from '@/queries/songs';
 
 function UploadSongSheet({ genres, albums, artists }) {
   const [open, setOpen] = useState(false);
@@ -38,20 +41,26 @@ function UploadSongSheet({ genres, albums, artists }) {
     handleSubmit,
     watch,
     setValue,
-    reset,
+    reset: resetFields,
   } = useForm({ resolver: zodResolver(schema) });
+  const { mutateAsync, isPending, reset: resetMutation } = useMutation(uploadSongMutation());
 
   const audioFile = watch('audioFile')?.[0];
   const coverFile = watch('cover')?.[0];
 
   const submitHandler = async (data) => {
-    console.log(data);
+    await mutateAsync(data, {
+      onSuccess: () => setOpen(false),
+    });
   };
 
-  // reset form values when sheet is closed
+  // reset form values and mutation states when sheet is closed
   useEffect(() => {
-    !open && reset();
-  }, [open, reset]);
+    if (!open) {
+      resetFields();
+      resetMutation();
+    }
+  }, [open, resetFields, resetMutation]);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -197,8 +206,19 @@ function UploadSongSheet({ genres, albums, artists }) {
                   Cancel
                 </Button>
               </SheetClose>
-              <Button type="submit" size="sm" className="bg-blue-500 text-white hover:bg-blue-600">
-                Upload
+              <Button
+                className="bg-blue-500 text-white hover:bg-blue-600"
+                disabled={isPending}
+                type="submit"
+              >
+                {isPending ? (
+                  <>
+                    <Spinner />
+                    Uploading
+                  </>
+                ) : (
+                  'Upload'
+                )}
               </Button>
             </div>
           </SheetFooter>

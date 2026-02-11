@@ -20,7 +20,6 @@ import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import SearchInput from '@components/SearchInput/SearchInput';
-import UploadSongDialog from '@/components/Dialogs/Songs/UploadSongDialog';
 import columns from '@/columns/columns.songs.jsx';
 import useDebounce from '@/hooks/useDebounce';
 import UploadSongSheet from '@/components/Sheets/Songs/UploadSongSheet';
@@ -88,9 +87,8 @@ function Songs() {
   return (
     <>
       <PageHeader title="Songs" description="Manage and analyze all uploaded songs.">
+        {/* Upload new song sheet */}
         <UploadSongSheet genres={genres} albums={albums} artists={artists} />
-        {/* Upload new song dialog */}
-        <UploadSongDialog genres={genres} artists={artists} albums={albums} />
       </PageHeader>
       <KpiCardWrapper data={kpiInfos} isPending={isKpiLoading} />
 
