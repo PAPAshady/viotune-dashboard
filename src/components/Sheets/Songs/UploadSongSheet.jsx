@@ -10,7 +10,15 @@ import {
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Upload } from 'lucide-react';
-import { FieldGroup, Field, FieldLabel, FieldError } from '@/components/ui/field';
+import {
+  FieldGroup,
+  Field,
+  FieldLabel,
+  FieldError,
+  FieldSeparator,
+  FieldLegend,
+  FieldDescription,
+} from '@/components/ui/field';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
@@ -52,32 +60,18 @@ function UploadSongSheet({ genres, albums, artists }) {
           </SheetHeader>
           <div className="w-full grow overflow-y-auto p-4 pb-10" style={{ scrollbarWidth: 'thin' }}>
             <FieldGroup>
-              <div className="space-y-4">
-                <Field>
-                  <FieldLabel className="text-base">Audio File</FieldLabel>
-                  <FieldError>{errors.audioFile?.message}</FieldError>
-                  <FileUploadZone
-                    isInvalid={!!errors.audioFile}
-                    validFileTypes={['.mp3', '.mpeg', '.wav', '.m4a']}
-                    {...register('audioFile')}
-                  />
-                  {audioFile && (
-                    <FileItem file={audioFile} onRemove={() => setValue('audioFile', null)} />
-                  )}
-                </Field>
-                <Field>
-                  <FieldLabel className="text-base">Cover Image (optional)</FieldLabel>
-                  <FieldError>{errors.cover?.message}</FieldError>
-                  <FileUploadZone
-                    isInvalid={!!errors.cover}
-                    validFileTypes={['.jpg', '.jpeg', '.png']}
-                    {...register('cover')}
-                  />
-                  {coverFile && (
-                    <FileItem file={coverFile} onRemove={() => setValue('cover', null)} />
-                  )}
-                </Field>
-              </div>
+              <Field>
+                <FieldLabel className="text-base">Audio File</FieldLabel>
+                <FieldError>{errors.audioFile?.message}</FieldError>
+                <FileUploadZone
+                  isInvalid={!!errors.audioFile}
+                  validFileTypes={['.mp3', '.mpeg', '.wav', '.m4a']}
+                  {...register('audioFile')}
+                />
+                {audioFile && (
+                  <FileItem file={audioFile} onRemove={() => setValue('audioFile', null)} />
+                )}
+              </Field>
               <Field>
                 <FieldLabel>Song Title</FieldLabel>
                 <FieldError>{errors.title?.message}</FieldError>
@@ -104,7 +98,45 @@ function UploadSongSheet({ genres, albums, artists }) {
                 </NativeSelect>
               </Field>
               <Field>
-                <FieldLabel>artist</FieldLabel>
+                <FieldLabel>Release Date</FieldLabel>
+                <FieldError>{errors.release_date?.message}</FieldError>
+                <Input
+                  type="date"
+                  aria-invalid={!!errors.release_date}
+                  {...register('release_date')}
+                />
+              </Field>
+              <Field>
+                <FieldLabel>Status</FieldLabel>
+                <FieldError>{errors.status?.message}</FieldError>
+                <NativeSelect
+                  aria-invalid={!!errors.status}
+                  className="bg-[#192134]! font-semibold"
+                  {...register('status')}
+                >
+                  <NativeSelectOption value="published">Published</NativeSelectOption>
+                  <NativeSelectOption value="draft">Draft</NativeSelectOption>
+                </NativeSelect>
+              </Field>
+              <FieldSeparator />
+              <div>
+                <FieldLegend>Optional fields</FieldLegend>
+                <FieldDescription>These are fields that do not need any value</FieldDescription>
+              </div>
+              <Field>
+                <FieldLabel className="text-base">Cover Image (optional)</FieldLabel>
+                <FieldError>{errors.cover?.message}</FieldError>
+                <FileUploadZone
+                  isInvalid={!!errors.cover}
+                  validFileTypes={['.jpg', '.jpeg', '.png']}
+                  {...register('cover')}
+                />
+                {coverFile && (
+                  <FileItem file={coverFile} onRemove={() => setValue('cover', null)} />
+                )}
+              </Field>
+              <Field>
+                <FieldLabel>Artist (optional)</FieldLabel>
                 <FieldError>{errors.artist?.message}</FieldError>
                 <NativeSelect
                   aria-invalid={!!errors.artist}
@@ -121,7 +153,7 @@ function UploadSongSheet({ genres, albums, artists }) {
                 </NativeSelect>
               </Field>
               <Field>
-                <FieldLabel>Album</FieldLabel>
+                <FieldLabel>Album (optional)</FieldLabel>
                 <FieldError>{errors.album?.message}</FieldError>
                 <NativeSelect
                   aria-invalid={!!errors.album}
@@ -138,15 +170,6 @@ function UploadSongSheet({ genres, albums, artists }) {
                 </NativeSelect>
               </Field>
               <Field>
-                <FieldLabel>Release Date</FieldLabel>
-                <FieldError>{errors.release_date?.message}</FieldError>
-                <Input
-                  type="date"
-                  aria-invalid={!!errors.release_date}
-                  {...register('release_date')}
-                />
-              </Field>
-              <Field>
                 <FieldLabel>Track Number (optional)</FieldLabel>
                 <FieldError>{errors.track_number?.message}</FieldError>
                 <Input
@@ -155,18 +178,6 @@ function UploadSongSheet({ genres, albums, artists }) {
                   aria-invalid={!!errors.track_number}
                   {...register('track_number')}
                 />
-              </Field>
-              <Field>
-                <FieldLabel>Status</FieldLabel>
-                <FieldError>{errors.status?.message}</FieldError>
-                <NativeSelect
-                  aria-invalid={!!errors.status}
-                  className="bg-[#192134]! font-semibold"
-                  {...register('status')}
-                >
-                  <NativeSelectOption value="published">Published</NativeSelectOption>
-                  <NativeSelectOption value="draft">Draft</NativeSelectOption>
-                </NativeSelect>
               </Field>
             </FieldGroup>
           </div>
