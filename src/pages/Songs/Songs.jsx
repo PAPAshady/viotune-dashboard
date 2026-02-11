@@ -23,6 +23,7 @@ import SearchInput from '@components/SearchInput/SearchInput';
 import UploadSongDialog from '@/components/Dialogs/Songs/UploadSongDialog';
 import columns from '@/columns/columns.songs.jsx';
 import useDebounce from '@/hooks/useDebounce';
+import UploadSongSheet from '@/components/Sheets/Songs/UploadSongSheet';
 
 const statusOptions = [
   { value: '', label: 'All' },
@@ -47,7 +48,8 @@ function Songs() {
   const [artistId, setArtistId] = useState(null);
   const [albumId, setAlbumId] = useState(null);
   const [genreId, setGenreId] = useState(null);
-  const [status, setStatus] = useState(null); ``
+  const [status, setStatus] = useState(null);
+  ``;
 
   const filters = { artistId, albumId, genreId, status };
 
@@ -86,6 +88,7 @@ function Songs() {
   return (
     <>
       <PageHeader title="Songs" description="Manage and analyze all uploaded songs.">
+        <UploadSongSheet genres={genres} albums={albums} artists={artists} />
         {/* Upload new song dialog */}
         <UploadSongDialog genres={genres} artists={artists} albums={albums} />
       </PageHeader>
