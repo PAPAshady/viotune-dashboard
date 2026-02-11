@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 import {
   Sheet,
   SheetClose,
@@ -29,12 +31,14 @@ import FileItem from '@/components/FileUpload/FileItem';
 import schema from '@/schemas/songs.schema';
 
 function UploadSongSheet({ genres, albums, artists }) {
+  const [open, setOpen] = useState(false);
   const {
     register,
     formState: { errors },
     handleSubmit,
     watch,
     setValue,
+    reset,
   } = useForm({ resolver: zodResolver(schema) });
 
   const audioFile = watch('audioFile')?.[0];
@@ -44,8 +48,13 @@ function UploadSongSheet({ genres, albums, artists }) {
     console.log(data);
   };
 
+  // reset form values when sheet is closed
+  useEffect(() => {
+    !open && reset();
+  }, [open, reset]);
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button className="bg-blue-500 text-white hover:bg-blue-600">
           <Upload />
