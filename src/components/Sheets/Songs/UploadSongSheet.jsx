@@ -67,6 +67,8 @@ function UploadSongSheet({ genres, albums, artists }) {
   const cover = watch('cover');
   const audio = watch('audioFile');
 
+  console.log(audio);
+
   const submitHandler = async (data) => {
     if (isEditMode) {
       const modifiedFields = Object.keys(dirtyFields).reduce((acc, key) => {
@@ -124,7 +126,7 @@ function UploadSongSheet({ genres, albums, artists }) {
                 {typeof audio === 'string' && (
                   <UploadedFileItem
                     fileType="audio"
-                    name={song.audio_path}
+                    name={getValues('audio_path')}
                     onRemove={() => setValue('audioFile', null, { shouldDirty: true })}
                   />
                 )}
