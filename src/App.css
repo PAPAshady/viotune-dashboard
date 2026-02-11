@@ -140,3 +140,21 @@
     @apply cursor-pointer;
   }
 }
+
+/* custom styles for toast */
+
+[data-sonner-toast][data-type='success'] {
+  @apply border-green-500/30 text-green-300;
+}
+
+[data-sonner-toast][data-type='error'] {
+  @apply border-red-500/30 text-red-300;
+}
+
+[data-sonner-toast][data-type='warning'] {
+  @apply border-yellow-500/30 text-yellow-500;
+}
+
+[data-sonner-toast][data-type='info'] {
+  @apply border-blue-500/30 text-blue-300;
+}

@@ -1,14 +1,13 @@
 import { useState } from 'react';
 
-import { Button } from '@components/ui/button';
-import { useIsMobile } from '@hooks/use-mobile';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import {
   getSongsQuery,
   getMostPlayedSongsQuery,
   getZeroPlayedSongsCountQuery,
 } from '@/queries/songs';
+import { deleteSongsMutation } from '@/queries/songs';
 import { getArtistsQuery } from '@/queries/artists';
 import { getCurrentStatsQuery } from '@/queries/stats';
 import { getAllAlbumsQuery } from '@/queries/albums';
@@ -21,9 +20,9 @@ import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import SearchInput from '@components/SearchInput/SearchInput';
-import SongsDialog from '@/components/Dialogs/SongsDialog';
 import columns from '@/columns/columns.songs.jsx';
 import useDebounce from '@/hooks/useDebounce';
+import UploadSongSheet from '@/components/Sheets/Songs/UploadSongSheet';
 
 const statusOptions = [
   { value: '', label: 'All' },
@@ -38,17 +37,18 @@ function Songs() {
   const { data: zeroPlayedSongsCount, isPending: isZeroPlayedSongsPending } = useQuery(
     getZeroPlayedSongsCountQuery()
   );
+  const bulkDeleteMutation = useMutation(deleteSongsMutation());
   const { data: artists, isPending: isArtistsPending } = useQuery(getArtistsQuery());
   const { data: albums, isPending: isAlbumsPending } = useQuery(getAllAlbumsQuery());
   const { data: genres, isPending: isGenresPending } = useQuery(getGenresQuery());
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
-  const isMobile = useIsMobile();
   const isKpiLoading = isStatsPending || isZeroPlayedSongsPending;
   const [artistId, setArtistId] = useState(null);
   const [albumId, setAlbumId] = useState(null);
   const [genreId, setGenreId] = useState(null);
   const [status, setStatus] = useState(null);
+  ``;
 
   const filters = { artistId, albumId, genreId, status };
 
@@ -87,12 +87,11 @@ function Songs() {
   return (
     <>
       <PageHeader title="Songs" description="Manage and analyze all uploaded songs.">
-        <Button size={isMobile ? 'sm' : 'default'} variant="outline">
-          Bulk Actions (0)
-        </Button>
-        {/* Upload new son dialog */}
-        <SongsDialog />
+        {/* Upload new song sheet */}
+        <UploadSongSheet genres={genres} albums={albums} artists={artists} />
       </PageHeader>
+      <KpiCardWrapper data={kpiInfos} isPending={isKpiLoading} />
+
       <SearchInput
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
@@ -134,13 +133,15 @@ function Songs() {
           onChange={onStatusSelect}
         />
       </FilterBar>
-      <KpiCardWrapper data={kpiInfos} isPending={isKpiLoading} />
       <PrimaryTable
         columns={columns}
         rows={data}
         isLoading={isLoading}
         pagination={pagination}
         setPagination={setPagination}
+        tableClassName="min-w-235"
+        onBulkDelete={bulkDeleteMutation.mutateAsync}
+        bulkDeletePending={bulkDeleteMutation.isPending}
       />
       <MostPlaysChart
         chartTitle="Top songs by Plays"

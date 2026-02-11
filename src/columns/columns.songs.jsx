@@ -7,6 +7,9 @@ import SongsTableSongCellSkeleton from '@components/Tables/ColumnDefs/Cells/Song
 import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
 import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
 import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
+import StatusCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/StatusCell';
+import StatusCellSkeleton from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/StatusCellSkeleton';
+import SongsTableActionCell from '@/components/Tables/ColumnDefs/Cells/SongsTableCells/SongsTableActionCell';
 import { formatTime } from '@/utils';
 
 export default [
@@ -40,6 +43,12 @@ export default [
     meta: { skeleton: <TextSkeleton className="w-16" /> },
   },
   {
+    header: 'Status',
+    accessorKey: 'status',
+    cell: (props) => <StatusCell {...props} />,
+    meta: { skeleton: <StatusCellSkeleton /> },
+  },
+  {
     header: 'Uploaded At',
     accessorKey: 'created_at',
     cell: (props) => <TimeCell {...props} />,
@@ -48,7 +57,7 @@ export default [
   {
     header: 'Actions',
     id: 'actions',
-    cell: (props) => <ActionsCell {...props} />,
+    cell: (props) => <SongsTableActionCell {...props} />,
     meta: { skeleton: <ActionsCellSkeleton /> },
   },
 ];
