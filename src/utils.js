@@ -88,3 +88,11 @@ export const isURL = (url) => {
     return false;
   }
 };
+
+// return dirty fields from react-hook-form in a {key: value} format instead of {key: bool}
+export const getDirtyFields = (dirtyFields) => {
+  return Object.keys(dirtyFields).reduce((acc, key) => {
+    acc[key] = dirtyFields[key];
+    return acc;
+  }, {});
+};

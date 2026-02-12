@@ -34,7 +34,7 @@ import UploadedFileItem from '@/components/FileUpload/UploadedFileItem';
 import schema from '@/schemas/songs.schema';
 import { uploadSongMutation } from '@/queries/songs';
 import useSongSheet from '@/store/songSheet.store';
-import { isURL } from '@/utils';
+import { isURL, getDirtyFields } from '@/utils';
 
 function UploadSongSheet({ genres, albums, artists }) {
   const open = useSongSheet((state) => state.open);
@@ -81,10 +81,7 @@ function UploadSongSheet({ genres, albums, artists }) {
 
   const submitHandler = async (data) => {
     if (isEditMode) {
-      const modifiedFields = Object.keys(dirtyFields).reduce((acc, key) => {
-        acc[key] = data[key];
-        return acc;
-      }, {});
+      const modifiedFields = getDirtyFields(dirtyFields);
       console.log('edit complete : ', modifiedFields);
     } else {
       await mutateAsync(data, {
