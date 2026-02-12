@@ -109,7 +109,7 @@ function UploadSongSheet({ genres, albums, artists }) {
           Upload Song
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent onCloseAutoFocus={(e) => e.preventDefault()}>
         <form className="flex h-full flex-col" onSubmit={handleSubmit(submitHandler)}>
           <SheetHeader className="border-b">
             <SheetTitle>{isEditMode ? `Edit "${song.title}"` : 'Upload New Song'}</SheetTitle>
