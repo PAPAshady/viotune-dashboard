@@ -282,8 +282,6 @@ export const updateSong = async ({ modifiedFields, prevSongData }) => {
     data.album_id = album_id;
   }
 
-  console.log(data);
-
   const { error: dbError, data: dbData } = await supabase
     .from('songs')
     .update(data)
