@@ -49,8 +49,8 @@ export const getZeroPlayedSongsCount = async () => {
 export const uploadSong = async ({
   title,
   audioFile,
-  cover,
-  genre,
+  coverFile,
+  genre_id,
   artist,
   album,
   release_date,
@@ -60,7 +60,7 @@ export const uploadSong = async ({
   // since we send artist and album data in a string format, we have to sperate them.
   const [artist_id, artistName] = artist ? artist.split('|') : [null, 'Unknown artist'];
   const [album_id, albumTitle] = album ? album.split('|') : [null, null];
-  const coverExists = !!cover.length;
+  const coverExists = !!coverFile.length;
   const uploadedAt = new Date().toISOString();
 
   // upload audio file to storage
@@ -79,7 +79,7 @@ export const uploadSong = async ({
     const { data: coverFileData, error: coverFileError } = await uploadFile(
       'song-covers',
       `${title}-${artistName}-${uploadedAt}`,
-      cover[0]
+      coverFile[0]
     );
 
     if (coverFileError) throw coverFileError;
@@ -105,7 +105,7 @@ export const uploadSong = async ({
       release_date,
       artist: artistName,
       status,
-      genre_id: genre,
+      genre_id,
       song_url,
       cover: cover_url,
       audio_path,
@@ -178,4 +178,117 @@ export const toggleSongStatus = async (song) => {
 
   if (error) throw error;
   return data;
+};
+
+export const updateSong = async ({ modifiedFields, prevSongData }) => {
+  const updatedArtist = modifiedFields?.artist;
+  const updatedAlbum = modifiedFields?.album;
+  const updatedTitle = modifiedFields?.title;
+  const uploadedAt = new Date().toISOString(); // we use this timestamp in the name of our files in storage to be unique
+
+  // extract artist_id and artist_name from 'modifiedFields.artist'
+  const [artist_id, artist_name] = updatedArtist
+    ? updatedArtist.split('|')
+    : [null, 'Unknown artist'];
+
+  // extract album_id and album_title from 'modifiedFields.album'
+  const [album_id, album_title] = updatedAlbum ? updatedAlbum.split('|') : [null, null];
+
+  const data = { ...modifiedFields };
+
+  // upload new audio file (if changed)
+  if (data.audioFile) {
+    const newAudioFile = data.audioFile[0];
+
+    // remove unnecessary properties from data because we will send "data" to postgres database
+    delete data.audioFile;
+    delete data.existingAudioUrl;
+
+    // delete previous audio file from storage
+    const { error: prevAudioFileDeleteError } = await deleteFiles('songs', [
+      prevSongData.audio_path,
+    ]);
+    if (prevAudioFileDeleteError) throw prevAudioFileDeleteError;
+
+    // include updated title and artist name in the new audio file name (if changed)
+    const newAudioFileName = `${updatedTitle ? updatedTitle : prevSongData.title}-${updatedArtist ? artist_name : prevSongData.artist}-${uploadedAt}`;
+
+    // upload new audio file to storage
+    const { data: newAudioFileData, error: newAudioFileError } = await uploadFile(
+      'songs',
+      newAudioFileName,
+      newAudioFile
+    );
+
+    if (newAudioFileError) throw newAudioFileError;
+
+    // calculate the new song duration and insert it into database
+    const { error: songDurationError } = await supabase.functions.invoke('get-song-duration', {
+      method: 'POST',
+      body: JSON.stringify({
+        bucket: 'songs',
+        path: newAudioFileData.path,
+        song_id: prevSongData.id,
+      }),
+    });
+
+    if (songDurationError) throw songDurationError;
+
+    data.audio_path = newAudioFileData.path;
+    data.song_url = getFileUrl('songs', newAudioFileData.path);
+  }
+
+  // update cover in case user changed it.
+  if (data.coverFile || data.existingCoverUrl === null) {
+    // remove unnecessary properties from data because we will send "data" to postgres database
+    delete data.existingCoverUrl;
+
+    // delete previous cover file from storage
+    const { error: prevCoverFileDeleteError } = await deleteFiles('song-covers', [
+      prevSongData.cover_path,
+    ]);
+    if (prevCoverFileDeleteError) throw prevCoverFileDeleteError;
+    data.cover = null;
+    data.cover_path = null;
+
+    // upload new cover if user selected a new cover
+    if (data.coverFile) {
+      const newCoverFile = data.coverFile[0];
+      delete data.coverFile;
+
+      // include updated title and artist name in the new cover file name (if changed)
+      const newCoverFileName = `${updatedTitle ? updatedTitle : prevSongData.title}-${updatedArtist ? artist_name : prevSongData.artist}-${uploadedAt}`;
+
+      // upload new cover file to storage
+      const { data: newCoverFileData, error: newCoverFileError } = await uploadFile(
+        'song-covers',
+        newCoverFileName,
+        newCoverFile
+      );
+      if (newCoverFileError) throw newCoverFileError;
+      data.cover_path = newCoverFileData.path;
+      data.cover = getFileUrl('song-covers', newCoverFileData.path);
+    }
+  }
+
+  // normalize data structure because we want to send it to database
+  if (typeof updatedArtist !== 'undefined') {
+    data.artist = artist_name;
+    data.artist_id = artist_id;
+  }
+
+  if (typeof updatedAlbum !== 'undefined') {
+    data.album = album_title;
+    data.album_id = album_id;
+  }
+
+  const { error: dbError, data: dbData } = await supabase
+    .from('songs')
+    .update(data)
+    .eq('id', prevSongData.id)
+    .select()
+    .single();
+
+  if (dbError) throw dbError;
+  return dbData;
 };

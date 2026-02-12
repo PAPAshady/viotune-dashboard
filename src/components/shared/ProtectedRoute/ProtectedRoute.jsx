@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router';
 
-import useAuth from '@/store/useAuth';
+import useAuth from '@/store/auth.store';
 import useMediaQuery from '@hooks/useMediaQuery';
 import Logo from '@components/Logo/Logo';
 

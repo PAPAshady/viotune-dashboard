@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react';
-
 import {
   Sheet,
   SheetClose,
@@ -30,51 +28,97 @@ import { Spinner } from '@/components/ui/spinner';
 
 import FileUploadZone from '@/components/FileUpload/FileUploadZone';
 import FileItem from '@/components/FileUpload/FileItem';
+import UploadedFileItem from '@/components/FileUpload/UploadedFileItem';
 import schema from '@/schemas/songs.schema';
-import { uploadSongMutation } from '@/queries/songs';
+import { uploadSongMutation, updateSongMutation } from '@/queries/songs';
+import useSongSheet from '@/store/songSheet.store';
+import { isURL, getDirtyFields } from '@/utils';
 
 function UploadSongSheet({ genres, albums, artists }) {
-  const [open, setOpen] = useState(false);
+  const open = useSongSheet((state) => state.open);
+  const setOpen = useSongSheet((state) => state.setOpen);
+  const closeSheet = useSongSheet((state) => state.closeSheet);
+  const isEditMode = useSongSheet((state) => state.isEditMode);
+  const song = useSongSheet((state) => state.song); // selected song to edit
+
+  // fill out the form with dynamic default values in case user wants to edit a song.
+  const defaultValues = isEditMode
+    ? {
+        title: song.title,
+        release_date: song.release_date,
+        track_number: song.track_number,
+        status: song.status,
+        genre_id: song.genre_id,
+        existingAudioUrl: song.song_url,
+        existingCoverUrl: song.cover,
+        artist: `${song.artist_id}|${song.artist}`,
+        album: `${song.album_id}|${song.album}`,
+      }
+    : {};
+
   const {
     register,
-    formState: { errors },
+    formState: { errors, dirtyFields, isDirty },
     handleSubmit,
     watch,
     setValue,
     reset: resetFields,
-  } = useForm({ resolver: zodResolver(schema) });
-  const { mutateAsync, isPending, reset: resetMutation } = useMutation(uploadSongMutation());
+  } = useForm({ resolver: zodResolver(schema), values: defaultValues });
+  const {
+    mutateAsync,
+    isPending,
+    reset: resetMutation,
+  } = useMutation(isEditMode ? updateSongMutation() : uploadSongMutation());
 
-  const audioFile = watch('audioFile')?.[0];
-  const coverFile = watch('cover')?.[0];
+  const coverFile = watch('coverFile');
+  const audioFile = watch('audioFile');
+  const existingAudioUrl = watch('existingAudioUrl');
+  const existingCoverUrl = watch('existingCoverUrl');
 
-  const submitHandler = async (data) => {
-    await mutateAsync(data, {
-      onSuccess: () => setOpen(false),
-    });
+  const hasAudioFile = audioFile instanceof FileList && audioFile.length > 0;
+  const hasAudioUrl = !hasAudioFile && isURL(existingAudioUrl);
+
+  const hasCoverFile = coverFile instanceof FileList && coverFile.length > 0;
+  const hasCoverUrl = !hasCoverFile && isURL(existingCoverUrl);
+
+  const onSheetOpenChange = async (isOpen) => {
+    // reset form values and mutation states when sheet is closed
+    if (!isOpen) {
+      resetFields({});
+      resetMutation();
+      closeSheet(); // close the sheet and reset sheet state
+      return;
+    }
+    setOpen(isOpen);
   };
 
-  // reset form values and mutation states when sheet is closed
-  useEffect(() => {
-    if (!open) {
-      resetFields();
-      resetMutation();
-    }
-  }, [open, resetFields, resetMutation]);
+  const submitHandler = async (formData) => {
+    const modifiedFields = getDirtyFields(formData, dirtyFields);
+
+    // data to pass to server depending if user wants to edit or upload a song
+    const data = isEditMode ? { modifiedFields, prevSongData: song } : formData;
+
+    mutateAsync(data, { onSuccess: () => onSheetOpenChange(false) });
+  };
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={onSheetOpenChange}>
       <SheetTrigger asChild>
         <Button className="bg-blue-500 text-white hover:bg-blue-600">
           <Upload />
           Upload Song
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      {/* prevent radix ui from scroling to top if user opened and closed the sheet from a song on songs table (via dropdown menu) */}
+      <SheetContent onCloseAutoFocus={(e) => e.preventDefault()}> 
         <form className="flex h-full flex-col" onSubmit={handleSubmit(submitHandler)}>
           <SheetHeader className="border-b">
-            <SheetTitle>Add New Song</SheetTitle>
-            <SheetDescription>Upload and configure a new song</SheetDescription>
+            <SheetTitle>{isEditMode ? `Edit "${song.title}"` : 'Upload New Song'}</SheetTitle>
+            <SheetDescription>
+              {isEditMode
+                ? `You are editing "${song.title}" song.`
+                : 'Upload and configure a new song'}
+            </SheetDescription>
           </SheetHeader>
           <div className="w-full grow overflow-y-auto p-4 pb-10" style={{ scrollbarWidth: 'thin' }}>
             <FieldGroup>
@@ -86,8 +130,15 @@ function UploadSongSheet({ genres, albums, artists }) {
                   validFileTypes={['.mp3', '.mpeg', '.wav', '.m4a']}
                   {...register('audioFile')}
                 />
-                {audioFile && (
-                  <FileItem file={audioFile} onRemove={() => setValue('audioFile', null)} />
+                {hasAudioUrl && (
+                  <UploadedFileItem
+                    fileType="audio"
+                    name={song?.audio_path}
+                    onRemove={() => setValue('existingAudioUrl', null, { shouldDirty: true })}
+                  />
+                )}
+                {hasAudioFile && (
+                  <FileItem file={audioFile[0]} onRemove={() => setValue('audioFile', null)} />
                 )}
               </Field>
               <Field>
@@ -101,11 +152,11 @@ function UploadSongSheet({ genres, albums, artists }) {
               </Field>
               <Field>
                 <FieldLabel>Genre</FieldLabel>
-                <FieldError>{errors.genre?.message}</FieldError>
+                <FieldError>{errors.genre_id?.message}</FieldError>
                 <NativeSelect
-                  aria-invalid={!!errors.genre}
+                  aria-invalid={!!errors.genre_id}
                   className="bg-[#192134]! font-semibold"
-                  {...register('genre')}
+                  {...register('genre_id')}
                 >
                   <NativeSelectOption value="">Select Genre</NativeSelectOption>
                   {genres?.map((genre) => (
@@ -143,14 +194,22 @@ function UploadSongSheet({ genres, albums, artists }) {
               </div>
               <Field>
                 <FieldLabel className="text-base">Cover Image (optional)</FieldLabel>
-                <FieldError>{errors.cover?.message}</FieldError>
+                <FieldError>{errors.coverFile?.message}</FieldError>
                 <FileUploadZone
-                  isInvalid={!!errors.cover}
+                  isInvalid={!!errors.coverFile}
                   validFileTypes={['.jpg', '.jpeg', '.png']}
-                  {...register('cover')}
+                  {...register('coverFile')}
                 />
-                {coverFile && (
-                  <FileItem file={coverFile} onRemove={() => setValue('cover', null)} />
+                {hasCoverUrl && (
+                  <UploadedFileItem
+                    fileType="image"
+                    url={existingCoverUrl}
+                    name={song?.cover_path}
+                    onRemove={() => setValue('existingCoverUrl', null, { shouldDirty: true })}
+                  />
+                )}
+                {hasCoverFile && (
+                  <FileItem file={coverFile[0]} onRemove={() => setValue('coverFile', null)} />
                 )}
               </Field>
               <Field>
@@ -208,14 +267,17 @@ function UploadSongSheet({ genres, albums, artists }) {
               </SheetClose>
               <Button
                 className="bg-blue-500 text-white hover:bg-blue-600"
-                disabled={isPending}
+                disabled={isPending || !isDirty}
                 type="submit"
+                size="sm"
               >
                 {isPending ? (
                   <>
                     <Spinner />
-                    Uploading
+                    {isEditMode ? 'Saving changes' : 'Uploading'}
                   </>
+                ) : isEditMode ? (
+                  'Save changes'
                 ) : (
                   'Upload'
                 )}

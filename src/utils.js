@@ -79,3 +79,20 @@ export const formatFileSize = (bytes, decimals = 2) => {
 
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(decimals))} ${sizes[i]}`;
 };
+
+export const isURL = (url) => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+// return dirty fields from react-hook-form in a {key: value} format instead of {key: bool}
+export const getDirtyFields = (data, dirtyFields) => {
+  return Object.keys(dirtyFields).reduce((acc, key) => {
+    acc[key] = data[key];
+    return acc;
+  }, {});
+};

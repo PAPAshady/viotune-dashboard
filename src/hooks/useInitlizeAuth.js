@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import supabase from '@/services/supabase';
 
-import useAuth from '@/store/useAuth';
+import useAuth from '@/store/auth.store';
 
 function useInitlizeAuth() {
   const setUser = useAuth((state) => state.setUser);

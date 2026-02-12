@@ -10,12 +10,16 @@ import {
 import { Button } from '@components/ui/button';
 import { MoreHorizontalIcon, PencilIcon, EyeOffIcon, EyeIcon } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
+import { Spinner } from '@/components/ui/spinner';
 
 import DeleteSongDialog from '@/components/Dialogs/Songs/DeleteSongDialog';
 import { toggleSongStatusMutation } from '@/queries/songs';
-import { Spinner } from '@/components/ui/spinner';
+import useSongSheet from '@/store/songSheet.store';
 
 function SongsTableActionCell({ row }) {
+  const setIsSongSheetOpen = useSongSheet((state) => state.setOpen); // open open edit/upload song form
+  const setIsEditMode = useSongSheet((state) => state.setIsEditMode); // set edit/uplaod song form mode
+  const setSong = useSongSheet((state) => state.setSong); // set seleced song to edit
   const [open, setOpen] = useState(false);
   const statusMutation = useMutation(toggleSongStatusMutation());
   const song = row.original;
@@ -28,6 +32,12 @@ function SongsTableActionCell({ row }) {
     closeDropDown();
   };
 
+  const openEditSongForm = () => {
+    setIsEditMode(true);
+    setSong(song)
+    setIsSongSheetOpen(true);
+  };
+
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
@@ -36,7 +46,7 @@ function SongsTableActionCell({ row }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>
+        <DropdownMenuItem onSelect={openEditSongForm}>
           <PencilIcon className="me-2 size-4" />
           Edit metadata
         </DropdownMenuItem>

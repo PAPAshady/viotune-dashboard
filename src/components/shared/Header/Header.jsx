@@ -6,7 +6,7 @@ import { InputGroup, InputGroupInput, InputGroupAddon } from '@/components/ui/in
 import { useSidebar } from '@/components/ui/sidebar';
 
 import defaultAvatar from '@assets/images/default-avatar.png';
-import useAuth from '@/store/useAuth';
+import useAuth from '@/store/auth.store';
 
 function Header() {
   const { toggleSidebar } = useSidebar();
