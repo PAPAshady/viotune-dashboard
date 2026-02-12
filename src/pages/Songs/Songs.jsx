@@ -60,8 +60,6 @@ function Songs() {
     })
   );
 
-  console.log(chartData);
-
   // if no filter is selected, set to null instead if empty string
   const onArtistSelect = (selectedArtistId) => setArtistId(selectedArtistId || null);
   const onAlbumSelect = (selectedAlbumId) => setAlbumId(selectedAlbumId || null);
