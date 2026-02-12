@@ -81,7 +81,7 @@ function UploadSongSheet({ genres, albums, artists }) {
 
   const submitHandler = async (data) => {
     if (isEditMode) {
-      const modifiedFields = getDirtyFields(dirtyFields);
+      const modifiedFields = getDirtyFields(data, dirtyFields);
       console.log('edit complete : ', modifiedFields);
     } else {
       await mutateAsync(data, {
