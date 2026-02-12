@@ -32,6 +32,7 @@ function MostPlaysChart({ chartTitle, data, yAxisDataKey, barDataKey }) {
             <Bar
               width={10}
               dataKey={barDataKey}
+              name="Plays"
               fill="oklch(62.3% 0.214 259.815)"
               barSize={isMobile ? 15 : 25}
             />
