@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import {
   Sheet,
   SheetClose,
@@ -32,7 +30,7 @@ import FileUploadZone from '@/components/FileUpload/FileUploadZone';
 import FileItem from '@/components/FileUpload/FileItem';
 import UploadedFileItem from '@/components/FileUpload/UploadedFileItem';
 import schema from '@/schemas/songs.schema';
-import { uploadSongMutation } from '@/queries/songs';
+import { uploadSongMutation, updateSongMutation } from '@/queries/songs';
 import useSongSheet from '@/store/songSheet.store';
 import { isURL, getDirtyFields } from '@/utils';
 
@@ -50,11 +48,11 @@ function UploadSongSheet({ genres, albums, artists }) {
         release_date: song.release_date,
         track_number: song.track_number,
         status: song.status,
-        album: `${song.album_id}|${song.album}`,
-        artist: `${song.artist_id}|${song.artist}`,
-        genre: song.genre_id,
+        genre_id: song.genre_id,
         existingAudioUrl: song.song_url,
         existingCoverUrl: song.cover,
+        artist: `${song.artist_id}|${song.artist}`,
+        album: `${song.album_id}|${song.album}`,
       }
     : {};
 
@@ -66,7 +64,11 @@ function UploadSongSheet({ genres, albums, artists }) {
     setValue,
     reset: resetFields,
   } = useForm({ resolver: zodResolver(schema), values: defaultValues });
-  const { mutateAsync, isPending, reset: resetMutation } = useMutation(uploadSongMutation());
+  const {
+    mutateAsync,
+    isPending,
+    reset: resetMutation,
+  } = useMutation(isEditMode ? updateSongMutation() : uploadSongMutation());
 
   const coverFile = watch('coverFile');
   const audioFile = watch('audioFile');
@@ -79,28 +81,28 @@ function UploadSongSheet({ genres, albums, artists }) {
   const hasCoverFile = coverFile instanceof FileList && coverFile.length > 0;
   const hasCoverUrl = !hasCoverFile && isURL(existingCoverUrl);
 
-  const submitHandler = async (data) => {
-    if (isEditMode) {
-      const modifiedFields = getDirtyFields(data, dirtyFields);
-      console.log('edit complete : ', modifiedFields);
-    } else {
-      await mutateAsync(data, {
-        onSuccess: closeSheet,
-      });
+  const onSheetOpenChange = async (isOpen) => {
+    // reset form values and mutation states when sheet is closed
+    if (!isOpen) {
+      resetFields({});
+      resetMutation();
+      closeSheet(); // close the sheet and reset sheet state
+      return;
     }
+    setOpen(isOpen);
   };
 
-  //, form values and mutation states when sheet is closed
-  useEffect(() => {
-    if (!open) {
-      closeSheet();
-      resetMutation();
-      resetFields({});
-    }
-  }, [open, resetFields, resetMutation, closeSheet]);
+  const submitHandler = async (formData) => {
+    const modifiedFields = getDirtyFields(formData, dirtyFields);
+
+    // data to pass to server depending if user wants to edit or upload a song
+    const data = isEditMode ? { modifiedFields, prevSongData: song } : formData;
+
+    mutateAsync(data, { onSuccess: () => onSheetOpenChange(false) });
+  };
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={onSheetOpenChange}>
       <SheetTrigger asChild>
         <Button className="bg-blue-500 text-white hover:bg-blue-600">
           <Upload />
@@ -149,11 +151,11 @@ function UploadSongSheet({ genres, albums, artists }) {
               </Field>
               <Field>
                 <FieldLabel>Genre</FieldLabel>
-                <FieldError>{errors.genre?.message}</FieldError>
+                <FieldError>{errors.genre_id?.message}</FieldError>
                 <NativeSelect
-                  aria-invalid={!!errors.genre}
+                  aria-invalid={!!errors.genre_id}
                   className="bg-[#192134]! font-semibold"
-                  {...register('genre')}
+                  {...register('genre_id')}
                 >
                   <NativeSelectOption value="">Select Genre</NativeSelectOption>
                   {genres?.map((genre) => (
@@ -271,7 +273,7 @@ function UploadSongSheet({ genres, albums, artists }) {
                 {isPending ? (
                   <>
                     <Spinner />
-                    Uploading
+                    {isEditMode ? 'Saving changes' : 'Uploading'}
                   </>
                 ) : isEditMode ? (
                   'Save changes'

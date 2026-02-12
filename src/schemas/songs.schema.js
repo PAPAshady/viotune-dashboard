@@ -10,7 +10,7 @@ export default z
         (audio) => {
           const isEditMode = useSongSheet.getState().isEditMode;
           // audio file is optional in edit mode because user have uploaded an audio file before.
-          if (isEditMode && audio?.length === 0) return true; 
+          if (isEditMode && audio?.length === 0) return true;
           return audio?.length > 0;
         },
         { message: 'Audio file is required' }
@@ -39,12 +39,12 @@ export default z
       .optional(),
     existingAudioUrl: z.url().nullable().optional(),
     existingCoverUrl: z.url().nullable().optional(),
-    genre: z.string().min(1, { message: 'Genre is required' }),
+    genre_id: z.uuid({ message: 'Genre is required' }),
     artist: z.string().optional(),
     album: z.string().optional(),
     release_date: z.iso.date({ message: 'Use a valid date' }),
     // track_number can be both string and number (number in edit mode because that's what server sends to us)
-    track_number: z.union([z.string(), z.null(), z.number()]).optional(), 
+    track_number: z.union([z.string(), z.null(), z.number()]).optional(),
     status: z.enum(['published', 'draft'], { message: 'Status is required' }),
   })
   // make sure the audio always exists, wether its a new audio file or the existing audio url

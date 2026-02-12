@@ -9,6 +9,7 @@ import {
   deleteSong,
   toggleSongStatus,
   deleteSongs,
+  updateSong,
 } from '@/services/songs';
 import queryClient from '@/QueryClient';
 
@@ -56,12 +57,12 @@ export const deleteSongMutation = () =>
     onSuccess: () => {
       queryClient.invalidateQueries(['songs']);
       toast.success('Song deleted successfully', {
-        description: 'Your song no longer exists in the library.',
+        description: 'The song has been permanently removed from your library.',
       });
     },
     onError: (err) => {
-      toast.error('Upload failed', {
-        description: 'Something went wrong while deleting the song.',
+      toast.error('Unable to Delete Song', {
+        description: 'We couldn’t delete the song. Please try again.',
       });
       console.error('Error while uploading song => ', err);
     },
@@ -73,12 +74,12 @@ export const deleteSongsMutation = () =>
     mutationFn: deleteSongs,
     onSuccess: () => {
       queryClient.invalidateQueries(['songs']);
-      toast.success('All songs deleted successfully', {
+      toast.success('All songs deleted successfully.', {
         description: 'Your songs no longer exist in the library.',
       });
     },
     onError: (err) => {
-      toast.error('Upload failed', {
+      toast.error('Upload failed.', {
         description: 'Something went wrong while deleting songs.',
       });
       console.error('Error while deleting songs => ', err);
@@ -101,9 +102,26 @@ export const toggleSongStatusMutation = () =>
       toast.success(message, { description });
     },
     onError: (err) => {
-      toast.error("Couldn't update song's visibility", {
-        description: 'Something went wrong while changing the song visibilty. Please try again.',
+      toast.error('Update failed.', {
+        description: 'We couldn’t update the song. Please try again.',
       });
       console.error('Error while changing song status => ', err);
+    },
+  });
+
+export const updateSongMutation = () =>
+  mutationOptions({
+    queryKey: ['songs'],
+    mutationFn: updateSong,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['songs']);
+      toast.success('Song updated successfully', {
+        message:
+          'Your changes have been saved. The song details are now up to date and ready to go.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Update failed.', { message: 'We couldn’t update the song. Please try again.' });
+      console.error('Error while updating song => ', err);
     },
   });
