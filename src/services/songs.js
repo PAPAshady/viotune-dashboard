@@ -49,7 +49,7 @@ export const getZeroPlayedSongsCount = async () => {
 export const uploadSong = async ({
   title,
   audioFile,
-  cover,
+  coverFile,
   genre,
   artist,
   album,
@@ -60,7 +60,7 @@ export const uploadSong = async ({
   // since we send artist and album data in a string format, we have to sperate them.
   const [artist_id, artistName] = artist ? artist.split('|') : [null, 'Unknown artist'];
   const [album_id, albumTitle] = album ? album.split('|') : [null, null];
-  const coverExists = !!cover.length;
+  const coverExists = !!coverFile.length;
   const uploadedAt = new Date().toISOString();
 
   // upload audio file to storage
@@ -79,7 +79,7 @@ export const uploadSong = async ({
     const { data: coverFileData, error: coverFileError } = await uploadFile(
       'song-covers',
       `${title}-${artistName}-${uploadedAt}`,
-      cover[0]
+      coverFile[0]
     );
 
     if (coverFileError) throw coverFileError;

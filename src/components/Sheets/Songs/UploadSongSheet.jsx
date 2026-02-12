@@ -34,6 +34,7 @@ import UploadedFileItem from '@/components/FileUpload/UploadedFileItem';
 import schema from '@/schemas/songs.schema';
 import { uploadSongMutation } from '@/queries/songs';
 import useSongSheet from '@/store/songSheet.store';
+import { isURL } from '@/utils';
 
 function UploadSongSheet({ genres, albums, artists }) {
   const open = useSongSheet((state) => state.open);
@@ -45,11 +46,15 @@ function UploadSongSheet({ genres, albums, artists }) {
   // fill out the form with dynamic default values in case user wants to edit a song.
   const defaultValues = isEditMode
     ? {
-        ...song,
+        title: song.title,
+        release_date: song.release_date,
+        track_number: song.track_number,
+        status: song.status,
         album: `${song.album_id}|${song.album}`,
         artist: `${song.artist_id}|${song.artist}`,
         genre: song.genre_id,
-        audioFile: song.song_url,
+        existingAudioUrl: song.song_url,
+        existingCoverUrl: song.cover,
       }
     : {};
 
@@ -59,15 +64,20 @@ function UploadSongSheet({ genres, albums, artists }) {
     handleSubmit,
     watch,
     setValue,
-    getValues,
     reset: resetFields,
   } = useForm({ resolver: zodResolver(schema), values: defaultValues });
   const { mutateAsync, isPending, reset: resetMutation } = useMutation(uploadSongMutation());
 
-  const cover = watch('cover');
-  const audio = watch('audioFile');
+  const coverFile = watch('coverFile');
+  const audioFile = watch('audioFile');
+  const existingAudioUrl = watch('existingAudioUrl');
+  const existingCoverUrl = watch('existingCoverUrl');
 
-  console.log(audio);
+  const hasAudioFile = audioFile instanceof FileList && audioFile.length > 0;
+  const hasAudioUrl = !hasAudioFile && isURL(existingAudioUrl);
+
+  const hasCoverFile = coverFile instanceof FileList && coverFile.length > 0;
+  const hasCoverUrl = !hasCoverFile && isURL(existingCoverUrl);
 
   const submitHandler = async (data) => {
     if (isEditMode) {
@@ -75,7 +85,7 @@ function UploadSongSheet({ genres, albums, artists }) {
         acc[key] = data[key];
         return acc;
       }, {});
-      console.log(modifiedFields);
+      console.log('edit complete : ', modifiedFields);
     } else {
       await mutateAsync(data, {
         onSuccess: closeSheet,
@@ -87,8 +97,8 @@ function UploadSongSheet({ genres, albums, artists }) {
   useEffect(() => {
     if (!open) {
       closeSheet();
-      resetFields();
       resetMutation();
+      resetFields({});
     }
   }, [open, resetFields, resetMutation, closeSheet]);
 
@@ -120,15 +130,15 @@ function UploadSongSheet({ genres, albums, artists }) {
                   validFileTypes={['.mp3', '.mpeg', '.wav', '.m4a']}
                   {...register('audioFile')}
                 />
-                {audio instanceof FileList && audio.length > 0 && (
-                  <FileItem file={audio} onRemove={() => setValue('audioFile', null)} />
-                )}
-                {typeof audio === 'string' && (
+                {hasAudioUrl && (
                   <UploadedFileItem
                     fileType="audio"
-                    name={getValues('audio_path')}
-                    onRemove={() => setValue('audioFile', null, { shouldDirty: true })}
+                    name={song?.audio_path}
+                    onRemove={() => setValue('existingAudioUrl', null, { shouldDirty: true })}
                   />
+                )}
+                {hasAudioFile && (
+                  <FileItem file={audioFile[0]} onRemove={() => setValue('audioFile', null)} />
                 )}
               </Field>
               <Field>
@@ -184,22 +194,22 @@ function UploadSongSheet({ genres, albums, artists }) {
               </div>
               <Field>
                 <FieldLabel className="text-base">Cover Image (optional)</FieldLabel>
-                <FieldError>{errors.cover?.message}</FieldError>
+                <FieldError>{errors.coverFile?.message}</FieldError>
                 <FileUploadZone
-                  isInvalid={!!errors.cover}
+                  isInvalid={!!errors.coverFile}
                   validFileTypes={['.jpg', '.jpeg', '.png']}
-                  {...register('cover')}
+                  {...register('coverFile')}
                 />
-                {typeof cover === 'string' && (
+                {hasCoverUrl && (
                   <UploadedFileItem
                     fileType="image"
-                    name={getValues('cover_path')}
-                    url={cover}
-                    onRemove={() => setValue('cover', null, { shouldDirty: true })}
+                    url={existingCoverUrl}
+                    name={song?.cover_path}
+                    onRemove={() => setValue('existingCoverUrl', null, { shouldDirty: true })}
                   />
                 )}
-                {cover instanceof FileList && cover.length > 0 && (
-                  <FileItem file={cover[0]} onRemove={() => setValue('cover', null)} />
+                {hasCoverFile && (
+                  <FileItem file={coverFile[0]} onRemove={() => setValue('coverFile', null)} />
                 )}
               </Field>
               <Field>
