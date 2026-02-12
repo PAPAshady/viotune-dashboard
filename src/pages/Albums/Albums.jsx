@@ -10,49 +10,57 @@ import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import { getPeginatedAlbumsQuery } from '@/queries/albums';
+import { getArtistsQuery } from '@/queries/artists';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import SearchInput from '@components/SearchInput/SearchInput';
 import columns from '@/columns/columns.albums.jsx';
+import useDebounce from '@/hooks/useDebounce';
 
-const artists = [
-  { id: 1, name: 'Artist One' },
-  { id: 2, name: 'Artist Two' },
-  { id: 3, name: 'Artist Three' },
-  { id: 4, name: 'Artist Four' },
-];
-
-const visibilityOptions = [
-  { value: 'public', label: 'Public' },
-  { value: 'private', label: 'Private' },
+const statusOptions = [
+  { value: '', label: 'All' },
   { value: 'draft', label: 'Draft' },
+  { value: 'published', label: 'Published' },
 ];
 
 const releaseYearOptions = [
+  { value: '2026', label: '2026' },
+  { value: '2025', label: '2025' },
+  { value: '2024', label: '2024' },
   { value: '2023', label: '2023' },
   { value: '2022', label: '2022' },
   { value: '2021', label: '2021' },
   { value: '2020', label: '2020' },
+  { value: '2019', label: '2019' },
 ];
 
 function Albums() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const isMobile = useIsMobile();
-  const [visibility, setVisibility] = useState();
-  const [releaseYear, setReleaseYear] = useState();
-  const { data, isLoading } = useQuery(getPeginatedAlbumsQuery(pagination));
+  const { data: artists, isPending: isArtistsPending } = useQuery(getArtistsQuery());
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearchValue = useDebounce(searchValue);
+  const [status, setStatus] = useState(null);
+  const [releaseYear, setReleaseYear] = useState(null);
+  const [artistId, setArtistId] = useState(null);
 
-  const onArtistSelect = (value) => {
-    console.log(`Selected artist: ${value}`);
+  const filters = {
+    status,
+    releaseYear,
+    artistId,
   };
 
-  const onVisibilityChange = (e) => {
-    const value = e.target.value;
-    setVisibility(value);
-  };
+  const { data, isLoading } = useQuery(
+    getPeginatedAlbumsQuery({ ...pagination, ...filters, search: debouncedSearchValue })
+  );
 
-  const onReleaseYearChange = (e) => {
-    const value = e.target.value;
-    setReleaseYear(value);
+  const onArtistSelect = (selectedArtistId) => setArtistId(selectedArtistId || null);
+  const onStatusChange = (e) => setStatus(e.target.value || null);
+  const onReleaseYearChange = (e) => setReleaseYear(e.target.value || null);
+
+  const clearFilters = () => {
+    setStatus(null);
+    setArtistId(null);
+    setReleaseYear('');
   };
 
   return (
@@ -68,21 +76,27 @@ function Albums() {
           <PlusIcon /> Add Album
         </Button>
       </PageHeader>
-      <SearchInput placeholder="Search albums by title or artist..." />
-      <FilterBar>
+      <SearchInput
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        placeholder="Search albums by title or artist..."
+      />
+      <FilterBar filters={filters} onClearAll={clearFilters}>
         <FilterComboBox
           filterName="Artists"
           placeholder="Select an artist"
           options={artists}
+          isPending={isArtistsPending}
           valueKey="name"
-          onSelect={onArtistSelect}
+          onChange={onArtistSelect}
+          value={artistId}
         />
         <FilterSelectBox
-          filterName="Visibility"
-          placeholder="Select visibility"
-          options={visibilityOptions}
-          value={visibility}
-          onChange={onVisibilityChange}
+          filterName="Status"
+          placeholder="Select Status"
+          options={statusOptions}
+          value={status}
+          onChange={onStatusChange}
         />
         <FilterSelectBox
           filterName="Release year"
