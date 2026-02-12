@@ -58,8 +58,8 @@ function Albums() {
   const onReleaseYearChange = (e) => setReleaseYear(e.target.value || null);
 
   const clearFilters = () => {
-    setStatus(null);
     setArtistId(null);
+    setStatus('');
     setReleaseYear('');
   };
 

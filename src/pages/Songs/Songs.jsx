@@ -48,7 +48,6 @@ function Songs() {
   const [albumId, setAlbumId] = useState(null);
   const [genreId, setGenreId] = useState(null);
   const [status, setStatus] = useState(null);
-  ``;
 
   const filters = { artistId, albumId, genreId, status };
 
@@ -70,7 +69,7 @@ function Songs() {
     setArtistId(null);
     setAlbumId(null);
     setGenreId(null);
-    setStatus(null);
+    setStatus('');
   };
 
   const kpiInfos = [
