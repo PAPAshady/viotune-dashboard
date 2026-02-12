@@ -109,7 +109,8 @@ function UploadSongSheet({ genres, albums, artists }) {
           Upload Song
         </Button>
       </SheetTrigger>
-      <SheetContent onCloseAutoFocus={(e) => e.preventDefault()}>
+      {/* prevent radix ui from scroling to top if user opened and closed the sheet from a song on songs table (via dropdown menu) */}
+      <SheetContent onCloseAutoFocus={(e) => e.preventDefault()}> 
         <form className="flex h-full flex-col" onSubmit={handleSubmit(submitHandler)}>
           <SheetHeader className="border-b">
             <SheetTitle>{isEditMode ? `Edit "${song.title}"` : 'Upload New Song'}</SheetTitle>
