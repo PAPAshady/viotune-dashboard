@@ -2,7 +2,7 @@ import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader
 import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
 import AlbumsTableAlbumCell from '@components/Tables/ColumnDefs/Cells/AlbumsTableCells/AlbumsTableAlbumCell';
 import AlbumsTableArtistCell from '@components/Tables/ColumnDefs/Cells/AlbumsTableCells/AlbumsTableArtistCell';
-import ActionsCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
+import AlbumsTableActionCell from '@/components/Tables/ColumnDefs/Cells/AlbumsTableCells/AlbumsTableActionCell';
 import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
 import AlbumsTableAlbumCellSkeleton from '@components/Tables/ColumnDefs/Cells/AlbumsTableCells/Skeleton/AlbumsTableAlbumCellSkeleton';
 import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
@@ -50,7 +50,7 @@ export default [
   {
     header: 'Actions',
     id: 'actions',
-    cell: (props) => <ActionsCell {...props} />,
+    cell: (props) => <AlbumsTableActionCell {...props} />,
     meta: { skeleton: <ActionsCellSkeleton /> },
   },
 ];
