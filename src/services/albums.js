@@ -39,3 +39,16 @@ export const getPeginatedAlbums = async ({
   if (error) throw error;
   return { data, total: count };
 };
+
+export const toggleAlbumStatus = async (album) => {
+  const newStatus = album.status === 'published' ? 'draft' : 'published';
+  const { data, error } = await supabase
+    .from('albums')
+    .update({ status: newStatus })
+    .eq('id', album.id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
