@@ -13,6 +13,7 @@ export const getPeginatedAlbums = async ({
   pageIndex,
   pageSize,
   artistId,
+  genreId,
   releaseYear,
   status,
   search,
@@ -27,6 +28,7 @@ export const getPeginatedAlbums = async ({
     .order('created_at', { ascending: false });
 
   if (artistId) query.eq('artist_id', artistId);
+  if (genreId) query.eq('genre_id', genreId);
   if (status) query.eq('status', status);
   if (releaseYear)
     query

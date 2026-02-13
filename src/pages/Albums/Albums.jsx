@@ -35,17 +35,19 @@ const releaseYearOptions = [
 function Albums() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const { data: artists, isPending: isArtistsPending } = useQuery(getArtistsQuery());
-  const { data: genres } = useQuery(getGenresQuery());
+  const { data: genres, isPending: isGenresPending } = useQuery(getGenresQuery());
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
   const [status, setStatus] = useState(null);
   const [releaseYear, setReleaseYear] = useState(null);
   const [artistId, setArtistId] = useState(null);
+  const [genreId, setGenreId] = useState(null);
 
   const filters = {
     status,
     releaseYear,
     artistId,
+    genreId,
   };
 
   const { data, isLoading } = useQuery(
@@ -53,6 +55,7 @@ function Albums() {
   );
 
   const onArtistSelect = (selectedArtistId) => setArtistId(selectedArtistId || null);
+  const onGenreSelect = (selectedGenreId) => setGenreId(selectedGenreId || null);
   const onStatusChange = (e) => setStatus(e.target.value || null);
   const onReleaseYearChange = (e) => setReleaseYear(e.target.value || null);
 
@@ -81,6 +84,15 @@ function Albums() {
           valueKey="name"
           onChange={onArtistSelect}
           value={artistId}
+        />
+        <FilterComboBox
+          filterName="Genres"
+          placeholder="Select a genre"
+          options={genres}
+          isPending={isGenresPending}
+          valueKey="title"
+          onChange={onGenreSelect}
+          value={genreId}
         />
         <FilterSelectBox
           filterName="Status"
