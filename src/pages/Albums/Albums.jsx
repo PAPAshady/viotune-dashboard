@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-import { PlusIcon } from 'lucide-react';
-import { Button } from '@components/ui/button';
-import { useIsMobile } from '@hooks/use-mobile';
 import { useQuery } from '@tanstack/react-query';
 
 import PageHeader from '@components/shared/PageHeader/PageHeader';
@@ -15,6 +12,8 @@ import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import SearchInput from '@components/SearchInput/SearchInput';
 import columns from '@/columns/columns.albums.jsx';
 import useDebounce from '@/hooks/useDebounce';
+import AlbumSheet from '@components/Sheets/Albums/AlbumSheet';
+import { getGenresQuery } from '@/queries/genres';
 
 const statusOptions = [
   { value: '', label: 'All' },
@@ -35,8 +34,8 @@ const releaseYearOptions = [
 
 function Albums() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
-  const isMobile = useIsMobile();
   const { data: artists, isPending: isArtistsPending } = useQuery(getArtistsQuery());
+  const { data: genres } = useQuery(getGenresQuery());
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
   const [status, setStatus] = useState(null);
@@ -66,15 +65,7 @@ function Albums() {
   return (
     <>
       <PageHeader title="Albums" description="Manage all albums in your platform.">
-        <Button size={isMobile ? 'sm' : 'default'} variant="outline">
-          Bulk Actions (0)
-        </Button>
-        <Button
-          size={isMobile ? 'sm' : 'default'}
-          className="bg-blue-500 text-white hover:bg-blue-600"
-        >
-          <PlusIcon /> Add Album
-        </Button>
+        <AlbumSheet artists={artists} genres={genres} />
       </PageHeader>
       <SearchInput
         value={searchValue}
