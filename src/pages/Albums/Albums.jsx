@@ -61,6 +61,7 @@ function Albums() {
 
   const clearFilters = () => {
     setArtistId(null);
+    setGenreId(null);
     setStatus('');
     setReleaseYear('');
   };
