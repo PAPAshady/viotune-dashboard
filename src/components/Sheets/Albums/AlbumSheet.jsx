@@ -30,13 +30,18 @@ import UploadedFileItem from '@/components/FileUpload/UploadedFileItem';
 import FileItem from '@/components/FileUpload/FileItem';
 import shcema from '@/schemas/albums.schema';
 import { isURL } from '@/utils';
+import useAlbumSheet from '@/store/albumsSheet.store';
 
 function AddAlbumSheet({ artists, genres }) {
+  const open = useAlbumSheet((state) => state.open);
+  const setOpen = useAlbumSheet((state) => state.setOpen);
+  const closeSheet = useAlbumSheet((state) => state.closeSheet);
   const {
     handleSubmit,
     register,
     setValue,
     watch,
+    reset: resetFields,
     formState: { errors },
   } = useForm({ resolver: zodResolver(shcema) });
 
@@ -51,8 +56,17 @@ function AddAlbumSheet({ artists, genres }) {
   const hasCoverFile = coverFile instanceof FileList && coverFile.length > 0;
   const hasCoverUrl = !hasCoverFile && isURL(existingCoverUrl);
 
+  const onSheetOpenChange = (isOpen) => {
+    if (!isOpen) {
+      resetFields({});
+      closeSheet();
+      return;
+    }
+    setOpen(isOpen);
+  };
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={onSheetOpenChange}>
       <SheetTrigger asChild>
         <Button className="bg-blue-500 text-white hover:bg-blue-600">
           <Plus />
