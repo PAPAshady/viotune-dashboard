@@ -7,6 +7,7 @@ import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCe
 import AlbumsTableAlbumCellSkeleton from '@components/Tables/ColumnDefs/Cells/AlbumsTableCells/Skeleton/AlbumsTableAlbumCellSkeleton';
 import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
 import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
+import AlbumsTableStatusCell from '@/components/Tables/ColumnDefs/Cells/AlbumsTableCells/AlbumsTableStatusCell';
 
 export default [
   {
@@ -33,6 +34,12 @@ export default [
     accessorKey: 'genre_title',
     header: 'Genre',
     meta: { skeleton: <TextSkeleton className="w-16" /> },
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: (props) => <AlbumsTableStatusCell {...props} />,
+    meta: { skeleton: <TextSkeleton className="w-20" /> },
   },
   {
     accessorKey: 'release_date',
