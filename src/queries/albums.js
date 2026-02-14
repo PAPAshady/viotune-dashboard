@@ -7,6 +7,7 @@ import {
   toggleAlbumStatus,
   createAlbum,
   deleteAlbum,
+  deleteAlbums,
 } from '@/services/albums';
 import queryClient from '@/QueryClient';
 
@@ -26,7 +27,6 @@ export const toggleAlbumStatusMutation = () =>
     mutationFn: toggleAlbumStatus,
     onSuccess: (data) => {
       queryClient.invalidateQueries(['albums']);
-
       const isPublished = data.status === 'published';
       const message = isPublished ? 'Album published' : 'Album moved to draft';
       const description = isPublished
@@ -76,5 +76,23 @@ export const deleteAlbumMutation = () =>
         description: 'We couldn’t delete the album. Please try again.',
       });
       console.error('Error while uploading album => ', err);
+    },
+  });
+
+export const deleteAlbumsMutation = () =>
+  mutationOptions({
+    queryKey: ['albums'],
+    mutationFn: deleteAlbums,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['albums']);
+      toast.success('All albums deleted successfully.', {
+        description: 'Your albums no longer exist in the library.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Deletion failed.', {
+        description: 'Something went wrong while deleting albums.',
+      });
+      console.error('Error while deleting albums => ', err);
     },
   });

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
-import { getPeginatedAlbumsQuery } from '@/queries/albums';
+import { getPeginatedAlbumsQuery, deleteAlbumsMutation } from '@/queries/albums';
 import { getArtistsQuery } from '@/queries/artists';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import SearchInput from '@components/SearchInput/SearchInput';
@@ -33,6 +33,7 @@ const releaseYearOptions = [
 ];
 
 function Albums() {
+  const bulkDeleteMutation = useMutation(deleteAlbumsMutation());
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const { data: artists, isPending: isArtistsPending } = useQuery(getArtistsQuery());
   const { data: genres, isPending: isGenresPending } = useQuery(getGenresQuery());
@@ -116,6 +117,8 @@ function Albums() {
         isLoading={isLoading}
         pagination={pagination}
         setPagination={setPagination}
+        onBulkDelete={bulkDeleteMutation.mutateAsync}
+        bulkDeletePending={bulkDeleteMutation.isPending}
       />
     </>
   );

@@ -113,3 +113,19 @@ export const deleteAlbum = async (data) => {
 
   return dbData;
 };
+
+export const deleteAlbums = async (albumRows) => {
+  const coverPaths = albumRows.map((row) => row.original.cover_path);
+  const albumIds = albumRows.map((row) => row.original.id);
+
+  // delete cover files
+  const { error: coversDeleteErrors } = await deleteFiles('album-covers', coverPaths);
+  if (coversDeleteErrors) throw coversDeleteErrors;
+
+  // remove albums metadata from database
+  const { data, error } = await supabase.from('albums').delete().in('id', albumIds).select();
+
+  if (error) throw error;
+
+  return data;
+};
