@@ -1,5 +1,5 @@
 import supabase from './supabase';
-import { uploadFile, getFileUrl } from './storage';
+import { uploadFile, getFileUrl, deleteFiles } from './storage';
 
 export const getAllAlbums = async () => {
   const { data, error } = await supabase
@@ -79,7 +79,7 @@ export const createAlbum = async (data) => {
     newAlbum.cover_path = coverFileData.path;
     newAlbum.cover = getFileUrl('album-covers', coverFileData.path);
   }
-  
+
   // delete coverFile property because we already exctracted it
   delete newAlbum.coverFile;
 
@@ -90,6 +90,27 @@ export const createAlbum = async (data) => {
     .single();
 
   if (dbError) throw dbError;
+
+  return dbData;
+};
+
+export const deleteAlbum = async (data) => {
+  // delete cover file from storage if exists
+  console.log(data);
+  if (data.cover_path) {
+    const { error: coverDeleteError } = await deleteFiles('album-covers', [data.cover_path]);
+    if (coverDeleteError) throw coverDeleteError;
+  }
+
+  // remove album metadata from database
+  const { error, data: dbData } = await supabase
+    .from('albums')
+    .delete()
+    .eq('id', data.id)
+    .select()
+    .single();
+
+  if (error) throw error;
 
   return dbData;
 };

@@ -9,11 +9,12 @@ import {
 } from '@components/ui/dropdown-menu';
 import { Button } from '@components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import { MoreHorizontal, Pencil, EyeOff, Eye, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Pencil, EyeOff, Eye } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 
 import useAlbumSheet from '@/store/albumsSheet.store';
 import { toggleAlbumStatusMutation } from '@/queries/albums';
+import DeleteAlbumDialog from '@/components/Dialogs/Albums/DeleteAlbumDialog';
 
 function AlbumsTableActionCell({ row }) {
   const [open, setOpen] = useState(false);
@@ -61,10 +62,7 @@ function AlbumsTableActionCell({ row }) {
           {isPublished ? 'Draft' : 'Publish'}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-destructive">
-          <Trash2 className="me-2 size-4" />
-          Delete
-        </DropdownMenuItem>
+        <DeleteAlbumDialog album={album} onDropDownClose={closeDropDown} />
       </DropdownMenuContent>
     </DropdownMenu>
   );

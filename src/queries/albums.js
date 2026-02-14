@@ -6,6 +6,7 @@ import {
   getAllAlbums,
   toggleAlbumStatus,
   createAlbum,
+  deleteAlbum,
 } from '@/services/albums';
 import queryClient from '@/QueryClient';
 
@@ -55,6 +56,24 @@ export const createAlbumMutation = () =>
     onError: (err) => {
       toast.error('Upload failed', {
         description: 'Something went wrong while creating the album.',
+      });
+      console.error('Error while uploading album => ', err);
+    },
+  });
+
+export const deleteAlbumMutation = () =>
+  mutationOptions({
+    queryKey: ['albums'],
+    mutationFn: deleteAlbum,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['albums']);
+      toast.success('Album deleted successfully', {
+        description: 'The album has been permanently removed from your library.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Unable to Delete slbum', {
+        description: 'We couldn’t delete the album. Please try again.',
       });
       console.error('Error while uploading album => ', err);
     },
