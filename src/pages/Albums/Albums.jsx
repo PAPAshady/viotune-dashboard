@@ -1,88 +1,107 @@
 import { useState } from 'react';
 
-import { PlusIcon } from 'lucide-react';
-import { Button } from '@components/ui/button';
-import { useIsMobile } from '@hooks/use-mobile';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
-import { getPeginatedAlbumsQuery } from '@/queries/albums';
+import { getPeginatedAlbumsQuery, deleteAlbumsMutation } from '@/queries/albums';
+import { getArtistsQuery } from '@/queries/artists';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import SearchInput from '@components/SearchInput/SearchInput';
 import columns from '@/columns/columns.albums.jsx';
+import useDebounce from '@/hooks/useDebounce';
+import AlbumSheet from '@components/Sheets/Albums/AlbumSheet';
+import { getGenresQuery } from '@/queries/genres';
 
-const artists = [
-  { id: 1, name: 'Artist One' },
-  { id: 2, name: 'Artist Two' },
-  { id: 3, name: 'Artist Three' },
-  { id: 4, name: 'Artist Four' },
-];
-
-const visibilityOptions = [
-  { value: 'public', label: 'Public' },
-  { value: 'private', label: 'Private' },
+const statusOptions = [
+  { value: '', label: 'All' },
   { value: 'draft', label: 'Draft' },
+  { value: 'published', label: 'Published' },
 ];
 
 const releaseYearOptions = [
+  { value: '2026', label: '2026' },
+  { value: '2025', label: '2025' },
+  { value: '2024', label: '2024' },
   { value: '2023', label: '2023' },
   { value: '2022', label: '2022' },
   { value: '2021', label: '2021' },
   { value: '2020', label: '2020' },
+  { value: '2019', label: '2019' },
 ];
 
 function Albums() {
+  const bulkDeleteMutation = useMutation(deleteAlbumsMutation());
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
-  const isMobile = useIsMobile();
-  const [visibility, setVisibility] = useState();
-  const [releaseYear, setReleaseYear] = useState();
-  const { data, isLoading } = useQuery(getPeginatedAlbumsQuery(pagination));
+  const { data: artists, isPending: isArtistsPending } = useQuery(getArtistsQuery());
+  const { data: genres, isPending: isGenresPending } = useQuery(getGenresQuery());
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearchValue = useDebounce(searchValue);
+  const [status, setStatus] = useState(null);
+  const [releaseYear, setReleaseYear] = useState(null);
+  const [artistId, setArtistId] = useState(null);
+  const [genreId, setGenreId] = useState(null);
 
-  const onArtistSelect = (value) => {
-    console.log(`Selected artist: ${value}`);
+  const filters = {
+    status,
+    releaseYear,
+    artistId,
+    genreId,
   };
 
-  const onVisibilityChange = (e) => {
-    const value = e.target.value;
-    setVisibility(value);
-  };
+  const { data, isLoading } = useQuery(
+    getPeginatedAlbumsQuery({ ...pagination, ...filters, search: debouncedSearchValue })
+  );
 
-  const onReleaseYearChange = (e) => {
-    const value = e.target.value;
-    setReleaseYear(value);
+  const onArtistSelect = (selectedArtistId) => setArtistId(selectedArtistId || null);
+  const onGenreSelect = (selectedGenreId) => setGenreId(selectedGenreId || null);
+  const onStatusChange = (e) => setStatus(e.target.value || null);
+  const onReleaseYearChange = (e) => setReleaseYear(e.target.value || null);
+
+  const clearFilters = () => {
+    setArtistId(null);
+    setGenreId(null);
+    setStatus('');
+    setReleaseYear('');
   };
 
   return (
     <>
       <PageHeader title="Albums" description="Manage all albums in your platform.">
-        <Button size={isMobile ? 'sm' : 'default'} variant="outline">
-          Bulk Actions (0)
-        </Button>
-        <Button
-          size={isMobile ? 'sm' : 'default'}
-          className="bg-blue-500 text-white hover:bg-blue-600"
-        >
-          <PlusIcon /> Add Album
-        </Button>
+        <AlbumSheet artists={artists} genres={genres} />
       </PageHeader>
-      <SearchInput placeholder="Search albums by title or artist..." />
-      <FilterBar>
+      <SearchInput
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        placeholder="Search albums by title or artist..."
+      />
+      <FilterBar filters={filters} onClearAll={clearFilters}>
         <FilterComboBox
           filterName="Artists"
           placeholder="Select an artist"
           options={artists}
+          isPending={isArtistsPending}
           valueKey="name"
-          onSelect={onArtistSelect}
+          onChange={onArtistSelect}
+          value={artistId}
+        />
+        <FilterComboBox
+          filterName="Genres"
+          placeholder="Select a genre"
+          options={genres}
+          isPending={isGenresPending}
+          valueKey="title"
+          onChange={onGenreSelect}
+          value={genreId}
         />
         <FilterSelectBox
-          filterName="Visibility"
-          placeholder="Select visibility"
-          options={visibilityOptions}
-          value={visibility}
-          onChange={onVisibilityChange}
+          filterName="Status"
+          placeholder="Select Status"
+          options={statusOptions}
+          value={status}
+          onChange={onStatusChange}
         />
         <FilterSelectBox
           filterName="Release year"
@@ -98,6 +117,8 @@ function Albums() {
         isLoading={isLoading}
         pagination={pagination}
         setPagination={setPagination}
+        onBulkDelete={bulkDeleteMutation.mutateAsync}
+        bulkDeletePending={bulkDeleteMutation.isPending}
       />
     </>
   );

@@ -79,7 +79,7 @@ export const deleteSongsMutation = () =>
       });
     },
     onError: (err) => {
-      toast.error('Upload failed.', {
+      toast.error('Deletion failed.', {
         description: 'Something went wrong while deleting songs.',
       });
       console.error('Error while deleting songs => ', err);
