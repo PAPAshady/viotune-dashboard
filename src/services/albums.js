@@ -96,7 +96,6 @@ export const createAlbum = async (data) => {
 
 export const deleteAlbum = async (data) => {
   // delete cover file from storage if exists
-  console.log(data);
   if (data.cover_path) {
     const { error: coverDeleteError } = await deleteFiles('album-covers', [data.cover_path]);
     if (coverDeleteError) throw coverDeleteError;
