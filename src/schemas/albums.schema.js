@@ -5,7 +5,7 @@ export default z.object({
 
   title: z.string().min(1, { message: 'Title is requierd.' }),
   artist: z.string().min(1, { message: 'Artist is requierd.' }),
-  genre_id: z.uuid({ message: 'Genre is required.' }),
+  genre: z.string().min(1, { message: 'Genre is required.' }),
   release_date: z.iso.date({ message: 'Use a valid date.' }),
   status: z.enum(['published', 'draft'], { message: 'Status is required' }),
 

@@ -1,4 +1,5 @@
 import supabase from './supabase';
+import { uploadFile, getFileUrl } from './storage';
 
 export const getAllAlbums = async () => {
   const { data, error } = await supabase
@@ -51,4 +52,44 @@ export const toggleAlbumStatus = async (album) => {
 
   if (error) throw error;
   return data;
+};
+
+export const createAlbum = async (data) => {
+  // since we send artist and genre data in a string format, we have to extract them them.
+  const [artist_id, artist_name] = data.artist ? data.artist.split('|') : [null, 'Unknown artist'];
+  const [genre_id, genre_title] = data.genre ? data.genre.split('|') : [null, null];
+
+  delete data.genre; // delete genre property because we already exctracted it
+
+  const newAlbum = { ...data, genre_id, genre_title, artist: artist_name, artist_id };
+
+  // upload album coverfile if it exists
+  if (newAlbum.coverFile && newAlbum.coverFile.length > 0) {
+    const coverFile = newAlbum.coverFile[0];
+    const uploadedAt = new Date().toISOString();
+
+    const { data: coverFileData, error: coverFileError } = await uploadFile(
+      'album-covers',
+      `${data.title}-${artist_name}-${uploadedAt}`,
+      coverFile
+    );
+
+    if (coverFileError) throw coverFileError;
+
+    newAlbum.cover_path = coverFileData.path;
+    newAlbum.cover = getFileUrl('album-covers', coverFileData.path);
+  }
+  
+  // delete coverFile property because we already exctracted it
+  delete newAlbum.coverFile;
+
+  const { data: dbData, error: dbError } = await supabase
+    .from('albums')
+    .insert(newAlbum)
+    .select()
+    .single();
+
+  if (dbError) throw dbError;
+
+  return dbData;
 };

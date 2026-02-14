@@ -24,6 +24,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import { useMutation } from '@tanstack/react-query';
 
 import FileUploadZone from '@/components/FileUpload/FileUploadZone';
 import UploadedFileItem from '@/components/FileUpload/UploadedFileItem';
@@ -31,6 +32,8 @@ import FileItem from '@/components/FileUpload/FileItem';
 import shcema from '@/schemas/albums.schema';
 import { isURL } from '@/utils';
 import useAlbumSheet from '@/store/albumsSheet.store';
+import { createAlbumMutation } from '@/queries/albums';
+import { Spinner } from '@/components/ui/spinner';
 
 function AddAlbumSheet({ artists, genres }) {
   const open = useAlbumSheet((state) => state.open);
@@ -44,10 +47,7 @@ function AddAlbumSheet({ artists, genres }) {
     reset: resetFields,
     formState: { errors },
   } = useForm({ resolver: zodResolver(shcema) });
-
-  const submitHandler = async (data) => {
-    console.log(data);
-  };
+  const mutation = useMutation(createAlbumMutation());
 
   const descriptionLength = +watch('description')?.length;
 
@@ -58,11 +58,16 @@ function AddAlbumSheet({ artists, genres }) {
 
   const onSheetOpenChange = (isOpen) => {
     if (!isOpen) {
-      resetFields({});
+      mutation.reset();
       closeSheet();
+      resetFields();
       return;
     }
     setOpen(isOpen);
+  };
+
+  const submitHandler = async (data) => {
+    mutation.mutate(data, { onSuccess: () => onSheetOpenChange(false) });
   };
 
   return (
@@ -110,15 +115,15 @@ function AddAlbumSheet({ artists, genres }) {
               </Field>
               <Field>
                 <FieldLabel>Genre</FieldLabel>
-                <FieldError>{errors.genre_id?.message}</FieldError>
+                <FieldError>{errors.genre?.message}</FieldError>
                 <NativeSelect
-                  aria-invalid={!!errors.genre_id}
+                  aria-invalid={!!errors.genre}
                   className="bg-[#192134]! font-semibold"
-                  {...register('genre_id')}
+                  {...register('genre')}
                 >
                   <NativeSelectOption value="">Select Genre</NativeSelectOption>
                   {genres?.map((genre) => (
-                    <NativeSelectOption key={genre.id} value={genre.id}>
+                    <NativeSelectOption key={genre.id} value={`${genre.id}|${genre.title}`}>
                       {genre.title}
                     </NativeSelectOption>
                   ))}
@@ -191,8 +196,20 @@ function AddAlbumSheet({ artists, genres }) {
                   Cancel
                 </Button>
               </SheetClose>
-              <Button className="bg-blue-500 text-white hover:bg-blue-600" type="submit" size="sm">
-                Create
+              <Button
+                className="bg-blue-500 text-white hover:bg-blue-600"
+                type="submit"
+                size="sm"
+                disabled={mutation.isPending}
+              >
+                {mutation.isPending ? (
+                  <>
+                    <Spinner />
+                    Creating album
+                  </>
+                ) : (
+                  'Create'
+                )}
               </Button>
             </div>
           </SheetFooter>

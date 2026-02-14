@@ -1,7 +1,12 @@
 import { queryOptions, keepPreviousData, mutationOptions } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { getPeginatedAlbums, getAllAlbums, toggleAlbumStatus } from '@/services/albums';
+import {
+  getPeginatedAlbums,
+  getAllAlbums,
+  toggleAlbumStatus,
+  createAlbum,
+} from '@/services/albums';
 import queryClient from '@/QueryClient';
 
 export const getAllAlbumsQuery = () =>
@@ -34,5 +39,23 @@ export const toggleAlbumStatusMutation = () =>
         description: 'We couldn’t update the album. Please try again.',
       });
       console.error('Error while changing album status => ', err);
+    },
+  });
+
+export const createAlbumMutation = () =>
+  mutationOptions({
+    queryKey: ['albums'],
+    mutationFn: createAlbum,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['albums']);
+      toast.success('Album created successfully', {
+        description: 'Your album is now added to the library and ready to be streamed.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Upload failed', {
+        description: 'Something went wrong while creating the album.',
+      });
+      console.error('Error while uploading album => ', err);
     },
   });
