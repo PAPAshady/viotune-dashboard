@@ -129,3 +129,77 @@ export const deleteAlbums = async (albumRows) => {
 
   return data;
 };
+
+export const updateAlbum = async ({ modifiedFields, prevAlbumData }) => {
+  const updatedArtist = modifiedFields?.artist;
+  const updatedGenre = modifiedFields?.genre;
+  const updatedTitle = modifiedFields?.title;
+  const uploadedAt = new Date().toISOString(); // we use this timestamp in the name of our files in storage to be unique
+
+  // extract artist_id and artist_name from 'modifiedFields.artist'
+  const [artist_id, artist_name] = updatedArtist
+    ? updatedArtist.split('|')
+    : [null, 'Unknown artist'];
+
+  const [genre_id, genre_title] = updatedGenre ? updatedGenre.split('|') : [null, null];
+
+  const data = { ...modifiedFields };
+
+  // update cover in case user changed it.
+  if (data.coverFile || data.existingCoverUrl === null) {
+    // delete previous cover file from storage
+    const { error: prevCoverFileDeleteError } = await deleteFiles('album-covers', [
+      prevAlbumData.cover_path,
+    ]);
+
+    if (prevCoverFileDeleteError) throw prevCoverFileDeleteError;
+    data.cover = null;
+    data.cover_path = null;
+
+    // upload new cover if user selected a new cover
+    if (data.coverFile) {
+      const newCoverFile = data.coverFile[0];
+
+      // include updated title and artist name in the new cover file name (if changed)
+      const newCoverFileName = `${updatedTitle ? updatedTitle : prevAlbumData.title}-${updatedArtist ? artist_name : prevAlbumData.artist}-${uploadedAt}`;
+
+      // upload new cover file to storage
+      const { data: newCoverFileData, error: newCoverFileError } = await uploadFile(
+        'album-covers',
+        newCoverFileName,
+        newCoverFile
+      );
+      if (newCoverFileError) throw newCoverFileError;
+      data.cover_path = newCoverFileData.path;
+      data.cover = getFileUrl('album-covers', newCoverFileData.path);
+    }
+  }
+
+  // normalize data structure because we want to send it to database
+
+  if (updatedArtist) {
+    data.artist = artist_name;
+    data.artist_id = artist_id;
+  }
+
+  if (updatedGenre) {
+    data.genre_title = genre_title;
+    data.genre_id = genre_id;
+  }
+
+  // remove unnecessary properties from data because we will send "data" to postgres database
+  delete data.existingCoverUrl;
+  delete data.coverFile;
+  delete data.genre;
+
+  const { data: dbData, error: dbError } = await supabase
+    .from('albums')
+    .update(data)
+    .eq('id', prevAlbumData.id)
+    .select()
+    .single();
+
+  if (dbError) throw dbError;
+
+  return dbData;
+};

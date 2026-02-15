@@ -32,22 +32,37 @@ import FileItem from '@/components/FileUpload/FileItem';
 import shcema from '@/schemas/albums.schema';
 import { isURL } from '@/utils';
 import useAlbumSheet from '@/store/albumsSheet.store';
-import { createAlbumMutation } from '@/queries/albums';
+import { createAlbumMutation, updateAlbumMutation } from '@/queries/albums';
 import { Spinner } from '@/components/ui/spinner';
+import { getDirtyFields } from '@/utils';
 
 function AddAlbumSheet({ artists, genres }) {
   const open = useAlbumSheet((state) => state.open);
   const setOpen = useAlbumSheet((state) => state.setOpen);
   const closeSheet = useAlbumSheet((state) => state.closeSheet);
+  const isEditMode = useAlbumSheet((state) => state.isEditMode);
+  const album = useAlbumSheet((state) => state.album); // selected album to edit
+
+  const defaultValues = {
+    title: album?.title,
+    release_date: album?.release_date,
+    status: album?.status,
+    description: album?.description,
+    artist: `${album?.artist_id}|${album?.artist}`,
+    genre: `${album?.genre_id}|${album?.genre_title}`,
+    existingCoverUrl: album?.cover,
+  };
+
   const {
     handleSubmit,
     register,
     setValue,
     watch,
     reset: resetFields,
-    formState: { errors },
-  } = useForm({ resolver: zodResolver(shcema) });
-  const mutation = useMutation(createAlbumMutation());
+    formState: { errors, dirtyFields, isDirty },
+    // fill out the form with dynamic in case user wants to edit an album.
+  } = useForm({ resolver: zodResolver(shcema), values: isEditMode ? defaultValues : {} });
+  const mutation = useMutation(isEditMode ? updateAlbumMutation() : createAlbumMutation());
 
   const descriptionLength = +watch('description')?.length;
 
@@ -66,7 +81,12 @@ function AddAlbumSheet({ artists, genres }) {
     setOpen(isOpen);
   };
 
-  const submitHandler = async (data) => {
+  const submitHandler = async (formData) => {
+    const modifiedFields = getDirtyFields(formData, dirtyFields);
+
+    // data to pass to server depending if user wants to edit or upload a album
+    const data = isEditMode ? { modifiedFields, prevAlbumData: album } : formData;
+    
     mutation.mutate(data, { onSuccess: () => onSheetOpenChange(false) });
   };
 
@@ -167,7 +187,7 @@ function AddAlbumSheet({ artists, genres }) {
                   <UploadedFileItem
                     fileType="image"
                     url={existingCoverUrl}
-                    // name={album?.cover_path}
+                    name={album?.cover_path}
                     onRemove={() => setValue('existingCoverUrl', null, { shouldDirty: true })}
                   />
                 )}
@@ -198,15 +218,17 @@ function AddAlbumSheet({ artists, genres }) {
               </SheetClose>
               <Button
                 className="bg-blue-500 text-white hover:bg-blue-600"
+                disabled={mutation.isPending || !isDirty}
                 type="submit"
                 size="sm"
-                disabled={mutation.isPending}
               >
                 {mutation.isPending ? (
                   <>
                     <Spinner />
-                    Creating album
+                    {isEditMode ? 'Saving changes' : 'Creating album'}
                   </>
+                ) : isEditMode ? (
+                  'Save changes'
                 ) : (
                   'Create'
                 )}
