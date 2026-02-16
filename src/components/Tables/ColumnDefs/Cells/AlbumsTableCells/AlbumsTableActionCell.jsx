@@ -15,6 +15,7 @@ import { useMutation } from '@tanstack/react-query';
 import useAlbumSheet from '@/store/albumsSheet.store';
 import { toggleAlbumStatusMutation } from '@/queries/albums';
 import DeleteAlbumDialog from '@/components/Dialogs/Albums/DeleteAlbumDialog';
+import AlbumSongsSheet from '@/components/Sheets/Albums/AlbumSongsSheet';
 
 function AlbumsTableActionCell({ row }) {
   const [open, setOpen] = useState(false);
@@ -51,6 +52,7 @@ function AlbumsTableActionCell({ row }) {
           <Pencil className="me-2 size-4" />
           Edit metadata
         </DropdownMenuItem>
+        <AlbumSongsSheet />
         <DropdownMenuItem disabled={albumStatusMutation.isPending} onSelect={onStatusChange}>
           {albumStatusMutation.isPending ? (
             <Spinner className="me-2" />
