@@ -1,6 +1,8 @@
-import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet';
+import { useState } from 'react';
+
+import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTrigger } from '@/components/ui/sheet';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { Music, Trash } from 'lucide-react';
+import { Music } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -10,85 +12,36 @@ import {
   TableRow,
 } from '@components/ui/table';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
+import { useQuery } from '@tanstack/react-query';
 
-import defaultImage from '@assets/images/default-cover.jpg';
-import { formatTime } from '@/utils';
+import defaultCover from '@assets/images/default-cover.jpg';
+import SearchInput from '@/components/SearchInput/SearchInput';
+import columns from '@/columns/columns.albumSongs.jsx';
+import { getSongsByAlbumIdQuery } from '@/queries/songs';
+import useDebounce from '@/hooks/useDebounce';
 
-const columns = [
-  { accessorKey: 'id', header: '#' },
-  {
-    accessorKey: 'cover',
-    header: 'Cover',
-    cell: () => (
-      <div className="size-10 overflow-hidden rounded-md border">
-        <img src={defaultImage} className="size-full object-cover" />
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'title',
-    header: 'Title',
-    cell: ({ getValue }) => <span className="font-semibold">{getValue()}</span>,
-  },
-  { accessorKey: 'artist', header: 'Artist' },
-  { accessorKey: 'genre', header: 'Genre' },
-  { accessorKey: 'duration', header: 'Duration', cell: ({ getValue }) => formatTime(getValue()) },
-  { id: 'actions', header: 'Actions', cell: () => <Trash className="size-5 text-red-500/70" /> },
-];
+const mockData = Array().fill({});
 
-const data = [
-  {
-    id: 1,
-    title: 'When I Grow Up',
-    cover: defaultImage,
-    artist: 'NF',
-    genre: 'Hip-Hop',
-    duration: 119.99113,
-  },
-  {
-    id: 2,
-    title: 'Outcast',
-    cover: defaultImage,
-    artist: 'NF',
-    genre: 'Hip-Hop',
-    duration: 119.99113,
-  },
-  {
-    id: 3,
-    title: 'Change',
-    cover: defaultImage,
-    artist: 'NF',
-    genre: 'Hip-Hop',
-    duration: 119.99113,
-  },
-  {
-    id: 4,
-    title: 'Rap God',
-    cover: defaultImage,
-    artist: 'NF',
-    genre: 'Hip-Hop',
-    duration: 119.99113,
-  },
-  {
-    id: 5,
-    title: 'Free Will',
-    cover: defaultImage,
-    artist: 'NF',
-    genre: 'Hip-Hop',
-    duration: 119.99113,
-  },
-];
+function AlbumSongsSheet({ album }) {
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearchValue = useDebounce(searchValue);
+  const [open, setOpen] = useState(false);
+  const { data: albumSongs } = useQuery({
+    ...getSongsByAlbumIdQuery(album?.id, debouncedSearchValue),
+    enabled: !!album?.id && open,
+  });
 
-function AlbumSongsSheet() {
+  console.log(albumSongs);
+
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),
-    data,
+    data: albumSongs?.data ?? mockData,
     columns,
-    getRowId: (row) => row.id,
+    getRowId: (row) => row?.id,
   });
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
           <Music className="me-2 size-4" />
@@ -96,51 +49,60 @@ function AlbumSongsSheet() {
         </DropdownMenuItem>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-xl! lg:max-w-2xl!">
-        <SheetHeader className="pt-10">
-          <div className="flex items-center gap-4">
-            <div className="size-24 overflow-hidden rounded-md border">
-              <img src={defaultImage} className="size-full object-cover" />
-            </div>
-            <div className="flex h-full grow flex-col justify-between py-1">
-              <p className="text-2xl font-bold">Night Sessions</p>
-              <span className="text-muted-foreground text-sm">Travis Barker</span>
-              <div className="text-muted-foreground flex items-center gap-4 text-sm">
-                <span>2023</span>
-                <span>•</span>
-                <span>0 songs</span>
+        <div className="flex h-full grow flex-col">
+          <SheetHeader className="pt-10">
+            <div className="flex items-center gap-4">
+              <div className="size-24 overflow-hidden rounded-md border">
+                <img src={album.cover || defaultCover} className="size-full object-cover" />
+              </div>
+              <div className="flex h-full grow flex-col justify-between py-1">
+                <p className="text-2xl font-bold">{album.title}</p>
+                <span className="text-muted-foreground">{album.artist}</span>
+                <div className="text-muted-foreground flex items-center gap-3">
+                  <span>{album.release_date.split('-')[0]}</span>
+                  <span>•</span>
+                  <span>{albumSongs?.total} songs</span>
+                </div>
               </div>
             </div>
+          </SheetHeader>
+          <p className="mb-4 px-4 text-2xl font-bold sm:mb-8">Songs</p>
+          <div className="mb-4 px-2">
+            <SearchInput
+              placeholder="Search songs by title or artist"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
           </div>
-        </SheetHeader>
-        <div className="space-y-4">
-          <p className="px-4 text-2xl font-bold">Songs</p>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(header.column.columnDef.header, header.getContext())}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow className="text-muted-foreground" key={row.id}>
-                    {row.getAllCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <div className="w-full grow space-y-4 overflow-y-auto pb-8">
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => (
+                        <TableHead key={header.id}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows.map((row) => (
+                    <TableRow className="text-muted-foreground" key={row.id}>
+                      {row.getAllCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
       </SheetContent>

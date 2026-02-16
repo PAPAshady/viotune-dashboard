@@ -292,3 +292,14 @@ export const updateSong = async ({ modifiedFields, prevSongData }) => {
   if (dbError) throw dbError;
   return dbData;
 };
+
+export const getSongsByAlbumId = async (albumId, keyword) => {
+  const { data, error, count } = await supabase
+    .from('songs_extended')
+    .select('*', { count: 'exact' })
+    .or(`title.ilike.%${keyword}%,artist.ilike.%${keyword}%`)
+    .eq(`album_id`, albumId)
+    .order('track_number', { ascending: true });
+  if (error) throw error;
+  return { data, total: count };
+};

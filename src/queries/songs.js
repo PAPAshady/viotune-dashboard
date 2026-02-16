@@ -10,6 +10,7 @@ import {
   toggleSongStatus,
   deleteSongs,
   updateSong,
+  getSongsByAlbumId,
 } from '@/services/songs';
 import queryClient from '@/QueryClient';
 
@@ -124,4 +125,12 @@ export const updateSongMutation = () =>
       toast.error('Update failed.', { message: 'We couldn’t update the song. Please try again.' });
       console.error('Error while updating song => ', err);
     },
+  });
+
+export const getSongsByAlbumIdQuery = (albumId, keyword) =>
+  queryOptions({
+    queryKey: ['songs', { albumId, keyword }],
+    queryFn: () => getSongsByAlbumId(albumId, keyword),
+    enabled: !!albumId,
+    placeholderData: keepPreviousData,
   });

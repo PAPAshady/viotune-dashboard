@@ -52,7 +52,7 @@ function AlbumsTableActionCell({ row }) {
           <Pencil className="me-2 size-4" />
           Edit metadata
         </DropdownMenuItem>
-        <AlbumSongsSheet />
+        <AlbumSongsSheet album={album} />
         <DropdownMenuItem disabled={albumStatusMutation.isPending} onSelect={onStatusChange}>
           {albumStatusMutation.isPending ? (
             <Spinner className="me-2" />
