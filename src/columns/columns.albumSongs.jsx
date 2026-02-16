@@ -9,9 +9,9 @@ export default [
   {
     accessorKey: 'cover',
     header: 'Cover',
-    cell: () => (
+    cell: ({ getValue }) => (
       <div className="size-10 overflow-hidden rounded-md border">
-        <img src={defaultImage} className="size-full object-cover" />
+        <img src={getValue() || defaultImage} className="size-full object-cover" />
       </div>
     ),
   },
@@ -28,7 +28,7 @@ export default [
     header: 'Actions',
     cell: () => (
       <Button variant="ghost">
-        <Trash className='text-red-400' />
+        <Trash className="text-red-400" />
       </Button>
     ),
   },
