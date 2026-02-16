@@ -1,13 +1,21 @@
 import supabase from './supabase';
 
-export const getPlaylists = async (pageIndex, pageSize) => {
+export const getPlaylists = async ({ pageIndex, pageSize, type, search }) => {
   const from = pageIndex * pageSize;
   const to = from + pageSize - 1;
-  const { data, error, count } = await supabase
+  let query = supabase
     .from('playlists_extended_admin')
     .select('*', { count: 'exact' })
+    .or(`title.ilike.%${search}%`)
     .range(from, to)
     .order('created_at', { ascending: false });
+
+  if (type) {
+    query.eq('is_public', type === 'public');
+  }
+
+  const { data, error, count } = await query;
+
   if (error) throw error;
   return { data, total: count };
 };

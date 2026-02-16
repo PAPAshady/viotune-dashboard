@@ -9,12 +9,12 @@ import PageHeader from '@components/shared/PageHeader/PageHeader';
 import SearchInput from '@/components/SearchInput/SearchInput';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
-import FilterSearchBox from '@components/FilterSearchBox/FilterSearchBox';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import { getPlaylistsQuery, getMostPlayedPlaylistsQuery } from '@/queries/playlists';
 import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import columns from '@/columns/columns.playlists.jsx';
+import useDebounce from '@/hooks/useDebounce';
 
 const kpiInfos = [
   { id: 1, value: 2, title: 'Total Playlists' },
@@ -23,39 +23,31 @@ const kpiInfos = [
   { id: 4, value: 15, title: 'Avg Songs/Playlist' },
 ];
 
-const visibilityOptions = [
-  { value: 'public', label: 'Public' },
-  { value: 'private', label: 'Private' },
-  { value: 'draft', label: 'Draft' },
-];
-
 const typeOptions = [
-  { value: 'private', label: 'User playlists' },
-  { value: 'public', label: 'Admin playlists' },
+  { value: 'private', label: 'User playlists (Private)' },
+  { value: 'public', label: 'Admin playlists (Public)' },
 ];
 
 function Playlists() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
-  const [filterSearchValue, setFilterSearchValue] = useState();
-  const [visibility, setVisibility] = useState();
   const [type, setType] = useState();
   const isMobile = useIsMobile();
-  const { data, isLoading } = useQuery(getPlaylistsQuery(pagination));
   const { data: mostPlayedPublicPlaylists } = useQuery(getMostPlayedPlaylistsQuery({ limit: 6 }));
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearchValue = useDebounce(searchValue);
 
-  const onVisibilityChange = (e) => {
-    const value = e.target.value;
-    setVisibility(value);
+  const filters = {
+    type,
   };
 
-  const onTypeChange = (e) => {
-    const value = e.target.value;
-    setType(value);
-  };
+  const { data, isLoading } = useQuery(
+    getPlaylistsQuery({ ...pagination, ...filters, search: debouncedSearchValue })
+  );
 
-  const onFilterSearchChange = (e) => {
-    const value = e.target.value;
-    setFilterSearchValue(value);
+  const onTypeChange = (e) => setType(e.target.value || null);
+
+  const clearFilters = () => {
+    setType('');
   };
 
   return (
@@ -71,14 +63,13 @@ function Playlists() {
           <PlusIcon /> Create Playlist
         </Button>
       </PageHeader>
-      <SearchInput placeholder="Search playlists or creator..." />
-      <FilterBar>
-        <FilterSearchBox
-          filterName="Creator"
-          value={filterSearchValue}
-          onChange={onFilterSearchChange}
-          placeholder="Filter by creator"
-        />
+      <KpiCardWrapper data={kpiInfos} />
+      <SearchInput
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        placeholder="Search playlists by title..."
+      />
+      <FilterBar filters={filters} onClearAll={clearFilters}>
         <FilterSelectBox
           filterName="Type"
           placeholder="Select type"
@@ -86,15 +77,7 @@ function Playlists() {
           value={type}
           onChange={onTypeChange}
         />
-        <FilterSelectBox
-          filterName="Visibility"
-          placeholder="Select visibility"
-          options={visibilityOptions}
-          value={visibility}
-          onChange={onVisibilityChange}
-        />
       </FilterBar>
-      <KpiCardWrapper data={kpiInfos} />
       <PrimaryTable
         columns={columns}
         rows={data}
