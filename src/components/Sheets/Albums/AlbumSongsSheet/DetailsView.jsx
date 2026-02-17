@@ -62,14 +62,14 @@ function DetailsView({ album, open, onAddSongClick }) {
           Add Song
         </Button>
       </div>
-      <div className="mb-4 px-2">
+      <div className="mb-4 px-4">
         <SearchInput
           placeholder="Search songs by title or artist"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
       </div>
-      <div className="w-full grow space-y-4 overflow-y-auto pb-8">
+      <div className="w-full grow p-4 space-y-4 overflow-y-auto pb-8">
         <div className="rounded-md border">
           <Table>
             <TableHeader>
