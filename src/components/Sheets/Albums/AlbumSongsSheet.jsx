@@ -20,18 +20,16 @@ import columns from '@/columns/columns.albumSongs.jsx';
 import { getSongsByAlbumIdQuery } from '@/queries/songs';
 import useDebounce from '@/hooks/useDebounce';
 
-const mockData = Array().fill({});
+const mockData = Array(6).fill({});
 
 function AlbumSongsSheet({ album }) {
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
   const [open, setOpen] = useState(false);
-  const { data: albumSongs } = useQuery({
+  const { data: albumSongs, isPending } = useQuery({
     ...getSongsByAlbumIdQuery(album?.id, debouncedSearchValue),
     enabled: !!album?.id && open,
   });
-
-  console.log(albumSongs);
 
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),
@@ -95,7 +93,9 @@ function AlbumSongsSheet({ album }) {
                     <TableRow className="text-muted-foreground" key={row.id}>
                       {row.getAllCells().map((cell) => (
                         <TableCell key={cell.id}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {!isPending
+                            ? flexRender(cell.column.columnDef.meta?.skeleton, cell.getContext())
+                            : flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       ))}
                     </TableRow>
