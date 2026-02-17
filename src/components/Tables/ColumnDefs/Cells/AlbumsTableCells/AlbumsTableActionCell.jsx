@@ -15,7 +15,7 @@ import { useMutation } from '@tanstack/react-query';
 import useAlbumSheet from '@/store/albumsSheet.store';
 import { toggleAlbumStatusMutation } from '@/queries/albums';
 import DeleteAlbumDialog from '@/components/Dialogs/Albums/DeleteAlbumDialog';
-import AlbumSongsSheet from '@/components/Sheets/Albums/AlbumSongsSheet';
+import AlbumSongsSheet from '@/components/Sheets/Albums/AlbumSongsSheet/AlbumSongsSheet';
 
 function AlbumsTableActionCell({ row }) {
   const [open, setOpen] = useState(false);
