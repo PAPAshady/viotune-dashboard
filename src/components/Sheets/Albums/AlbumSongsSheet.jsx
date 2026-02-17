@@ -93,7 +93,7 @@ function AlbumSongsSheet({ album }) {
                     <TableRow className="text-muted-foreground" key={row.id}>
                       {row.getAllCells().map((cell) => (
                         <TableCell key={cell.id}>
-                          {!isPending
+                          {isPending
                             ? flexRender(cell.column.columnDef.meta?.skeleton, cell.getContext())
                             : flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
