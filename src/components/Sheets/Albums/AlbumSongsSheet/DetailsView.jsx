@@ -10,7 +10,7 @@ import {
 } from '@components/ui/table';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import { useQuery } from '@tanstack/react-query';
-import { SheetHeader } from '@/components/ui/sheet';
+import { SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 
 import defaultCover from '@assets/images/default-cover.jpg';
 import SearchInput from '@/components/SearchInput/SearchInput';
@@ -45,12 +45,12 @@ function DetailsView({ album, open, onAddSongClick }) {
             <img src={album.cover || defaultCover} className="size-full object-cover" />
           </div>
           <div className="flex h-full grow flex-col justify-between py-1">
-            <p className="text-2xl font-bold">{album.title}</p>
-            <span className="text-muted-foreground">{album.artist}</span>
+            <SheetTitle className="text-2xl font-bold">{album.title}</SheetTitle>
+            <SheetDescription className="text-muted-foreground">{album.artist}</SheetDescription>
             <div className="text-muted-foreground flex items-center gap-3">
               <span>{album.release_date.split('-')[0]}</span>
               <span>•</span>
-              <span>{albumSongs?.total} songs</span>
+              <span>{album.totaltracks} songs</span>
             </div>
           </div>
         </div>
@@ -69,7 +69,7 @@ function DetailsView({ album, open, onAddSongClick }) {
           onChange={(e) => setSearchValue(e.target.value)}
         />
       </div>
-      <div className="w-full grow p-4 space-y-4 overflow-y-auto pb-8">
+      <div className="w-full grow space-y-4 overflow-y-auto p-4 pb-8">
         <div className="rounded-md border">
           <Table>
             <TableHeader>
