@@ -1,4 +1,9 @@
-import { queryOptions, mutationOptions, keepPreviousData } from '@tanstack/react-query';
+import {
+  queryOptions,
+  mutationOptions,
+  infiniteQueryOptions,
+  keepPreviousData,
+} from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import {
@@ -11,6 +16,7 @@ import {
   deleteSongs,
   updateSong,
   getSongsByAlbumId,
+  getAlbumRecommendedSongs,
 } from '@/services/songs';
 import queryClient from '@/QueryClient';
 
@@ -133,4 +139,15 @@ export const getSongsByAlbumIdQuery = (albumId, keyword) =>
     queryFn: () => getSongsByAlbumId(albumId, keyword),
     enabled: !!albumId,
     placeholderData: keepPreviousData,
+  });
+
+export const getAlbumRecommendedSongsInfiniteQuery = () =>
+  infiniteQueryOptions({
+    queryKey: ['songs', 'recommended'],
+    queryFn: getAlbumRecommendedSongs,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      const params = lastPage.map((song) => song.position);
+      return Math.max(...params);
+    },
   });

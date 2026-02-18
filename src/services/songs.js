@@ -303,3 +303,15 @@ export const getSongsByAlbumId = async (albumId, keyword) => {
   if (error) throw error;
   return { data, total: count };
 };
+
+export const getAlbumRecommendedSongs = async ({ pageParam, pageSize = 10 }) => {
+  const { data, error } = await supabase
+    .from('songs_extended')
+    .select('*')
+    .gt('position', pageParam)
+    .lte('position', pageParam + pageSize);
+
+  if (error) throw error;
+
+  return data;
+};
