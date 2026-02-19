@@ -6,18 +6,21 @@ import { ArrowLeft } from 'lucide-react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import useIntersectionObserver from '../../../../hooks/useIntersectionObserver';
 import { Spinner } from '@/components/ui/spinner';
+import { useMutation } from '@tanstack/react-query';
 
 import SearchInput from '@/components/SearchInput/SearchInput';
 import SongCard from '@/components/SongCard/SongCard';
 import SongCardSkeleton from '@/components/SongCard/SongCardSkeleton';
 import { getAlbumRecommendedSongsInfiniteQuery } from '@/queries/songs';
 import useDebounce from '@/hooks/useDebounce';
+import { addSongToAlbumMutation } from '@/queries/albums';
 
-function AddSongView({ onBack }) {
+function AddSongView({ onBack, album }) {
   const [selectedSongs, setSelectedSongs] = useState(new Set());
   const containerRef = useRef(null);
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
+  const addSongMutation = useMutation(addSongToAlbumMutation(album?.id));
   const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
     getAlbumRecommendedSongsInfiniteQuery({ pageSize: 10, search: debouncedSearchValue })
   );
@@ -34,7 +37,8 @@ function AddSongView({ onBack }) {
   };
 
   const onSubmit = () => {
-    console.log(selectedSongs);
+    const data = [...selectedSongs].map((songId) => ({ album_id: album.id, song_id: songId }));
+    addSongMutation.mutate(data);
   };
 
   return (

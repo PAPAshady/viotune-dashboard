@@ -203,3 +203,9 @@ export const updateAlbum = async ({ modifiedFields, prevAlbumData }) => {
 
   return dbData;
 };
+
+export const addSongToAlbum = async (songsData) => {
+  const { data, error } = await supabase.from('album_songs').insert(songsData).select();
+  if (error) throw error;
+  return data;
+};

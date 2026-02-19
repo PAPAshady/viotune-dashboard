@@ -27,7 +27,7 @@ function AlbumSongsSheet({ album }) {
         {tab === 'details' ? (
           <DetailsView album={album} open={open} onAddSongClick={() => setTab('add-song')} />
         ) : (
-          <AddSongView onBack={() => setTab('details')} />
+          <AddSongView album={album} onBack={() => setTab('details')} />
         )}
       </SheetContent>
     </Sheet>

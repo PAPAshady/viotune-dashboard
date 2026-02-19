@@ -295,13 +295,13 @@ export const updateSong = async ({ modifiedFields, prevSongData }) => {
 
 export const getSongsByAlbumId = async (albumId, keyword) => {
   const { data, error, count } = await supabase
-    .from('songs_extended')
-    .select('*', { count: 'exact' })
-    .or(`title.ilike.%${keyword}%,artist.ilike.%${keyword}%`)
+    .from('album_songs')
+    .select('songs(*)', { count: 'exact' })
     .eq(`album_id`, albumId)
-    .order('track_number', { ascending: true });
+    .order('track_number', { foreignTable: 'songs', ascending: true })
+    .or(`title.ilike.%${keyword}%,artist.ilike.%${keyword}%`, { foreignTable: 'songs' });
   if (error) throw error;
-  return { data, total: count };
+  return { data: data.map((data) => data.songs), total: count };
 };
 
 export const getAlbumRecommendedSongs = async ({ pageParam, pageSize = 10, search }) => {
