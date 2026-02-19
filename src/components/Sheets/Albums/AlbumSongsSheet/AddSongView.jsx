@@ -14,6 +14,7 @@ import { getAlbumRecommendedSongsInfiniteQuery } from '@/queries/songs';
 import useDebounce from '@/hooks/useDebounce';
 
 function AddSongView({ onBack }) {
+  const [selectedSongs, setSelectedSongs] = useState(new Set());
   const containerRef = useRef(null);
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
@@ -23,6 +24,18 @@ function AddSongView({ onBack }) {
   const { targetRef } = useIntersectionObserver({
     onIntersect: hasNextPage && fetchNextPage,
   });
+  const numberOfAvailableSongs = data?.pages.flat().length;
+
+  const songSelectHandler = (songId) => {
+    const updatedSongs = new Set(selectedSongs);
+    if (updatedSongs.has(songId)) updatedSongs.delete(songId);
+    else updatedSongs.add(songId);
+    setSelectedSongs(updatedSongs);
+  };
+
+  const onSubmit = () => {
+    console.log(selectedSongs);
+  };
 
   return (
     <div className="animate-in slide-in-from-right-4 fade-in flex h-full grow flex-col duration-300">
@@ -49,7 +62,16 @@ function AddSongView({ onBack }) {
           ? Array(10)
               .fill()
               .map((_, index) => <SongCardSkeleton key={index} />)
-          : data.pages.flat().map((song) => <SongCard key={song.id} {...song} />)}
+          : data.pages
+              .flat()
+              .map((song) => (
+                <SongCard
+                  key={song.id}
+                  isSelected={selectedSongs.has(song.id)}
+                  onSelect={songSelectHandler}
+                  {...song}
+                />
+              ))}
 
         {!isPending && <div className="p-2" ref={targetRef}></div>}
         {isFetchingNextPage && (
@@ -60,14 +82,22 @@ function AddSongView({ onBack }) {
       </div>
       <SheetFooter className="border-t">
         <div className="flex items-center justify-between">
-          <span className="text-muted-foreground text-sm">
-            {data?.pages.flat().length} songs available
-          </span>
-          <div className="flex items-center justify-end gap-4">
+          {numberOfAvailableSongs && (
+            <span className="text-muted-foreground text-sm">
+              {numberOfAvailableSongs} songs available
+            </span>
+          )}
+          <div className="ms-auto flex items-center justify-end gap-4">
             <Button variant="outline" onClick={onBack}>
               Cancel
             </Button>
-            <Button className="bg-blue-500 text-white hover:bg-blue-600">Add</Button>
+            <Button
+              className="bg-blue-500 text-white hover:bg-blue-600"
+              disabled={!selectedSongs.size}
+              onClick={onSubmit}
+            >
+              Add
+            </Button>
           </div>
         </div>
       </SheetFooter>

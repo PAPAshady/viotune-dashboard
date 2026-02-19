@@ -1,13 +1,20 @@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 import defaultCover from '@assets/images/default-cover.jpg';
 import { formatTime } from '@/utils';
 
-function SongCard({ title, cover, artist, duration, genre_name }) {
+function SongCard({ id, title, cover, artist, duration, genre_name, onSelect, isSelected }) {
   return (
-    <div className="hover:bg-muted/50 flex cursor-pointer items-center gap-3 rounded-lg border border-transparent px-3 py-2.5 transition-colors">
-      <Checkbox />
+    <div
+      className={cn(
+        'flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors',
+        isSelected ? 'bg-primary/10 border-primary/30' : 'hover:bg-muted/50 border-transparent'
+      )}
+      onClick={() => onSelect(id)}
+    >
+      <Checkbox onCheckedChange={() => onSelect(id)} checked={isSelected} />
       <img src={cover || defaultCover} className="h-10 w-10 shrink-0 rounded object-cover" />
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium">{title}</p>
