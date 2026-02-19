@@ -7,11 +7,12 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 
 import SearchInput from '@/components/SearchInput/SearchInput';
 import SongCard from '@/components/SongCard/SongCard';
+import SongCardSkeleton from '@/components/SongCard/SongCardSkeleton';
 import { getAlbumRecommendedSongsInfiniteQuery } from '@/queries/songs';
 
 function AddSongView({ onBack }) {
   const [searchValue, setSearchValue] = useState('');
-  const { data: songs } = useInfiniteQuery(getAlbumRecommendedSongsInfiniteQuery());
+  const { data, isPending } = useInfiniteQuery(getAlbumRecommendedSongsInfiniteQuery());
 
   return (
     <div className="animate-in slide-in-from-right-4 fade-in flex h-full grow flex-col duration-300">
@@ -33,16 +34,18 @@ function AddSongView({ onBack }) {
           onChange={(e) => setSearchValue(e.target.value)}
         />
       </div>
-      <div className="grow space-y-1 overflow-y-auto px-4 py-2">
-        {songs?.pages.flat().map((song) => (
-          <SongCard key={song.id} {...song} />
-        ))}
+      <div className="grow space-y-1.5 overflow-y-auto px-4 py-2">
+        {isPending
+          ? Array(10)
+              .fill()
+              .map((_, index) => <SongCardSkeleton key={index} />)
+          : data.pages.flat().map((song) => <SongCard key={song.id} {...song} />)}
         <div className="bg-red p-2"></div>
       </div>
       <SheetFooter className="border-t">
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground text-sm">
-            {songs?.pages.flat().length} songs available
+            {data?.pages.flat().length} songs available
           </span>
           <div className="flex items-center justify-end gap-4">
             <Button variant="outline" onClick={onBack}>
