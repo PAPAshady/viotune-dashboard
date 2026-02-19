@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import useIntersectionObserver from '../../../../hooks/useIntersectionObserver';
+import { Spinner } from '@/components/ui/spinner';
 
 import SearchInput from '@/components/SearchInput/SearchInput';
 import SongCard from '@/components/SongCard/SongCard';
@@ -11,8 +13,14 @@ import SongCardSkeleton from '@/components/SongCard/SongCardSkeleton';
 import { getAlbumRecommendedSongsInfiniteQuery } from '@/queries/songs';
 
 function AddSongView({ onBack }) {
+  const containerRef = useRef(null);
+  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
+    getAlbumRecommendedSongsInfiniteQuery({ pageSize: 10 })
+  );
   const [searchValue, setSearchValue] = useState('');
-  const { data, isPending } = useInfiniteQuery(getAlbumRecommendedSongsInfiniteQuery());
+  const { targetRef } = useIntersectionObserver({
+    onIntersect: hasNextPage && fetchNextPage,
+  });
 
   return (
     <div className="animate-in slide-in-from-right-4 fade-in flex h-full grow flex-col duration-300">
@@ -34,13 +42,19 @@ function AddSongView({ onBack }) {
           onChange={(e) => setSearchValue(e.target.value)}
         />
       </div>
-      <div className="grow space-y-1.5 overflow-y-auto px-4 py-2">
+      <div className="grow space-y-1.5 overflow-y-auto px-4 py-2" ref={containerRef}>
         {isPending
           ? Array(10)
               .fill()
               .map((_, index) => <SongCardSkeleton key={index} />)
           : data.pages.flat().map((song) => <SongCard key={song.id} {...song} />)}
-        <div className="bg-red p-2"></div>
+
+        {!isPending && <div className="p-2" ref={targetRef}></div>}
+        {isFetchingNextPage && (
+          <div className="flex justify-center px-4 pb-4">
+            <Spinner className="size-10" />
+          </div>
+        )}
       </div>
       <SheetFooter className="border-t">
         <div className="flex items-center justify-between">

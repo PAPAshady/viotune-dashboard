@@ -148,6 +148,9 @@ export const getAlbumRecommendedSongsInfiniteQuery = () =>
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
       const params = lastPage.map((song) => song.position);
-      return Math.max(...params);
+      const nextPageParam = Math.max(...params);
+      if (nextPageParam !== -Infinity) {
+        return nextPageParam;
+      }
     },
   });
