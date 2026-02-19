@@ -304,10 +304,11 @@ export const getSongsByAlbumId = async (albumId, keyword) => {
   return { data, total: count };
 };
 
-export const getAlbumRecommendedSongs = async ({ pageParam, pageSize = 10 }) => {
+export const getAlbumRecommendedSongs = async ({ pageParam, pageSize = 10, search }) => {
   const { data, error } = await supabase
-    .from('songs_extended')
+    .from('most_played_songs')
     .select('*')
+    .or(`title.ilike.%${search}%,artist.ilike.%${search}%`)
     .gt('position', pageParam)
     .lte('position', pageParam + pageSize);
 

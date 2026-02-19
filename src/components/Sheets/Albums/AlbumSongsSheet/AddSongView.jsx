@@ -11,13 +11,15 @@ import SearchInput from '@/components/SearchInput/SearchInput';
 import SongCard from '@/components/SongCard/SongCard';
 import SongCardSkeleton from '@/components/SongCard/SongCardSkeleton';
 import { getAlbumRecommendedSongsInfiniteQuery } from '@/queries/songs';
+import useDebounce from '@/hooks/useDebounce';
 
 function AddSongView({ onBack }) {
   const containerRef = useRef(null);
-  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
-    getAlbumRecommendedSongsInfiniteQuery({ pageSize: 10 })
-  );
   const [searchValue, setSearchValue] = useState('');
+  const debouncedSearchValue = useDebounce(searchValue);
+  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
+    getAlbumRecommendedSongsInfiniteQuery({ pageSize: 10, search: debouncedSearchValue })
+  );
   const { targetRef } = useIntersectionObserver({
     onIntersect: hasNextPage && fetchNextPage,
   });

@@ -141,10 +141,10 @@ export const getSongsByAlbumIdQuery = (albumId, keyword) =>
     placeholderData: keepPreviousData,
   });
 
-export const getAlbumRecommendedSongsInfiniteQuery = () =>
+export const getAlbumRecommendedSongsInfiniteQuery = (options) =>
   infiniteQueryOptions({
-    queryKey: ['songs', 'recommended'],
-    queryFn: getAlbumRecommendedSongs,
+    queryKey: ['songs', 'recommended', options],
+    queryFn: ({ pageParam }) => getAlbumRecommendedSongs({ pageParam, ...options }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
       const params = lastPage.map((song) => song.position);
