@@ -54,7 +54,7 @@ function AddSongView({ onBack, album }) {
           </Button>
           <div className="space-y-1">
             <SheetTitle className="text-xl font-bold">Add Songs</SheetTitle>
-            <SheetDescription>Browse existing songs to add to "album title"</SheetDescription>
+            <SheetDescription>Browse existing songs to add to "{album.title}"</SheetDescription>
           </div>
         </div>
       </SheetHeader>
