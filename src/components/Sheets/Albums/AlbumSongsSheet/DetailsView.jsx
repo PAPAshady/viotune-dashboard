@@ -35,6 +35,7 @@ function DetailsView({ album, open, onAddSongClick }) {
     data: albumSongs?.data ?? mockData,
     columns,
     getRowId: (row) => row?.id,
+    meta: { album },
   });
 
   return (

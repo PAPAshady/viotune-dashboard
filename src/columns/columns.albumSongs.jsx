@@ -1,26 +1,22 @@
-import { Trash } from 'lucide-react';
 
 import { formatTime } from '@/utils';
-import { Button } from '@/components/ui/button';
-import defaultImage from '@assets/images/default-cover.jpg';
 import { Skeleton } from '@/components/ui/skeleton';
 import TextSkeleton from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
 import ActionsCellSkeleton from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
+import AlbumSongsTableIdCell from '@/components/Tables/ColumnDefs/Cells/AlbumSongsTableCells/AlbumSongsTableIdCell';
+import AlbumSongsTableCoverCell from '@/components/Tables/ColumnDefs/Cells/AlbumSongsTableCells/AlbumSongsTableCoverCell';
+import AlbumSongsTableActionsCell from '@/components/Tables/ColumnDefs/Cells/AlbumSongsTableCells/AlbumSongsTableActionsCell';
 
 export default [
   {
     id: 'id',
     header: () => <span className="ps-1.5">#</span>,
-    cell: ({ row }) => <span className="ps-1.5">{row.index + 1}</span>,
+    cell: (props) => <AlbumSongsTableIdCell {...props} />,
   },
   {
     accessorKey: 'cover',
     header: 'Cover',
-    cell: ({ getValue }) => (
-      <div className="size-10 overflow-hidden rounded-md border">
-        <img src={getValue() || defaultImage} className="size-full object-cover" />
-      </div>
-    ),
+    cell: (props) => <AlbumSongsTableCoverCell {...props} />,
     meta: { skeleton: <Skeleton className="size-10 rounded-md" /> },
   },
   {
@@ -40,11 +36,7 @@ export default [
   {
     id: 'actions',
     header: 'Actions',
-    cell: () => (
-      <Button variant="ghost">
-        <Trash className="text-red-400" />
-      </Button>
-    ),
+    cell: (props) => <AlbumSongsTableActionsCell {...props} />,
     meta: { skeleton: <ActionsCellSkeleton /> },
   },
 ];

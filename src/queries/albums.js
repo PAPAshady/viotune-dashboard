@@ -10,6 +10,7 @@ import {
   deleteAlbums,
   updateAlbum,
   addSongToAlbum,
+  removeSongFromAlbum,
 } from '@/services/albums';
 import queryClient from '@/QueryClient';
 
@@ -122,7 +123,25 @@ export const addSongToAlbumMutation = (albumId) =>
     mutationFn: addSongToAlbum,
     enabled: !!albumId,
     onSuccess: () => {
-      queryClient.invalidateQueries(['songs']);
+      queryClient.invalidateQueries(['songs', 'recommended', { albumId }]);
+      queryClient.invalidateQueries(['albums']);
+      toast.success('Album updated successfully', {
+        message:
+          'Your changes have been saved. The album details are now up to date and ready to go.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Update failed.', { message: 'We couldn’t update the album. Please try again.' });
+      console.error('Error while updating album => ', err);
+    },
+  });
+
+export const removeSongFromAlbumMutation = (albumId) =>
+  mutationOptions({
+    queryKey: ['albums', { albumId }],
+    mutationFn: (songId) => removeSongFromAlbum(songId, albumId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['songs', { albumId }]);
       queryClient.invalidateQueries(['albums']);
       toast.success('Album updated successfully', {
         message:

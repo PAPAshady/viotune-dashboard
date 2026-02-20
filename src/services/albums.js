@@ -209,3 +209,13 @@ export const addSongToAlbum = async (songsData) => {
   if (error) throw error;
   return data;
 };
+
+export const removeSongFromAlbum = async (song_id, album_id) => {
+  const { data, error } = await supabase
+    .from('album_songs')
+    .delete()
+    .match({ album_id, song_id })
+    .select();
+  if (error) throw error;
+  return data;
+};
