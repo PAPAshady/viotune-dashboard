@@ -78,7 +78,24 @@ function DetailsView({ album, open, onAddSongClick }) {
         />
       </div>
       <div className="w-full grow space-y-4 overflow-y-auto p-4 pb-8">
-        {albumSongs?.data.length ? (
+        {!albumSongs?.data.length && !isPending ? (
+          <div className="flex justify-center">
+            <Empty className="border border-dashed md:p-6!">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <Music />
+                </EmptyMedia>
+                <EmptyTitle>No tracks added yet</EmptyTitle>
+                <EmptyDescription
+                  className="cursor-pointer text-blue-500 hover:underline"
+                  onClick={onAddSongClick}
+                >
+                  Add your first song
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          </div>
+        ) : (
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -108,23 +125,6 @@ function DetailsView({ album, open, onAddSongClick }) {
                 ))}
               </TableBody>
             </Table>
-          </div>
-        ) : (
-          <div className="flex justify-center">
-            <Empty className="border border-dashed md:p-6!">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <Music />
-                </EmptyMedia>
-                <EmptyTitle>No tracks added yet</EmptyTitle>
-                <EmptyDescription
-                  className="cursor-pointer text-blue-500 hover:underline"
-                  onClick={onAddSongClick}
-                >
-                  Add your first song
-                </EmptyDescription>
-              </EmptyHeader>
-            </Empty>
           </div>
         )}
       </div>

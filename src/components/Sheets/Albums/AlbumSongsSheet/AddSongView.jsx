@@ -38,7 +38,7 @@ function AddSongView({ onBack, album }) {
   const { targetRef } = useIntersectionObserver({
     onIntersect: hasNextPage && fetchNextPage,
   });
-  const numberOfAvailableSongs = Number(data?.pages.flat().length);
+  const numberOfAvailableSongs = Number(data?.pages.flat().length) || 0;
 
   const songSelectHandler = (songId) => {
     const updatedSongs = new Set(selectedSongs);
@@ -87,7 +87,7 @@ function AddSongView({ onBack, album }) {
                   {...song}
                 />
               ))}
-        {!numberOfAvailableSongs && (
+        {!numberOfAvailableSongs && !isPending && (
           <Empty className="border border-dashed md:p-6!">
             <EmptyHeader>
               <EmptyMedia variant="icon">
