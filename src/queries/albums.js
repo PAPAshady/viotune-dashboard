@@ -123,7 +123,7 @@ export const addSongToAlbumMutation = (albumId) =>
     mutationFn: addSongToAlbum,
     enabled: !!albumId,
     onSuccess: () => {
-      queryClient.invalidateQueries(['songs', 'recommended', { albumId }]);
+      queryClient.invalidateQueries(['songs', { albumId }]);
       queryClient.invalidateQueries(['albums']);
       toast.success('Album updated successfully', {
         message:

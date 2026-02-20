@@ -31,7 +31,7 @@ function AddSongView({ onBack, album }) {
   const { targetRef } = useIntersectionObserver({
     onIntersect: hasNextPage && fetchNextPage,
   });
-  const numberOfAvailableSongs = data?.pages.flat().length;
+  const numberOfAvailableSongs = Number(data?.pages.flat().length);
 
   const songSelectHandler = (songId) => {
     const updatedSongs = new Set(selectedSongs);
@@ -90,11 +90,9 @@ function AddSongView({ onBack, album }) {
       </div>
       <SheetFooter className="border-t">
         <div className="flex items-center justify-between">
-          {numberOfAvailableSongs && (
-            <span className="text-muted-foreground text-sm">
-              {numberOfAvailableSongs} songs available
-            </span>
-          )}
+          <span className="text-muted-foreground text-sm">
+            {numberOfAvailableSongs} songs available
+          </span>
           <div className="ms-auto flex items-center justify-end gap-4">
             <Button variant="outline" onClick={onBack}>
               Cancel
