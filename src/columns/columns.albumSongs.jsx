@@ -9,9 +9,9 @@ import ActionsCellSkeleton from '@/components/Tables/ColumnDefs/Cells/GenreicTab
 
 export default [
   {
-    accessorKey: 'track_number',
-    header: '#',
-    meta: { skeleton: <TextSkeleton className="w-6" /> },
+    id: 'id',
+    header: () => <span className="ps-1.5">#</span>,
+    cell: ({ row }) => <span className="ps-1.5">{row.index + 1}</span>,
   },
   {
     accessorKey: 'cover',
