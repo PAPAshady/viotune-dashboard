@@ -2,11 +2,18 @@ import { useRef, useState } from 'react';
 
 import { SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Music } from 'lucide-react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import useIntersectionObserver from '../../../../hooks/useIntersectionObserver';
 import { Spinner } from '@/components/ui/spinner';
 import { useMutation } from '@tanstack/react-query';
+import {
+  Empty,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyHeader,
+  EmptyDescription,
+} from '@/components/ui/empty';
 
 import SearchInput from '@/components/SearchInput/SearchInput';
 import SongCard from '@/components/SongCard/SongCard';
@@ -80,6 +87,17 @@ function AddSongView({ onBack, album }) {
                   {...song}
                 />
               ))}
+        {!numberOfAvailableSongs && (
+          <Empty className="border border-dashed md:p-6!">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <Music />
+              </EmptyMedia>
+              <EmptyTitle>No tracks available</EmptyTitle>
+              <EmptyDescription>Check later or add new songs</EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        )}
 
         {!isPending && <div className="p-2" ref={targetRef}></div>}
         {isFetchingNextPage && (
