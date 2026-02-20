@@ -11,6 +11,13 @@ import {
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import { useQuery } from '@tanstack/react-query';
 import { SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import {
+  Empty,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyHeader,
+  EmptyDescription,
+} from '@/components/ui/empty';
 
 import defaultCover from '@assets/images/default-cover.jpg';
 import SearchInput from '@/components/SearchInput/SearchInput';
@@ -18,7 +25,7 @@ import columns from '@/columns/columns.albumSongs.jsx';
 import { getSongsByAlbumIdQuery } from '@/queries/songs';
 import useDebounce from '@/hooks/useDebounce';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, Music } from 'lucide-react';
 
 const mockData = Array(6).fill({});
 
@@ -71,36 +78,55 @@ function DetailsView({ album, open, onAddSongClick }) {
         />
       </div>
       <div className="w-full grow space-y-4 overflow-y-auto p-4 pb-8">
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow className="text-muted-foreground" key={row.id}>
-                  {row.getAllCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {isPending
-                        ? flexRender(cell.column.columnDef.meta?.skeleton, cell.getContext())
-                        : flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        {albumSongs?.data.length ? (
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow className="text-muted-foreground" key={row.id}>
+                    {row.getAllCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {isPending
+                          ? flexRender(cell.column.columnDef.meta?.skeleton, cell.getContext())
+                          : flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <Empty className="border border-dashed md:p-6!">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <Music />
+                </EmptyMedia>
+                <EmptyTitle>No tracks added yet</EmptyTitle>
+                <EmptyDescription
+                  className="cursor-pointer text-blue-500 hover:underline"
+                  onClick={onAddSongClick}
+                >
+                  Add your first song
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          </div>
+        )}
       </div>
     </div>
   );
