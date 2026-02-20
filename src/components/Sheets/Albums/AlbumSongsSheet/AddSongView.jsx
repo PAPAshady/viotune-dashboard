@@ -22,7 +22,11 @@ function AddSongView({ onBack, album }) {
   const debouncedSearchValue = useDebounce(searchValue);
   const addSongMutation = useMutation(addSongToAlbumMutation(album?.id));
   const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
-    getAlbumRecommendedSongsInfiniteQuery({ pageSize: 10, search: debouncedSearchValue })
+    getAlbumRecommendedSongsInfiniteQuery({
+      pageSize: 10,
+      search: debouncedSearchValue,
+      albumId: album?.id,
+    })
   );
   const { targetRef } = useIntersectionObserver({
     onIntersect: hasNextPage && fetchNextPage,
@@ -97,10 +101,17 @@ function AddSongView({ onBack, album }) {
             </Button>
             <Button
               className="bg-blue-500 text-white hover:bg-blue-600"
-              disabled={!selectedSongs.size}
+              disabled={!selectedSongs.size || addSongMutation.isPending}
               onClick={onSubmit}
             >
-              Add
+              {addSongMutation.isPending ? (
+                <>
+                  <Spinner />
+                  Adding...
+                </>
+              ) : (
+                'Add'
+              )}
             </Button>
           </div>
         </div>

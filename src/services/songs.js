@@ -304,10 +304,15 @@ export const getSongsByAlbumId = async (albumId, keyword) => {
   return { data: data.map((data) => data.songs), total: count };
 };
 
-export const getAlbumRecommendedSongs = async ({ pageParam, pageSize = 10, search }) => {
+export const getAlbumRecommendedSongs = async ({ pageParam, pageSize = 10, search, albumId }) => {
+  const { data: albumSongs, error: albumSongsError } = await getSongsByAlbumId(albumId, '');
+  if (albumSongsError) throw error;
+  const excludedIds = albumSongs.map((song) => song.id);
+
   const { data, error } = await supabase
     .from('most_played_songs')
     .select('*')
+    .notIn('id', excludedIds)
     .or(`title.ilike.%${search}%,artist.ilike.%${search}%`)
     .gt('position', pageParam)
     .lte('position', pageParam + pageSize);
