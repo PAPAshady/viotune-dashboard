@@ -57,7 +57,7 @@ function PlaylistsSheet() {
     setValue,
     reset: resetFields,
     // fill out the form with dynamic in case user wants to edit an playlist.
-  } = useForm({ resolver: zodResolver(schema), values: defaultValues });
+  } = useForm({ resolver: zodResolver(schema), values: isEditMode ? defaultValues : undefined });
   const {
     mutate,
     isPending,
