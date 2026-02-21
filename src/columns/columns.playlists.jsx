@@ -8,6 +8,7 @@ import PlaylistsTablePlaylistCell from '@components/Tables/ColumnDefs/Cells/Play
 import PlaylistsTableCreatorCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableCreatorCell';
 import PlaylistsTableVisibilityCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableVisibilityCell';
 import ActionsCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
+import PlaylistsTableActionCell from '@/components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableActionCell';
 
 export default [
   {
@@ -47,7 +48,7 @@ export default [
   {
     header: 'Actions',
     id: 'actions',
-    cell: (props) => <ActionsCell {...props} />,
+    cell: (props) => <PlaylistsTableActionCell {...props} />,
     meta: { skeleton: <ActionsCellSkeleton /> },
   },
 ];

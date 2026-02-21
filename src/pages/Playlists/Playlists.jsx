@@ -1,9 +1,8 @@
 import { useState } from 'react';
 
-import { useIsMobile } from '@hooks/use-mobile';
-import { PlusIcon } from 'lucide-react';
-import { Button } from '@components/ui/button';
 import { useQuery } from '@tanstack/react-query';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import SearchInput from '@/components/SearchInput/SearchInput';
@@ -19,8 +18,7 @@ import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import columns from '@/columns/columns.playlists.jsx';
 import useDebounce from '@/hooks/useDebounce';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import PlaylistsSheet from '@/components/Sheets/Playlists/PlaylistsSheet';
 
 const typeOptions = [
   { value: 'private', label: 'User playlists (Private)' },
@@ -38,7 +36,6 @@ const tracksRangeOptions = [
 function Playlists() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [type, setType] = useState();
-  const isMobile = useIsMobile();
   const { data: mostPlayedPublicPlaylists } = useQuery(getMostPlayedPlaylistsQuery({ limit: 6 }));
   const [searchValue, setSearchValue] = useState('');
   const [playlistCreatorSearchValue, setPlaylistCreatorSearchValue] = useState('');
@@ -91,12 +88,7 @@ function Playlists() {
   return (
     <>
       <PageHeader title="Playlists" description="Manage user and admin playlists.">
-        <Button
-          size={isMobile ? 'sm' : 'default'}
-          className="bg-blue-500 text-white hover:bg-blue-600"
-        >
-          <PlusIcon /> Create Playlist
-        </Button>
+        <PlaylistsSheet />
       </PageHeader>
       <KpiCardWrapper data={kpiCardsData} isPending={isStatsPending} />
       <SearchInput

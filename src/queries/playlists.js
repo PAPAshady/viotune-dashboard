@@ -1,6 +1,14 @@
-import { queryOptions, keepPreviousData } from '@tanstack/react-query';
+import { queryOptions, keepPreviousData, mutationOptions } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
-import { getPlaylists, getMostPlayedPlaylists, getPlaylistsStats } from '@/services/playlists';
+import {
+  getPlaylists,
+  getMostPlayedPlaylists,
+  getPlaylistsStats,
+  createPlaylist,
+  updatePlaylist,
+} from '@/services/playlists';
+import queryClient from '@/QueryClient';
 
 export const getPlaylistsQuery = (options) =>
   queryOptions({
@@ -19,4 +27,41 @@ export const getPlaylistsStatsQuery = () =>
   queryOptions({
     queryKey: ['playlists', 'stats'],
     queryFn: getPlaylistsStats,
+  });
+
+export const createPlaylistMutation = () =>
+  queryOptions({
+    queryKey: ['playlists'],
+    mutationFn: createPlaylist,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['playlists']);
+      toast.success('Playlist created successfully', {
+        description: 'Your playlist is now added to the library and ready to be streamed.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Upload failed', {
+        description: 'Something went wrong while creating the playlist.',
+      });
+      console.error('Error while uploading playlist => ', err);
+    },
+  });
+
+export const updatePlaylistMutation = () =>
+  mutationOptions({
+    queryKey: ['playlists'],
+    mutationFn: updatePlaylist,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['playlists']);
+      toast.success('Playlist updated successfully', {
+        message:
+          'Your changes have been saved. The playlist details are now up to date and ready to go.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Update failed.', {
+        message: 'We couldn’t update the playlist. Please try again.',
+      });
+      console.error('Error while updating playlist => ', err);
+    },
   });

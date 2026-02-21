@@ -1,4 +1,5 @@
 import supabase from './supabase';
+import { getFileUrl, uploadFile } from './storage';
 
 export const getPlaylists = async ({
   pageIndex,
@@ -54,4 +55,46 @@ export const getPlaylistsStats = async () => {
   const { data, error } = await supabase.functions.invoke('get-playlists-stats');
   if (error) throw error;
   return data;
+};
+
+export const createPlaylist = async (formData) => {
+  const newPlaylist = { ...formData, is_public: formData.visibility === '1' }; // convert visibility string to boolean for database
+
+  delete newPlaylist.visibility; // delete visibility because we already converted it to is_public which is what we need for database
+
+  // upload playlist coverfile if it exists
+  if (newPlaylist.coverFile && newPlaylist.coverFile.length > 0) {
+    const coverFile = newPlaylist.coverFile[0];
+    const uploadedAt = new Date().toISOString();
+
+    const newPlaylistCoverFileName = `${newPlaylist.title}-${newPlaylist.is_public ? 'public' : 'private'}-${uploadedAt}`;
+
+    const { data: coverFileData, error: coverFileError } = await uploadFile(
+      'playlist-covers',
+      newPlaylistCoverFileName,
+      coverFile
+    );
+
+    if (coverFileError) throw coverFileError;
+
+    newPlaylist.cover_path = coverFileData.path;
+    newPlaylist.cover = getFileUrl('playlist-covers', coverFileData.path);
+  }
+
+  // delete coverFile property because we already exctracted it
+  delete newPlaylist.coverFile;
+
+  const { data: dbData, error: dbError } = await supabase
+    .from('playlists')
+    .insert(newPlaylist)
+    .select()
+    .single();
+
+  if (dbError) throw dbError;
+
+  return dbData;
+};
+
+export const updatePlaylist = async ({ modifiedFields, prevPlaylistData }) => {
+  return { modifiedFields, prevPlaylistData };
 };
