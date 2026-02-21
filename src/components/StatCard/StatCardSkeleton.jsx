@@ -9,10 +9,10 @@ function StatCard() {
           <div className="xs:max-w-40 w-full">
             <Skeleton className="xs:w-full mb-3 h-3 w-30" />
             <Skeleton className="xs:w-2/3 h-4.5 w-20" />
-            <p className="mt-4 flex items-center text-xs md:text-sm">
+            <div className="mt-4 flex items-center text-xs md:text-sm">
               <Skeleton className="mr-2 size-7 min-w-7" />
               <Skeleton className="xs:w-3/5 h-3 w-30" />
-            </p>
+            </div>
           </div>
 
           <Skeleton className="size-12 min-w-12 rounded-full" />
