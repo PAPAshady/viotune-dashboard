@@ -1,7 +1,13 @@
 import supabase from './supabase';
 
-export const getPlaylists = async ({ pageIndex, pageSize, type, playlistCreator, search }) => {
-  console.log(playlistCreator);
+export const getPlaylists = async ({
+  pageIndex,
+  pageSize,
+  type,
+  playlistCreator,
+  tracksRange,
+  search,
+}) => {
   const from = pageIndex * pageSize;
   const to = from + pageSize - 1;
   let query = supabase
@@ -17,6 +23,15 @@ export const getPlaylists = async ({ pageIndex, pageSize, type, playlistCreator,
 
   if (playlistCreator) {
     query.or(`creator->>full_name.ilike.%${playlistCreator}%`);
+  }
+
+  if (tracksRange) {
+    if (tracksRange === '50+') {
+      query.gte('totaltracks', 50);
+    } else {
+      const [min, max] = tracksRange.split('-');
+      query = query.gte('totaltracks', min).lte('totaltracks', max);
+    }
   }
 
   const { data, error, count } = await query;

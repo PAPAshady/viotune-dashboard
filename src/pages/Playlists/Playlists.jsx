@@ -27,6 +27,14 @@ const typeOptions = [
   { value: 'public', label: 'Admin playlists (Public)' },
 ];
 
+const tracksRangeOptions = [
+  { value: '0-5', label: '0 to 5 tracks' },
+  { value: '6-10', label: '6 to 10 tracks' },
+  { value: '11-30', label: '11 to 30 tracks' },
+  { value: '31-50', label: '31 to 50 tracks' },
+  { value: '50+', label: '50+ tracks' },
+];
+
 function Playlists() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [type, setType] = useState();
@@ -34,11 +42,13 @@ function Playlists() {
   const { data: mostPlayedPublicPlaylists } = useQuery(getMostPlayedPlaylistsQuery({ limit: 6 }));
   const [searchValue, setSearchValue] = useState('');
   const [playlistCreatorSearchValue, setPlaylistCreatorSearchValue] = useState('');
+  const [tracksRange, setTracksRange] = useState();
   const debouncedSearchValue = useDebounce(searchValue);
   const { data: playlistsStats, isPending: isStatsPending } = useQuery(getPlaylistsStatsQuery());
 
   const filters = {
     type,
+    tracksRange,
     playlistCreator: playlistCreatorSearchValue,
   };
 
@@ -47,10 +57,12 @@ function Playlists() {
   );
 
   const onTypeChange = (e) => setType(e.target.value || null);
+  const onTracksRangeSelect = (e) => setTracksRange(e.target.value);
 
   const clearFilters = () => {
     setType('');
     setPlaylistCreatorSearchValue('');
+    setTracksRange('');
   };
 
   const kpiCardsData = [
@@ -108,6 +120,13 @@ function Playlists() {
             onChange={(e) => setPlaylistCreatorSearchValue(e.target.value)}
           />
         </div>
+        <FilterSelectBox
+          filterName="Tracks range"
+          placeholder="Select tracks range"
+          options={tracksRangeOptions}
+          value={tracksRange}
+          onChange={onTracksRangeSelect}
+        />
       </FilterBar>
       <PrimaryTable
         columns={columns}
