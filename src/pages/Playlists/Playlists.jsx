@@ -137,7 +137,7 @@ function Playlists() {
         tableClassName="min-w-220"
       />
       <MostPlaysChart
-        chartTitle="Most Played Playlists"
+        chartTitle="Most Played Public Playlists"
         data={mostPlayedPublicPlaylists}
         yAxisDataKey="title"
         barDataKey="total_plays"
