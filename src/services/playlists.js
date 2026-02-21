@@ -1,6 +1,7 @@
 import supabase from './supabase';
 
-export const getPlaylists = async ({ pageIndex, pageSize, type, search }) => {
+export const getPlaylists = async ({ pageIndex, pageSize, type, playlistCreator, search }) => {
+  console.log(playlistCreator);
   const from = pageIndex * pageSize;
   const to = from + pageSize - 1;
   let query = supabase
@@ -12,6 +13,10 @@ export const getPlaylists = async ({ pageIndex, pageSize, type, search }) => {
 
   if (type) {
     query.eq('is_public', type === 'public');
+  }
+
+  if (playlistCreator) {
+    query.or(`creator->>full_name.ilike.%${playlistCreator}%`);
   }
 
   const { data, error, count } = await query;

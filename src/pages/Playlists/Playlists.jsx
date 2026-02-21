@@ -19,6 +19,8 @@ import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import columns from '@/columns/columns.playlists.jsx';
 import useDebounce from '@/hooks/useDebounce';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 const typeOptions = [
   { value: 'private', label: 'User playlists (Private)' },
@@ -31,11 +33,24 @@ function Playlists() {
   const isMobile = useIsMobile();
   const { data: mostPlayedPublicPlaylists } = useQuery(getMostPlayedPlaylistsQuery({ limit: 6 }));
   const [searchValue, setSearchValue] = useState('');
+  const [playlistCreatorSearchValue, setPlaylistCreatorSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
   const { data: playlistsStats, isPending: isStatsPending } = useQuery(getPlaylistsStatsQuery());
 
   const filters = {
     type,
+    playlistCreator: playlistCreatorSearchValue,
+  };
+
+  const { data, isLoading } = useQuery(
+    getPlaylistsQuery({ ...pagination, ...filters, search: debouncedSearchValue })
+  );
+
+  const onTypeChange = (e) => setType(e.target.value || null);
+
+  const clearFilters = () => {
+    setType('');
+    setPlaylistCreatorSearchValue('');
   };
 
   const kpiCardsData = [
@@ -61,16 +76,6 @@ function Playlists() {
     },
   ];
 
-  const { data, isLoading } = useQuery(
-    getPlaylistsQuery({ ...pagination, ...filters, search: debouncedSearchValue })
-  );
-
-  const onTypeChange = (e) => setType(e.target.value || null);
-
-  const clearFilters = () => {
-    setType('');
-  };
-
   return (
     <>
       <PageHeader title="Playlists" description="Manage user and admin playlists.">
@@ -95,6 +100,14 @@ function Playlists() {
           value={type}
           onChange={onTypeChange}
         />
+        <div className="space-y-3">
+          <Label>Creator</Label>
+          <Input
+            placeholder="Search by creator name..."
+            value={playlistCreatorSearchValue}
+            onChange={(e) => setPlaylistCreatorSearchValue(e.target.value)}
+          />
+        </div>
       </FilterBar>
       <PrimaryTable
         columns={columns}
