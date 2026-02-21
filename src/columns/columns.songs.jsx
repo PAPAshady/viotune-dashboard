@@ -35,7 +35,12 @@ export default [
     accessorKey: 'genre_name',
     meta: { skeleton: <TextSkeleton className="w-16" /> },
   },
-  { header: 'Plays', accessorKey: 'play_count', meta: { skeleton: <TextSkeleton /> } },
+  {
+    header: 'Plays',
+    accessorKey: 'total_plays',
+    cell: ({ getValue }) => getValue().toLocaleString(),
+    meta: { skeleton: <TextSkeleton /> },
+  },
   {
     header: 'Duration',
     accessorKey: 'duration',
