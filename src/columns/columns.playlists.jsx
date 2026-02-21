@@ -6,7 +6,6 @@ import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader
 import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
 import PlaylistsTablePlaylistCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTablePlaylistCell';
 import PlaylistsTableCreatorCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableCreatorCell';
-import PlaylistsTableGenreCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableGenreCell';
 import PlaylistsTableVisibilityCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableVisibilityCell';
 import ActionsCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
 
@@ -39,12 +38,6 @@ export default [
     accessorKey: 'total_plays',
     header: 'Plays',
     meta: { skeleton: <TextSkeleton className="max-w-12" /> },
-  },
-  {
-    accessorKey: 'genre_title',
-    header: 'Genre',
-    cell: (props) => <PlaylistsTableGenreCell {...props} />,
-    meta: { skeleton: <TextSkeleton /> },
   },
   {
     accessorKey: 'totaltracks',
