@@ -22,7 +22,7 @@ export const getPeginatedAlbums = async ({
   const from = pageIndex * pageSize;
   const to = from + pageSize - 1;
   let query = supabase
-    .from('albums_extended')
+    .from('most_played_albums')
     .select('*', { count: 'exact' })
     .range(from, to)
     .or(`title.ilike.%${search}%,artist.ilike.%${search}%`)
