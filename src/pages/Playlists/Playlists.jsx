@@ -10,18 +10,15 @@ import SearchInput from '@/components/SearchInput/SearchInput';
 import FilterBar from '@components/FilterBar/FilterBar';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
-import { getPlaylistsQuery, getMostPlayedPlaylistsQuery } from '@/queries/playlists';
+import {
+  getPlaylistsQuery,
+  getMostPlayedPlaylistsQuery,
+  getPlaylistsStatsQuery,
+} from '@/queries/playlists';
 import MostPlaysChart from '@components/MostPlaysChart/MostPlaysChart';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import columns from '@/columns/columns.playlists.jsx';
 import useDebounce from '@/hooks/useDebounce';
-
-const kpiInfos = [
-  { id: 1, value: 2, title: 'Total Playlists' },
-  { id: 2, value: 200, title: 'Most Played Playlist' },
-  { id: 3, value: 0, title: 'Zero Songs' },
-  { id: 4, value: 15, title: 'Avg Songs/Playlist' },
-];
 
 const typeOptions = [
   { value: 'private', label: 'User playlists (Private)' },
@@ -35,10 +32,34 @@ function Playlists() {
   const { data: mostPlayedPublicPlaylists } = useQuery(getMostPlayedPlaylistsQuery({ limit: 6 }));
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
+  const { data: playlistsStats, isPending: isStatsPending } = useQuery(getPlaylistsStatsQuery());
 
   const filters = {
     type,
   };
+
+  const kpiCardsData = [
+    {
+      id: 1,
+      title: 'Total Playlists',
+      value: playlistsStats?.totalPlaylists ?? 'N/A',
+    },
+    {
+      id: 2,
+      title: 'Total Playlist Plays',
+      value: playlistsStats?.totalPlaylistPlays ?? 'N/A',
+    },
+    {
+      id: 3,
+      title: 'Total Playlist Tracks',
+      value: playlistsStats?.totalPlaylistTracks ?? 'N/A',
+    },
+    {
+      id: 4,
+      title: 'Avg Tracks per Playlist',
+      value: playlistsStats?.avgSongsPerPlaylist ?? 'N/A',
+    },
+  ];
 
   const { data, isLoading } = useQuery(
     getPlaylistsQuery({ ...pagination, ...filters, search: debouncedSearchValue })
@@ -53,9 +74,6 @@ function Playlists() {
   return (
     <>
       <PageHeader title="Playlists" description="Manage user and admin playlists.">
-        <Button size={isMobile ? 'sm' : 'default'} variant="outline">
-          Bulk Actions (0)
-        </Button>
         <Button
           size={isMobile ? 'sm' : 'default'}
           className="bg-blue-500 text-white hover:bg-blue-600"
@@ -63,7 +81,7 @@ function Playlists() {
           <PlusIcon /> Create Playlist
         </Button>
       </PageHeader>
-      <KpiCardWrapper data={kpiInfos} />
+      <KpiCardWrapper data={kpiCardsData} isPending={isStatsPending} />
       <SearchInput
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}

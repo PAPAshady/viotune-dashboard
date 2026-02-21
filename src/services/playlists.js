@@ -29,3 +29,9 @@ export const getMostPlayedPlaylists = async ({ limit = 5 }) => {
   if (error) throw error;
   return data;
 };
+
+export const getPlaylistsStats = async () => {
+  const { data, error } = await supabase.functions.invoke('get-playlists-stats');
+  if (error) throw error;
+  return data;
+};
