@@ -12,9 +12,10 @@ import { MoreHorizontalIcon, PencilIcon, EyeOffIcon, EyeIcon } from 'lucide-reac
 import { useMutation } from '@tanstack/react-query';
 import { Spinner } from '@/components/ui/spinner';
 
-import DeleteSongDialog from '@/components/Dialogs/Songs/DeleteSongDialog';
 import { toggleSongStatusMutation } from '@/queries/songs';
 import useSongSheet from '@/store/songSheet.store';
+import DeleteDialog from '@/components/Dialogs/DeleteDialog';
+import { deleteSongMutation } from '@/queries/songs';
 
 function SongsTableActionCell({ row }) {
   const setIsSongSheetOpen = useSongSheet((state) => state.setOpen); // open open edit/upload song form
@@ -23,6 +24,7 @@ function SongsTableActionCell({ row }) {
   const [open, setOpen] = useState(false);
   const statusMutation = useMutation(toggleSongStatusMutation());
   const song = row.original;
+  const deletionMutation = useMutation(deleteSongMutation());
 
   const closeDropDown = () => setOpen(false);
 
@@ -34,8 +36,12 @@ function SongsTableActionCell({ row }) {
 
   const openEditSongForm = () => {
     setIsEditMode(true);
-    setSong(song)
+    setSong(song);
     setIsSongSheetOpen(true);
+  };
+
+  const onSongDelete = () => {
+    deletionMutation.mutate(song, { onSuccess: closeDropDown });
   };
 
   return (
@@ -62,7 +68,13 @@ function SongsTableActionCell({ row }) {
           {song.status === 'published' ? 'Draft' : 'Publish'}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DeleteSongDialog onDropDownClose={closeDropDown} song={song} />
+        <DeleteDialog
+          onDropDownClose={closeDropDown}
+          onDelete={onSongDelete}
+          isPending={deletionMutation.isPending}
+          title="Delete song ?"
+          description="Are you sure you want to delete this song ? This action cannot be undone."
+        />
       </DropdownMenuContent>
     </DropdownMenu>
   );

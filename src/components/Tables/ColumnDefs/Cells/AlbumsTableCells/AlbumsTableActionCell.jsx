@@ -13,8 +13,8 @@ import { MoreHorizontal, Pencil, EyeOff, Eye } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 
 import useAlbumSheet from '@/store/albumsSheet.store';
-import { toggleAlbumStatusMutation } from '@/queries/albums';
-import DeleteAlbumDialog from '@/components/Dialogs/Albums/DeleteAlbumDialog';
+import DeleteDialog from '@/components/Dialogs/DeleteDialog';
+import { toggleAlbumStatusMutation, deleteAlbumMutation } from '@/queries/albums';
 import AlbumSongsSheet from '@/components/Sheets/Albums/AlbumSongsSheet/AlbumSongsSheet';
 
 function AlbumsTableActionCell({ row }) {
@@ -25,6 +25,7 @@ function AlbumsTableActionCell({ row }) {
   const album = row.original;
   const isPublished = album.status === 'published';
   const albumStatusMutation = useMutation(toggleAlbumStatusMutation());
+  const deletionMutation = useMutation(deleteAlbumMutation());
 
   const closeDropDown = () => setOpen(false);
 
@@ -38,6 +39,10 @@ function AlbumsTableActionCell({ row }) {
     e.preventDefault();
     await albumStatusMutation.mutateAsync(album);
     closeDropDown();
+  };
+
+  const onAlbumDelete = () => {
+    deletionMutation.mutate(album, { onSuccess: closeDropDown });
   };
 
   return (
@@ -64,7 +69,13 @@ function AlbumsTableActionCell({ row }) {
           {isPublished ? 'Draft' : 'Publish'}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DeleteAlbumDialog album={album} onDropDownClose={closeDropDown} />
+        <DeleteDialog
+          onDelete={onAlbumDelete}
+          isPending={deletionMutation.isPending}
+          onDropDownClose={closeDropDown}
+          title="Delete album ?"
+          description="Are you sure you want to delete this album ? This action cannot be undone."
+        />
       </DropdownMenuContent>
     </DropdownMenu>
   );

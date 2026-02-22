@@ -13,16 +13,17 @@ import {
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Spinner } from '@/components/ui/spinner';
 import { Trash2Icon } from 'lucide-react';
-import { useMutation } from '@tanstack/react-query';
 
-import { deleteAlbumMutation } from '@/queries/albums';
-
-function DeleteAlbumDialog({ album, onDropDownClose }) {
-  const { mutate, isPending } = useMutation(deleteAlbumMutation());
-
-  const deleteAlbumHandler = (e) => {
+function DeleteDialog({
+  onDelete,
+  isPending,
+  onDropDownClose,
+  title = 'Delete item ?',
+  description = 'Are you sure you want to delete this item ? This action cannot be undone.',
+}) {
+  const deleteHandler = (e) => {
     e.preventDefault(); // prevent the dropdown to close right after a click.
-    mutate(album, { onSuccess: onDropDownClose });
+    onDelete();
   };
 
   return (
@@ -38,20 +39,14 @@ function DeleteAlbumDialog({ album, onDropDownClose }) {
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
             <Trash2Icon />
           </AlertDialogMedia>
-          <AlertDialogTitle>Delete album ?</AlertDialogTitle>
-          <AlertDialogDescription>
-            Are you sure you want to delete this album ? This action cannot be undone.
-          </AlertDialogDescription>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel variant="outline" onClick={onDropDownClose}>
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isPending}
-            variant="destructive"
-            onClick={deleteAlbumHandler}
-          >
+          <AlertDialogAction disabled={isPending} variant="destructive" onClick={deleteHandler}>
             {isPending ? (
               <>
                 <Spinner />
@@ -67,4 +62,4 @@ function DeleteAlbumDialog({ album, onDropDownClose }) {
   );
 }
 
-export default DeleteAlbumDialog;
+export default DeleteDialog;
