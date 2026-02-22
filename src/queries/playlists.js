@@ -8,6 +8,7 @@ import {
   createPlaylist,
   updatePlaylist,
   deletePlaylist,
+  deletePlaylists,
 } from '@/services/playlists';
 import queryClient from '@/QueryClient';
 
@@ -82,5 +83,23 @@ export const deletePlaylistMutation = () =>
         description: 'We couldn’t delete the playlist. Please try again.',
       });
       console.error('Error while uploading playlist => ', err);
+    },
+  });
+
+export const deletePlaylistsMutation = () =>
+  mutationOptions({
+    queryKey: ['playlists'],
+    mutationFn: deletePlaylists,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['playlists']);
+      toast.success('All playlists deleted successfully.', {
+        description: 'Your playlists no longer exist in the library.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Deletion failed.', {
+        description: 'Something went wrong while deleting playlists.',
+      });
+      console.error('Error while deleting playlists => ', err);
     },
   });

@@ -118,3 +118,19 @@ export const deletePlaylist = async (data) => {
 
   return dbData;
 };
+
+export const deletePlaylists = async (playlistRows) => {
+  const coverPaths = playlistRows.map((row) => row.original.cover_path);
+  const playlistIds = playlistRows.map((row) => row.original.id);
+
+  // delete cover files
+  const { error: coversDeleteErrors } = await deleteFiles('playlist-covers', coverPaths);
+  if (coversDeleteErrors) throw coversDeleteErrors;
+
+  // remove playlists metadata from database
+  const { data, error } = await supabase.from('playlists').delete().in('id', playlistIds).select();
+
+  if (error) throw error;
+
+  return data;
+};

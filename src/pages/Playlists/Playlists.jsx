@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { useMutation } from '@tanstack/react-query';
 
 import PageHeader from '@components/shared/PageHeader/PageHeader';
 import SearchInput from '@/components/SearchInput/SearchInput';
@@ -19,6 +20,7 @@ import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import columns from '@/columns/columns.playlists.jsx';
 import useDebounce from '@/hooks/useDebounce';
 import PlaylistsSheet from '@/components/Sheets/Playlists/PlaylistsSheet';
+import { deletePlaylistsMutation } from '@/queries/playlists';
 
 const typeOptions = [
   { value: 'private', label: 'User playlists (Private)' },
@@ -42,6 +44,7 @@ function Playlists() {
   const [tracksRange, setTracksRange] = useState();
   const debouncedSearchValue = useDebounce(searchValue);
   const { data: playlistsStats, isPending: isStatsPending } = useQuery(getPlaylistsStatsQuery());
+  const bulkDeleteMutation = useMutation(deletePlaylistsMutation());
 
   const filters = {
     type,
@@ -127,6 +130,8 @@ function Playlists() {
         pagination={pagination}
         setPagination={setPagination}
         tableClassName="min-w-220"
+        onBulkDelete={bulkDeleteMutation.mutateAsync}
+        bulkDeletePending={bulkDeleteMutation.isPending}
       />
       <MostPlaysChart
         chartTitle="Most Played Public Playlists"
