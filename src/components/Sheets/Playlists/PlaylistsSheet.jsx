@@ -73,7 +73,7 @@ function PlaylistsSheet() {
   const onSheetOpenChange = async (isOpen) => {
     // reset form values and mutation states when sheet is closed
     if (!isOpen) {
-      resetFields({});
+      resetFields();
       resetMutation();
       closeSheet(); // close the sheet and reset sheet state
       return;
