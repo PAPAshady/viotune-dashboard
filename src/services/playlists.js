@@ -98,3 +98,7 @@ export const createPlaylist = async (formData) => {
 export const updatePlaylist = async ({ modifiedFields, prevPlaylistData }) => {
   return { modifiedFields, prevPlaylistData };
 };
+
+export const deletePlaylist = async (data) => {
+  return data;
+};

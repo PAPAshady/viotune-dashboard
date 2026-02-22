@@ -9,7 +9,11 @@ import {
 } from '@components/ui/dropdown-menu';
 import { Button } from '@components/ui/button';
 import { MoreHorizontalIcon, PencilIcon, Trash2Icon } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+
 import usePlaylistsSheet from '@/store/playlistsSheer.store';
+import DeleteDialog from '@/components/Dialogs/DeleteDialog';
+import { deletePlaylistMutation } from '@/queries/playlists';
 
 function PlaylistsTableActionCell({ row }) {
   const [open, setOpen] = useState(false);
@@ -17,6 +21,7 @@ function PlaylistsTableActionCell({ row }) {
   const setIsEditMode = usePlaylistsSheet((state) => state.setIsEditMode); // set edit/uplaod playlist form mode
   const setPlaylist = usePlaylistsSheet((state) => state.setPlaylist); // set seleced playlist to edit
   const playlist = row.original;
+  const deletionMutation = useMutation(deletePlaylistMutation());
 
   const closeDropDown = () => setOpen(false);
 
@@ -25,7 +30,11 @@ function PlaylistsTableActionCell({ row }) {
     setIsEditMode(true);
     setIsPlaylistsSheetOpen(true);
   };
-  
+
+  const onPlaylistDelete = () => {
+    deletionMutation.mutate(playlist, { onSuccess: closeDropDown });
+  };
+
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
@@ -40,10 +49,13 @@ function PlaylistsTableActionCell({ row }) {
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-destructive" onSelect={closeDropDown}>
-          <Trash2Icon className="me-2 size-4" />
-          Delete
-        </DropdownMenuItem>
+        <DeleteDialog
+          onDelete={onPlaylistDelete}
+          isPending={deletionMutation.isPending}
+          onDropDownClose={closeDropDown}
+          title="Delete playlist ?"
+          description="Are you sure you want to delete this playlist ? This action cannot be undone."
+        />
       </DropdownMenuContent>
     </DropdownMenu>
   );
