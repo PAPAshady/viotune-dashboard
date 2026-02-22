@@ -1,5 +1,5 @@
 import supabase from './supabase';
-import { getFileUrl, uploadFile } from './storage';
+import { getFileUrl, uploadFile, deleteFiles } from './storage';
 
 export const getPlaylists = async ({
   pageIndex,
@@ -100,5 +100,21 @@ export const updatePlaylist = async ({ modifiedFields, prevPlaylistData }) => {
 };
 
 export const deletePlaylist = async (data) => {
-  return data;
+  // delete cover file from storage if exists
+  if (data.cover_path) {
+    const { error: coverDeleteError } = await deleteFiles('playlist-covers', [data.cover_path]);
+    if (coverDeleteError) throw coverDeleteError;
+  }
+
+  // remove playlist metadata from database
+  const { error, data: dbData } = await supabase
+    .from('playlists')
+    .delete()
+    .eq('id', data.id)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return dbData;
 };
