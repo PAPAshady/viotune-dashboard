@@ -95,10 +95,6 @@ export const createPlaylist = async (formData) => {
   return dbData;
 };
 
-export const updatePlaylist = async ({ modifiedFields, prevPlaylistData }) => {
-  return { modifiedFields, prevPlaylistData };
-};
-
 export const deletePlaylist = async (data) => {
   // delete cover file from storage if exists
   if (data.cover_path) {
@@ -133,4 +129,57 @@ export const deletePlaylists = async (playlistRows) => {
   if (error) throw error;
 
   return data;
+};
+
+export const updatePlaylist = async ({ modifiedFields, prevPlaylistData }) => {
+  const updatedTitle = modifiedFields?.title;
+  const uploadedAt = new Date().toISOString(); // we use this timestamp in the name of our files in storage to be unique
+
+  const data = { ...modifiedFields, is_public: modifiedFields.visibility === '1' }; // convert visibility string to boolean for database
+
+  // update cover in case user changed it.
+  if (data.coverFile || data.existingCoverUrl === null) {
+    // delete previous cover file from storage
+    const { error: prevCoverFileDeleteError } = await deleteFiles('playlist-covers', [
+      prevPlaylistData.cover_path,
+    ]);
+
+    if (prevCoverFileDeleteError) throw prevCoverFileDeleteError;
+    data.cover = null;
+    data.cover_path = null;
+
+    // upload new cover if user selected a new cover
+    if (data.coverFile) {
+      const newCoverFile = data.coverFile[0];
+
+      // include updated title and playlist status in the new cover file name (if changed)
+      const newCoverFileName = `${updatedTitle ? updatedTitle : prevPlaylistData.title}-${modifiedFields.visibility !== undefined ? (modifiedFields.visibility === '1' ? 'public' : 'private') : prevPlaylistData.is_public ? 'public' : 'private'}-${uploadedAt}`;
+
+      // upload new cover file to storage
+      const { data: newCoverFileData, error: newCoverFileError } = await uploadFile(
+        'playlist-covers',
+        newCoverFileName,
+        newCoverFile
+      );
+      if (newCoverFileError) throw newCoverFileError;
+      data.cover_path = newCoverFileData.path;
+      data.cover = getFileUrl('playlist-covers', newCoverFileData.path);
+    }
+  }
+
+  // remove unnecessary properties from data because we will send "data" to postgres database
+  delete data.existingCoverUrl;
+  delete data.coverFile;
+  delete data.visibility; // we already converted visibility to is_public which is what we need for database
+
+  const { data: dbData, error: dbError } = await supabase
+    .from('playlists')
+    .update(data)
+    .eq('id', prevPlaylistData.id)
+    .select()
+    .single();
+
+  if (dbError) throw dbError;
+
+  return dbData;
 };
