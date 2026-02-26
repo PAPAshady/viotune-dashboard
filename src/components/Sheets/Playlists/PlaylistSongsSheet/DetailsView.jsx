@@ -22,27 +22,27 @@ import {
 import defaultCover from '@assets/images/default-cover.jpg';
 import SearchInput from '@/components/SearchInput/SearchInput';
 import columns from '@/columns/columns.tracklistSongs.jsx';
-import { getSongsByAlbumIdQuery } from '@/queries/songs';
+import { getSongsByPlaylistIdQuery } from '@/queries/songs';
 import useDebounce from '@/hooks/useDebounce';
 import { Button } from '@/components/ui/button';
 import { Plus, Music } from 'lucide-react';
 
 const mockData = Array(6).fill({});
 
-function DetailsView({ album, open, onAddSongClick }) {
+function DetailsView({ playlist, open, onAddSongClick }) {
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
-  const { data: albumSongs, isPending } = useQuery({
-    ...getSongsByAlbumIdQuery(album?.id, debouncedSearchValue),
-    enabled: !!album?.id && open,
+  const { data: playlistSongs, isPending } = useQuery({
+    ...getSongsByPlaylistIdQuery(playlist?.id, debouncedSearchValue),
+    enabled: !!playlist?.id && open,
   });
 
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),
-    data: albumSongs?.data ?? mockData,
+    data: playlistSongs?.data ?? mockData,
     columns,
     getRowId: (row) => row?.id,
-    meta: { tracklist: album },
+    meta: { tracklist: playlist },
   });
 
   return (
@@ -50,15 +50,15 @@ function DetailsView({ album, open, onAddSongClick }) {
       <SheetHeader className="pt-10">
         <div className="flex items-center gap-4">
           <div className="size-24 overflow-hidden rounded-md border">
-            <img src={album.cover || defaultCover} className="size-full object-cover" />
+            <img src={playlist.cover || defaultCover} className="size-full object-cover" />
           </div>
           <div className="flex h-full grow flex-col justify-between py-1">
-            <SheetTitle className="text-2xl font-bold">{album.title}</SheetTitle>
-            <SheetDescription className="text-muted-foreground">{album.artist}</SheetDescription>
+            <SheetTitle className="text-2xl font-bold">{playlist.title}</SheetTitle>
+            <SheetDescription className="text-muted-foreground">
+              {playlist.creator.full_name} ({playlist.creator.username})
+            </SheetDescription>
             <div className="text-muted-foreground flex items-center gap-3">
-              <span>{album.release_date.split('-')[0]}</span>
-              <span>•</span>
-              <span>{album.totaltracks} songs</span>
+              <span>{playlist.totaltracks} songs</span>
             </div>
           </div>
         </div>
@@ -78,7 +78,7 @@ function DetailsView({ album, open, onAddSongClick }) {
         />
       </div>
       <div className="w-full grow space-y-4 overflow-y-auto p-4 pb-8">
-        {!albumSongs?.data.length && !isPending ? (
+        {!playlistSongs?.data.length && !isPending ? (
           <div className="flex justify-center">
             <Empty className="border border-dashed md:p-6!">
               <EmptyHeader>

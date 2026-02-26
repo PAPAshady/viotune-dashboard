@@ -17,6 +17,8 @@ import {
   updateSong,
   getSongsByAlbumId,
   getAlbumRecommendedSongs,
+  getPlaylistRecommendedSongs,
+  getSongsByPlaylistId,
 } from '@/services/songs';
 import queryClient from '@/QueryClient';
 
@@ -153,4 +155,26 @@ export const getAlbumRecommendedSongsInfiniteQuery = (options) =>
         return nextPageParam;
       }
     },
+  });
+
+export const getPlaylistRecommendedSongsInfiniteQuery = (options) =>
+  infiniteQueryOptions({
+    queryKey: ['songs', 'recommended', options],
+    queryFn: ({ pageParam }) => getPlaylistRecommendedSongs({ pageParam, ...options }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      const params = lastPage.map((song) => song.position);
+      const nextPageParam = Math.max(...params);
+      if (nextPageParam !== -Infinity) {
+        return nextPageParam;
+      }
+    },
+  });
+
+export const getSongsByPlaylistIdQuery = (playlistId, keyword) =>
+  queryOptions({
+    queryKey: ['songs', { playlistId, keyword }],
+    queryFn: () => getSongsByPlaylistId(playlistId, keyword),
+    enabled: !!playlistId,
+    placeholderData: keepPreviousData,
   });

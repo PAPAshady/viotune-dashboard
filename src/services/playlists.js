@@ -183,3 +183,19 @@ export const updatePlaylist = async ({ modifiedFields, prevPlaylistData }) => {
 
   return dbData;
 };
+
+export const addSongToPlaylist = async (songsData) => {
+  const { data, error } = await supabase.from('playlist_songs').insert(songsData).select();
+  if (error) throw error;
+  return data;
+};
+
+export const removeSongFromPlaylist = async (song_id, playlist_id) => {
+  const { data, error } = await supabase
+    .from('playlist_songs')
+    .delete()
+    .match({ playlist_id, song_id })
+    .select();
+  if (error) throw error;
+  return data;
+};

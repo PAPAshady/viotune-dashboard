@@ -9,6 +9,8 @@ import {
   updatePlaylist,
   deletePlaylist,
   deletePlaylists,
+  addSongToPlaylist,
+  removeSongFromPlaylist,
 } from '@/services/playlists';
 import queryClient from '@/QueryClient';
 
@@ -101,5 +103,46 @@ export const deletePlaylistsMutation = () =>
         description: 'Something went wrong while deleting playlists.',
       });
       console.error('Error while deleting playlists => ', err);
+    },
+  });
+
+export const addSongToPlaylistMutation = (playlistId) =>
+  mutationOptions({
+    queryKey: ['playlists', { playlistId }],
+    mutationFn: addSongToPlaylist,
+    enabled: !!playlistId,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['songs', { playlistId }]);
+      queryClient.invalidateQueries(['playlists']);
+      toast.success('Playlist updated successfully', {
+        message:
+          'Your changes have been saved. The playlist details are now up to date and ready to go.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Update failed.', {
+        message: 'We couldn’t update the playlist. Please try again.',
+      });
+      console.error('Error while updating playlist => ', err);
+    },
+  });
+
+export const removeSongFromPlaylistMutation = (playlistId) =>
+  mutationOptions({
+    queryKey: ['playlists', { playlistId }],
+    mutationFn: (songId) => removeSongFromPlaylist(songId, playlistId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['songs', { playlistId }]);
+      queryClient.invalidateQueries(['playlists']);
+      toast.success('Playlist updated successfully', {
+        message:
+          'Your changes have been saved. The playlist details are now up to date and ready to go.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Update failed.', {
+        message: 'We couldn’t update the playlist. Please try again.',
+      });
+      console.error('Error while updating album => ', err);
     },
   });

@@ -14,6 +14,7 @@ import { useMutation } from '@tanstack/react-query';
 import usePlaylistsSheet from '@/store/playlistsSheer.store';
 import DeleteDialog from '@/components/Dialogs/DeleteDialog';
 import { deletePlaylistMutation } from '@/queries/playlists';
+import PlaylistSongsSheet from '@/components/Sheets/Playlists/PlaylistSongsSheet/PlaylistSongsSheet';
 
 function PlaylistsTableActionCell({ row }) {
   const [open, setOpen] = useState(false);
@@ -47,6 +48,8 @@ function PlaylistsTableActionCell({ row }) {
           <PencilIcon className="me-2 size-4" />
           Edit metadata
         </DropdownMenuItem>
+
+        <PlaylistSongsSheet playlist={playlist} />
 
         <DropdownMenuSeparator />
         <DeleteDialog

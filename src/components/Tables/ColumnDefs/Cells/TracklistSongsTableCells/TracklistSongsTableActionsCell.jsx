@@ -4,10 +4,16 @@ import { Spinner } from '@/components/ui/spinner';
 import { useMutation } from '@tanstack/react-query';
 
 import { removeSongFromAlbumMutation } from '@/queries/albums';
+import { removeSongFromPlaylistMutation } from '@/queries/playlists';
 
-function AlbumSongsTableActionsCell({ table, row }) {
+function TracklistSongsTableActionsCell({ table, row }) {
+  const tracklist = table.options.meta.tracklist;
+  const isAlbum = tracklist.type === 'album';
+  const { id } = tracklist;
+
+
   const { isPending, mutate } = useMutation(
-    removeSongFromAlbumMutation(table.options.meta.album.id)
+    isAlbum ? removeSongFromAlbumMutation(id) : removeSongFromPlaylistMutation(id)
   );
 
   return (
@@ -17,4 +23,4 @@ function AlbumSongsTableActionsCell({ table, row }) {
   );
 }
 
-export default AlbumSongsTableActionsCell;
+export default TracklistSongsTableActionsCell;

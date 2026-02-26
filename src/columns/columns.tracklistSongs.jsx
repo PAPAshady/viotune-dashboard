@@ -1,22 +1,21 @@
-
 import { formatTime } from '@/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import TextSkeleton from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
 import ActionsCellSkeleton from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
-import AlbumSongsTableIdCell from '@/components/Tables/ColumnDefs/Cells/AlbumSongsTableCells/AlbumSongsTableIdCell';
-import AlbumSongsTableCoverCell from '@/components/Tables/ColumnDefs/Cells/AlbumSongsTableCells/AlbumSongsTableCoverCell';
-import AlbumSongsTableActionsCell from '@/components/Tables/ColumnDefs/Cells/AlbumSongsTableCells/AlbumSongsTableActionsCell';
+import TracklistSongsTableIdCell from '@/components/Tables/ColumnDefs/Cells/TracklistSongsTableCells/TracklistSongsTableIdCell';
+import TracklistSongsTableCoverCell from '@/components/Tables/ColumnDefs/Cells/TracklistSongsTableCells/TracklistSongsTableCoverCell';
+import TracklistSongsTableActionsCell from '@/components/Tables/ColumnDefs/Cells/TracklistSongsTableCells/TracklistSongsTableActionsCell';
 
 export default [
   {
     id: 'id',
     header: () => <span className="ps-1.5">#</span>,
-    cell: (props) => <AlbumSongsTableIdCell {...props} />,
+    cell: (props) => <TracklistSongsTableIdCell {...props} />,
   },
   {
     accessorKey: 'cover',
     header: 'Cover',
-    cell: (props) => <AlbumSongsTableCoverCell {...props} />,
+    cell: (props) => <TracklistSongsTableCoverCell {...props} />,
     meta: { skeleton: <Skeleton className="size-10 rounded-md" /> },
   },
   {
@@ -36,7 +35,7 @@ export default [
   {
     id: 'actions',
     header: 'Actions',
-    cell: (props) => <AlbumSongsTableActionsCell {...props} />,
+    cell: (props) => <TracklistSongsTableActionsCell {...props} />,
     meta: { skeleton: <ActionsCellSkeleton /> },
   },
 ];
