@@ -9,14 +9,21 @@ export const getArtists = async () => {
   return data;
 };
 
-export const getPaginatedArtists = async (pageIndex, pageSize) => {
+export const getPaginatedArtists = async ({ pageIndex, pageSize, genreId, search }) => {
   const from = pageIndex * pageSize;
   const to = from + pageSize - 1;
-  const { data, error, count } = await supabase
+  const query = supabase
     .from('artists_extended')
     .select('*', { count: 'exact' })
+    .or(`name.ilike.%${search}%,full_name.ilike.%${search}%`)
     .range(from, to)
     .order('created_at', { ascending: false });
+
+  if (genreId) {
+    query.eq('genre_id', genreId);
+  }
+
+  const { data, error, count } = await query;
   if (error) throw error;
   return { data, total: count };
 };

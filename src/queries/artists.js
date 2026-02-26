@@ -8,9 +8,9 @@ export const getArtistsQuery = () =>
     queryFn: getArtists,
   });
 
-export const getPaginatedArtistsQuery = ({ pageIndex, pageSize }) =>
+export const getPaginatedArtistsQuery = (options) =>
   queryOptions({
-    queryKey: ['artists', { pageIndex, pageSize }],
-    queryFn: () => getPaginatedArtists(pageIndex, pageSize),
+    queryKey: ['artists', options],
+    queryFn: () => getPaginatedArtists(options),
     placeholderData: keepPreviousData,
   });

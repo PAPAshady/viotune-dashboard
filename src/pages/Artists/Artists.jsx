@@ -13,13 +13,8 @@ import { getPaginatedArtistsQuery } from '@/queries/artists';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import columns from '@/columns/columns.artists.jsx';
-
-const genre = [
-  { id: 1, title: 'Genre One' },
-  { id: 2, title: 'Genre Two' },
-  { id: 3, title: 'Genre Three' },
-  { id: 4, title: 'Genre Four' },
-];
+import { getGenresQuery } from '@/queries/genres';
+import useDebounce from '@/hooks/useDebounce';
 
 const kpiInfos = [
   { id: 1, value: 2, title: 'Total Artists' },
@@ -30,19 +25,27 @@ const kpiInfos = [
 
 function Artists() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
-  const { data, isLoading } = useQuery(getPaginatedArtistsQuery(pagination));
+  const [searchedValue, setSearchedValue] = useState('');
+  const debouncedSearchValue = useDebounce(searchedValue);
+  const [genreId, setGenreId] = useState(null);
+  const { data: genres, isPending: isGenresPending } = useQuery(getGenresQuery());
   const isMobile = useIsMobile();
 
-  const onGenreSelect = (value) => {
-    console.log(`Selected artist: ${value}`);
+  const filters = { genreId };
+
+  const { data, isLoading } = useQuery(
+    getPaginatedArtistsQuery({ ...pagination, ...filters, search: debouncedSearchValue })
+  );
+
+  const onGenreSelect = (selectedGenreId) => setGenreId(selectedGenreId || null);
+
+  const clearFilters = () => {
+    setGenreId(null);
   };
 
   return (
     <>
       <PageHeader title="Artists" description="Manage Artists and their content.">
-        <Button size={isMobile ? 'sm' : 'default'} variant="outline">
-          Bulk Actions (0)
-        </Button>
         <Button
           size={isMobile ? 'sm' : 'default'}
           className="bg-blue-500 text-white hover:bg-blue-600"
@@ -50,17 +53,23 @@ function Artists() {
           <PlusIcon /> Add Artist
         </Button>
       </PageHeader>
-      <SearchInput placeholder="Search by artist name..." />
-      <FilterBar>
+      <KpiCardWrapper data={kpiInfos} />
+      <SearchInput
+        placeholder="Search by artist name..."
+        value={searchedValue}
+        onChange={(e) => setSearchedValue(e.target.value)}
+      />
+      <FilterBar filters={filters} onClearAll={clearFilters}>
         <FilterComboBox
-          filterName="Genre"
-          placeholder="Select Genre"
-          options={genre}
+          filterName="Genres"
+          placeholder="Select a genre"
+          options={genres}
+          isPending={isGenresPending}
           valueKey="title"
-          onSelect={onGenreSelect}
+          onChange={onGenreSelect}
+          value={genreId}
         />
       </FilterBar>
-      <KpiCardWrapper data={kpiInfos} />
       <PrimaryTable
         columns={columns}
         rows={data}
