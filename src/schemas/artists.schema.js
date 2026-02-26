@@ -20,5 +20,5 @@ export default z.object({
       { message: 'Use a valid image format (.jpg .jpeg .png)' }
     ),
   existingImageUrl: z.url().nullable().optional(),
-  bio: z.string().max(100, { message: 'Bio is too long.' }).optional(),
+  bio: z.string().max(200, { message: 'Bio is too long.' }).optional(),
 });

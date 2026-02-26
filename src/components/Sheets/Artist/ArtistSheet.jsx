@@ -166,13 +166,13 @@ function ArtistsSheet({ genres }) {
 
               <Field>
                 <FieldLabel>Bio</FieldLabel>
-                <FieldDescription>{100 - bioLength} Characters left</FieldDescription>
+                <FieldDescription>{200 - bioLength} Characters left</FieldDescription>
                 <FieldError>{errors.bio?.message}</FieldError>
                 <Textarea
                   aria-invalid={!!errors.bio}
                   placeholder="Enter bio"
                   className="max-h-40 min-h-25"
-                  maxLength={100}
+                  maxLength={200}
                   {...register('bio')}
                 />
               </Field>

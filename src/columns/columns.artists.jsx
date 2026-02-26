@@ -6,7 +6,7 @@ import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader
 import CheckBoxCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
 import ArtistsTableArtistCell from '@/components/Tables/ColumnDefs/Cells/ArtistsTableCells/ArtistsTableArtistCell';
 import ArtistsTableGenreCell from '@/components/Tables/ColumnDefs/Cells/ArtistsTableCells/ArtistsTableGenreCell';
-import ActionsCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
+import ArtistsTableActionCell from '@/components/Tables/ColumnDefs/Cells/ArtistsTableCells/ArtistsTableActionCell';
 
 export default [
   {
@@ -40,7 +40,7 @@ export default [
   {
     id: 'actions',
     header: 'Actions',
-    cell: (props) => <ActionsCell {...props} />,
+    cell: (props) => <ArtistsTableActionCell {...props} />,
     meta: { skeleton: <ActionsCellSkeleton /> },
   },
 ];
