@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-import { useIsMobile } from '@hooks/use-mobile';
-import { PlusIcon } from 'lucide-react';
-import { Button } from '@components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 
 import SearchInput from '@components/SearchInput/SearchInput';
@@ -14,6 +11,7 @@ import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import columns from '@/columns/columns.artists.jsx';
 import { getGenresQuery } from '@/queries/genres';
 import useDebounce from '@/hooks/useDebounce';
+import ArtistsSheet from '@/components/Sheets/Artist/ArtistSheet';
 
 function Artists() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
@@ -21,7 +19,6 @@ function Artists() {
   const debouncedSearchValue = useDebounce(searchedValue);
   const [genreId, setGenreId] = useState(null);
   const { data: genres, isPending: isGenresPending } = useQuery(getGenresQuery());
-  const isMobile = useIsMobile();
 
   const filters = { genreId };
 
@@ -38,12 +35,7 @@ function Artists() {
   return (
     <>
       <PageHeader title="Artists" description="Manage Artists and their content.">
-        <Button
-          size={isMobile ? 'sm' : 'default'}
-          className="bg-blue-500 text-white hover:bg-blue-600"
-        >
-          <PlusIcon /> Add Artist
-        </Button>
+        <ArtistsSheet genres={genres} />
       </PageHeader>
       <SearchInput
         placeholder="Search by artist name..."

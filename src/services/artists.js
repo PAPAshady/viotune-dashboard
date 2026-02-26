@@ -27,3 +27,7 @@ export const getPaginatedArtists = async ({ pageIndex, pageSize, genreId, search
   if (error) throw error;
   return { data, total: count };
 };
+
+export const createArtist = async (data) => data;
+
+export const updateArtist = async (data) => data;
