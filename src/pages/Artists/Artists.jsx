@@ -11,17 +11,9 @@ import FilterBar from '@components/FilterBar/FilterBar';
 import FilterComboBox from '@components/FilterComboBox/FilterComboBox';
 import { getPaginatedArtistsQuery } from '@/queries/artists';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
-import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import columns from '@/columns/columns.artists.jsx';
 import { getGenresQuery } from '@/queries/genres';
 import useDebounce from '@/hooks/useDebounce';
-
-const kpiInfos = [
-  { id: 1, value: 2, title: 'Total Artists' },
-  { id: 2, value: 200, title: 'Verified Artists' },
-  { id: 3, value: 0, title: 'Avg Plays per Artist' },
-  { id: 4, value: 15, title: 'Artists with Zero Songs' },
-];
 
 function Artists() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
@@ -53,7 +45,6 @@ function Artists() {
           <PlusIcon /> Add Artist
         </Button>
       </PageHeader>
-      <KpiCardWrapper data={kpiInfos} />
       <SearchInput
         placeholder="Search by artist name..."
         value={searchedValue}
