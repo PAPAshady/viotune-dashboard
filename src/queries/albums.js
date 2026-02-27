@@ -107,12 +107,14 @@ export const updateAlbumMutation = () =>
     onSuccess: () => {
       queryClient.invalidateQueries(['albums']);
       toast.success('Album updated successfully', {
-        message:
+        description:
           'Your changes have been saved. The album details are now up to date and ready to go.',
       });
     },
     onError: (err) => {
-      toast.error('Update failed.', { message: 'We couldn’t update the album. Please try again.' });
+      toast.error('Update failed.', {
+        description: 'We couldn’t update the album. Please try again.',
+      });
       console.error('Error while updating album => ', err);
     },
   });
@@ -126,12 +128,14 @@ export const addSongToAlbumMutation = (albumId) =>
       queryClient.invalidateQueries(['songs', { albumId }]);
       queryClient.invalidateQueries(['albums']);
       toast.success('Album updated successfully', {
-        message:
+        description:
           'Your changes have been saved. The album details are now up to date and ready to go.',
       });
     },
     onError: (err) => {
-      toast.error('Update failed.', { message: 'We couldn’t update the album. Please try again.' });
+      toast.error('Update failed.', {
+        description: 'We couldn’t update the album. Please try again.',
+      });
       console.error('Error while updating album => ', err);
     },
   });
@@ -144,12 +148,14 @@ export const removeSongFromAlbumMutation = (albumId) =>
       queryClient.invalidateQueries(['songs', { albumId }]);
       queryClient.invalidateQueries(['albums']);
       toast.success('Album updated successfully', {
-        message:
+        description:
           'Your changes have been saved. The album details are now up to date and ready to go.',
       });
     },
     onError: (err) => {
-      toast.error('Update failed.', { message: 'We couldn’t update the album. Please try again.' });
+      toast.error('Update failed.', {
+        description: 'We couldn’t update the album. Please try again.',
+      });
       console.error('Error while updating album => ', err);
     },
   });

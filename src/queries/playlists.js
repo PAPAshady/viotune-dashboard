@@ -58,13 +58,13 @@ export const updatePlaylistMutation = () =>
     onSuccess: () => {
       queryClient.invalidateQueries(['playlists']);
       toast.success('Playlist updated successfully', {
-        message:
+        description:
           'Your changes have been saved. The playlist details are now up to date and ready to go.',
       });
     },
     onError: (err) => {
       toast.error('Update failed.', {
-        message: 'We couldn’t update the playlist. Please try again.',
+        description: 'We couldn’t update the playlist. Please try again.',
       });
       console.error('Error while updating playlist => ', err);
     },
@@ -115,13 +115,13 @@ export const addSongToPlaylistMutation = (playlistId) =>
       queryClient.invalidateQueries(['songs', { playlistId }]);
       queryClient.invalidateQueries(['playlists']);
       toast.success('Playlist updated successfully', {
-        message:
+        description:
           'Your changes have been saved. The playlist details are now up to date and ready to go.',
       });
     },
     onError: (err) => {
       toast.error('Update failed.', {
-        message: 'We couldn’t update the playlist. Please try again.',
+        description: 'We couldn’t update the playlist. Please try again.',
       });
       console.error('Error while updating playlist => ', err);
     },
@@ -135,13 +135,13 @@ export const removeSongFromPlaylistMutation = (playlistId) =>
       queryClient.invalidateQueries(['songs', { playlistId }]);
       queryClient.invalidateQueries(['playlists']);
       toast.success('Playlist updated successfully', {
-        message:
+        description:
           'Your changes have been saved. The playlist details are now up to date and ready to go.',
       });
     },
     onError: (err) => {
       toast.error('Update failed.', {
-        message: 'We couldn’t update the playlist. Please try again.',
+        description: 'We couldn’t update the playlist. Please try again.',
       });
       console.error('Error while updating album => ', err);
     },

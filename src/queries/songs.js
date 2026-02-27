@@ -125,12 +125,14 @@ export const updateSongMutation = () =>
     onSuccess: () => {
       queryClient.invalidateQueries(['songs']);
       toast.success('Song updated successfully', {
-        message:
+        description:
           'Your changes have been saved. The song details are now up to date and ready to go.',
       });
     },
     onError: (err) => {
-      toast.error('Update failed.', { message: 'We couldn’t update the song. Please try again.' });
+      toast.error('Update failed.', {
+        description: 'We couldn’t update the song. Please try again.',
+      });
       console.error('Error while updating song => ', err);
     },
   });

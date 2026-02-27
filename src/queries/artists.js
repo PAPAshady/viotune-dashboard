@@ -7,7 +7,7 @@ import {
   createArtist,
   updateArtist,
   deleteArtist,
-  deleteArtists
+  deleteArtists,
 } from '@/services/artists';
 import queryClient from '@/QueryClient';
 
@@ -49,13 +49,13 @@ export const updateArtistMutation = () =>
     onSuccess: () => {
       queryClient.invalidateQueries(['artists']);
       toast.success('Artist updated successfully', {
-        message:
+        description:
           'Your changes have been saved. The artist details are now up to date and ready to go.',
       });
     },
     onError: (err) => {
       toast.error('Update failed.', {
-        message: 'We couldn’t update the artist. Please try again.',
+        description: 'We couldn’t update the artist. Please try again.',
       });
       console.error('Error while updating artist => ', err);
     },
