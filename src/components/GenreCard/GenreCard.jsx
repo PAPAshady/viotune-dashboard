@@ -1,14 +1,7 @@
 import { Card, CardContent } from '@components/ui/card';
 import { Badge } from '@components/ui/badge';
 import { Separator } from '@components/ui/separator';
-import {
-  MusicIcon,
-  ListMusicIcon,
-  PencilIcon,
-  MoreHorizontalIcon,
-  EyeIcon,
-  TrashIcon,
-} from 'lucide-react';
+import { Music, ListMusic, PencilIcon, MoreHorizontalIcon, EyeIcon, TrashIcon } from 'lucide-react';
 import { Button } from '@components/ui/button';
 import {
   DropdownMenu,
@@ -19,30 +12,17 @@ import {
 
 import defaultCover from '@assets/images/default-cover.jpg';
 
-function GenreCard({ title, cover, description, tags, songsCount, playlistsCount }) {
+function GenreCard({ title, cover, description, tags, songsCount, albumsCount }) {
   return (
     <Card className="flex flex-col">
-      <div className="relative aspect-video overflow-hidden">
+      <div className="aspect-video overflow-hidden">
         <img
           src={cover || defaultCover}
           loading="lazy"
           alt={title}
           className="size-full object-cover"
         />
-        <div className="absolute inset-0 size-full">
-          <div className="flex flex-wrap justify-end gap-1 pe-3 pt-3">
-            <Badge variant="secondary" className="flex items-center border border-white">
-              <MusicIcon className="mr-1 size-4!" />
-              <span className="text-xs">{songsCount}</span>
-            </Badge>
-            <Badge variant="secondary" className="flex items-center border border-white">
-              <ListMusicIcon className="mr-1 size-4!" />
-              <span className="text-xs">{playlistsCount}</span>
-            </Badge>
-          </div>
-        </div>
       </div>
-
       <CardContent className="flex grow flex-col px-3">
         <div className="h-full grow">
           <div className="mb-4">
@@ -58,6 +38,14 @@ function GenreCard({ title, cover, description, tags, songsCount, playlistsCount
           </div>
         </div>
         <Separator className="my-4" />
+        <div className="flex flex-wrap items-center gap-3 pb-4">
+          <div className="flex items-center gap-1 text-xs">
+            <Music className="size-4" /> {songsCount.toLocaleString()} Songs
+          </div>
+          <div className="flex items-center gap-1 text-xs">
+            <ListMusic className="size-4" /> {albumsCount.toLocaleString()} Albums
+          </div>
+        </div>
         <div className="flex gap-2">
           <Button variant="outline" className="grow">
             <PencilIcon />
