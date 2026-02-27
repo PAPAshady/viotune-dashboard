@@ -46,7 +46,7 @@ function GenreSheet() {
   const defaultValues = {
     title: genre?.title,
     status: genre?.status,
-    existingCoverUrl: genre?.cover_path, // to show the existing cover image in case of edit mode
+    existingCoverUrl: genre?.cover, // to show the existing cover image in case of edit mode
     description: genre?.description,
   };
 

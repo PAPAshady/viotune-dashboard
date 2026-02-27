@@ -36,7 +36,7 @@ function GenreCard(genre) {
             <p className="text-muted-foreground mt-1 text-xs text-pretty">{description}</p>
           </div>
           <div className="flex flex-wrap gap-x-1 gap-y-2">
-            {tags.map((tag) => (
+            {tags?.map((tag) => (
               <Badge key={tag} variant="secondary">
                 {tag}
               </Badge>
