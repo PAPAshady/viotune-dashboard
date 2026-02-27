@@ -179,7 +179,7 @@ function GenreSheet() {
                 {mutation.isPending ? (
                   <>
                     <Spinner />
-                    {isEditMode ? 'Saving changes' : 'Creating album'}
+                    {isEditMode ? 'Saving changes' : 'Creating genre'}
                   </>
                 ) : isEditMode ? (
                   'Save changes'

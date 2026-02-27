@@ -1,6 +1,6 @@
 import supabase from './supabase';
 
-import { getFileUrl, uploadFile } from './storage';
+import { getFileUrl, uploadFile, deleteFiles } from './storage';
 
 export const getGenres = async () => {
   const { data, error } = await supabase.from('genres_extended').select('*');
@@ -49,3 +49,23 @@ export const createGenre = async (data) => {
 };
 
 export const updateGenre = async (data) => console.log(data);
+
+export const deleteGenre = async (data) => {
+  // delete cover file from storage if exists
+  if (data.cover_path) {
+    const { error: coverDeleteError } = await deleteFiles('genres-cover', [data.cover_path]);
+    if (coverDeleteError) throw coverDeleteError;
+  }
+
+  // remove genre metadata from database
+  const { error, data: dbData } = await supabase
+    .from('genres')
+    .delete()
+    .eq('id', data.id)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return dbData;
+};

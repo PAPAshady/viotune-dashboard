@@ -4,14 +4,18 @@ import { Separator } from '@components/ui/separator';
 import { Music, ListMusic, PencilIcon, TrashIcon } from 'lucide-react';
 import { Button } from '@components/ui/button';
 import useGenreSheet from '@/store/genresSheet.store';
+import { useMutation } from '@tanstack/react-query';
+import { Spinner } from '@components/ui/spinner';
 
 import defaultCover from '@assets/images/default-cover.jpg';
+import { deleteGenreMutation } from '@/queries/genres';
 
 function GenreCard(genre) {
   const { title, cover, description, tags, songsCount, albumsCount } = genre;
   const setIsGenreSheetOpen = useGenreSheet((state) => state.setOpen); // open open edit/upload genre form
   const setIsEditMode = useGenreSheet((state) => state.setIsEditMode); // set edit/uplaod genre form mode
   const setGenre = useGenreSheet((state) => state.setGenre); // set seleced genre to edit
+  const deletionMutation = useMutation(deleteGenreMutation());
 
   const openGenreSheet = () => {
     setGenre(genre);
@@ -53,9 +57,23 @@ function GenreCard(genre) {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="text-destructive grow">
-            <TrashIcon />
-            Delete
+          <Button
+            variant="outline"
+            className="text-destructive grow"
+            disabled={deletionMutation.isPending}
+            onClick={() => deletionMutation.mutate(genre)}
+          >
+            {deletionMutation.isPending ? (
+              <>
+                <Spinner />
+                Deleting
+              </>
+            ) : (
+              <>
+                <TrashIcon />
+                Delete
+              </>
+            )}
           </Button>
           <Button variant="outline" className="grow" onClick={openGenreSheet}>
             <PencilIcon />
