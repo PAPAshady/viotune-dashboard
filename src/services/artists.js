@@ -1,5 +1,7 @@
 import supabase from './supabase';
 
+import { getFileUrl, uploadFile } from './storage';
+
 export const getArtists = async () => {
   const { data, error } = await supabase
     .from('artists_extended')
@@ -28,6 +30,37 @@ export const getPaginatedArtists = async ({ pageIndex, pageSize, genreId, search
   return { data, total: count };
 };
 
-export const createArtist = async (data) => data;
+export const createArtist = async (data) => {
+  const newArtist = { ...data };
+
+  // upload album imagefile if it exists
+  if (newArtist.imageFile && newArtist.imageFile.length > 0) {
+    const imageFile = newArtist.imageFile[0];
+    const uploadedAt = new Date().toISOString();
+
+    const { data: imageFileData, error: imageFileError } = await uploadFile(
+      'artist-covers',
+      `${newArtist.name}-${newArtist.full_name}-${uploadedAt}`,
+      imageFile
+    );
+
+    if (imageFileError) throw imageFileError;
+
+    newArtist.avatar_path = imageFileData.path;
+    newArtist.image = getFileUrl('artist-covers', imageFileData.path);
+  }
+
+  // delete imageFile property because we already exctracted it
+  delete newArtist.imageFile;
+
+  const { data: dbData, error: dbError } = await supabase
+    .from('artists')
+    .insert(newArtist)
+    .select()
+    .single();
+
+  if (dbError) throw dbError;
+  return dbData;
+};
 
 export const updateArtist = async (data) => data;
