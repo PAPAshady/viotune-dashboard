@@ -33,7 +33,7 @@ export const getPaginatedArtists = async ({ pageIndex, pageSize, genreId, search
 export const createArtist = async (data) => {
   const newArtist = { ...data };
 
-  // upload album imagefile if it exists
+  // upload artist imagefile if it exists
   if (newArtist.imageFile && newArtist.imageFile.length > 0) {
     const imageFile = newArtist.imageFile[0];
     const uploadedAt = new Date().toISOString();
@@ -63,7 +63,58 @@ export const createArtist = async (data) => {
   return dbData;
 };
 
-export const updateArtist = async (data) => data;
+export const updateArtist = async ({ modifiedFields, prevArtistData }) => {
+  const updatedName = modifiedFields?.name;
+  const updatedFullName = modifiedFields?.full_name;
+  const uploadedAt = new Date().toISOString(); // we use this timestamp in the name of our files in storage to be unique
+
+  const data = { ...modifiedFields };
+
+  // update cover in case user changed it.
+  if (data.imageFile || data.existingImageUrl === null) {
+    // delete previous cover file from storage
+    const { error: prevImageFileDeleteError } = await deleteFiles('artist-covers', [
+      prevArtistData.avatar_path,
+    ]);
+
+    if (prevImageFileDeleteError) throw prevImageFileDeleteError;
+    data.image = null;
+    data.avatar_path = null;
+
+    // upload new avatar if user selected a new cover
+    if (data.imageFile) {
+      const newImageFile = data.imageFile[0];
+
+      // include updated title and playlist status in the new cover file name (if changed)
+      const newImageFileName = `${updatedName || prevArtistData.name}--${updatedFullName || prevArtistData.full_name}-${uploadedAt}`;
+
+      // upload new cover file to storage
+      const { data: newImageFileData, error: newImageFileError } = await uploadFile(
+        'artist-covers',
+        newImageFileName,
+        newImageFile
+      );
+      if (newImageFileError) throw newImageFileError;
+      data.avatar_path = newImageFileData.path;
+      data.image = getFileUrl('artist-covers', newImageFileData.path);
+    }
+  }
+
+  // remove unnecessary properties from data because we will send "data" to postgres database
+  delete data.existingImageUrl;
+  delete data.imageFile;
+
+  const { data: dbData, error: dbError } = await supabase
+    .from('artists')
+    .update(data)
+    .eq('id', prevArtistData.id)
+    .select()
+    .single();
+
+  if (dbError) throw dbError;
+
+  return dbData;
+};
 
 export const deleteArtist = async (artist) => {
   // delete avatar file from storage if exists
