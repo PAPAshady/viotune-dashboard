@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -8,7 +9,11 @@ import {
 } from '@components/ui/dropdown-menu';
 import { Button } from '@components/ui/button';
 import { MoreHorizontalIcon, PencilIcon, EyeOffIcon, Trash2Icon } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+
 import useArtistSheet from '@/store/artistsSheet.store';
+import DeleteDialog from '@/components/Dialogs/DeleteDialog';
+import { deleteArtistMutation } from '@/queries/artists';
 
 function ArtistsTableActionCell({ row }) {
   const [open, setOpen] = useState(false);
@@ -16,11 +21,18 @@ function ArtistsTableActionCell({ row }) {
   const setIsEditMode = useArtistSheet((state) => state.setIsEditMode); // set edit/uplaod artist form mode
   const setArtist = useArtistSheet((state) => state.setArtist); // set seleced artist to edit
   const artist = row.original;
+  const { mutate: deleteArtist, isPending: isDeleting } = useMutation(deleteArtistMutation());
+
+  const closeDropDown = () => setOpen(false);
 
   const openAlbumSheet = () => {
     setArtist(artist);
     setIsEditMode(true);
     setIsAlbumSheetOpen(true);
+  };
+
+  const onArtistDelete = () => {
+    deleteArtist(artist, { onSuccess: closeDropDown });
   };
 
   return (
@@ -40,10 +52,13 @@ function ArtistsTableActionCell({ row }) {
           Hide / Unpublish
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-destructive">
-          <Trash2Icon className="me-2 size-4" />
-          Delete
-        </DropdownMenuItem>
+        <DeleteDialog
+          onDelete={onArtistDelete}
+          isPending={isDeleting}
+          onDropDownClose={closeDropDown}
+          title="Delete artist ?"
+          description="Are you sure you want to delete this artist ? This action cannot be undone."
+        />
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -1,6 +1,6 @@
 import supabase from './supabase';
 
-import { getFileUrl, uploadFile } from './storage';
+import { getFileUrl, uploadFile, deleteFiles } from './storage';
 
 export const getArtists = async () => {
   const { data, error } = await supabase
@@ -64,3 +64,23 @@ export const createArtist = async (data) => {
 };
 
 export const updateArtist = async (data) => data;
+
+export const deleteArtist = async (artist) => {
+  // delete avatar file from storage if exists
+  if (artist.avatar_path) {
+    const { error: avatarDeleteError } = await deleteFiles('artist-covers', [artist.avatar_path]);
+    if (avatarDeleteError) throw avatarDeleteError;
+  }
+
+  // remove album metadata from database
+  const { error, data } = await supabase
+    .from('artists')
+    .delete()
+    .eq('id', artist.id)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
+};

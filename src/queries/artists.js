@@ -1,7 +1,13 @@
 import { queryOptions, keepPreviousData, mutationOptions } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { getArtists, getPaginatedArtists, createArtist, updateArtist } from '@/services/artists';
+import {
+  getArtists,
+  getPaginatedArtists,
+  createArtist,
+  updateArtist,
+  deleteArtist,
+} from '@/services/artists';
 import queryClient from '@/QueryClient';
 
 export const getArtistsQuery = () =>
@@ -51,5 +57,23 @@ export const updateArtistMutation = () =>
         message: 'We couldn’t update the artist. Please try again.',
       });
       console.error('Error while updating artist => ', err);
+    },
+  });
+
+export const deleteArtistMutation = () =>
+  mutationOptions({
+    queryKey: ['artists'],
+    mutationFn: deleteArtist,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['artists']);
+      toast.success('Artist deleted successfully', {
+        description: 'The artist has been permanently removed from your library.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Unable to Delete Artist', {
+        description: 'We couldn’t delete the artist. Please try again.',
+      });
+      console.error('Error while deleting artist => ', err);
     },
   });
