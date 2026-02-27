@@ -7,6 +7,7 @@ import {
   createArtist,
   updateArtist,
   deleteArtist,
+  deleteArtists
 } from '@/services/artists';
 import queryClient from '@/QueryClient';
 
@@ -75,5 +76,23 @@ export const deleteArtistMutation = () =>
         description: 'We couldn’t delete the artist. Please try again.',
       });
       console.error('Error while deleting artist => ', err);
+    },
+  });
+
+export const deleteArtistsMutation = () =>
+  mutationOptions({
+    queryKey: ['artists'],
+    mutationFn: deleteArtists,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['artists']);
+      toast.success('All artists deleted successfully.', {
+        description: 'Your artists no longer exist in the library.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Deletion failed.', {
+        description: 'Something went wrong while deleting artists.',
+      });
+      console.error('Error while deleting artists => ', err);
     },
   });

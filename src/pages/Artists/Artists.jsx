@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 import SearchInput from '@components/SearchInput/SearchInput';
 import PageHeader from '@components/shared/PageHeader/PageHeader';
@@ -12,6 +12,7 @@ import columns from '@/columns/columns.artists.jsx';
 import { getGenresQuery } from '@/queries/genres';
 import useDebounce from '@/hooks/useDebounce';
 import ArtistsSheet from '@/components/Sheets/Artist/ArtistSheet';
+import { deleteArtistsMutation } from '@/queries/artists';
 
 function Artists() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
@@ -19,6 +20,7 @@ function Artists() {
   const debouncedSearchValue = useDebounce(searchedValue);
   const [genreId, setGenreId] = useState(null);
   const { data: genres, isPending: isGenresPending } = useQuery(getGenresQuery());
+  const bulkDeleteMutation = useMutation(deleteArtistsMutation());
 
   const filters = { genreId };
 
@@ -59,6 +61,8 @@ function Artists() {
         isLoading={isLoading}
         pagination={pagination}
         setPagination={setPagination}
+        bulkDeletePending={bulkDeleteMutation.isPending}
+        onBulkDelete={bulkDeleteMutation.mutateAsync}
       />
     </>
   );

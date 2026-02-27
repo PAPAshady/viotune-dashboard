@@ -84,3 +84,19 @@ export const deleteArtist = async (artist) => {
 
   return data;
 };
+
+export const deleteArtists = async (artistRows) => {
+  const avatarPaths = artistRows.map((row) => row.original.avatar_path);
+  const artistIds = artistRows.map((row) => row.original.id);
+
+  // delete avatar files
+  const { error: avatarDeleteErrors } = await deleteFiles('artist-covers', avatarPaths);
+  if (avatarDeleteErrors) throw avatarDeleteErrors;
+
+  // remove artists metadata from database
+  const { data, error } = await supabase.from('artists').delete().in('id', artistIds).select();
+
+  if (error) throw error;
+
+  return data;
+};
