@@ -1,6 +1,3 @@
-import { useIsMobile } from '@hooks/use-mobile';
-import { PlusIcon } from 'lucide-react';
-import { Button } from '@components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 
 import PageHeader from '@components/shared/PageHeader/PageHeader';
@@ -9,11 +6,11 @@ import SearchInput from '@components/SearchInput/SearchInput';
 import GenreCard from '@components/GenreCard/GenreCard';
 import { getGenresQuery, getGenresStatsQuery } from '@/queries/genres';
 import GenreCardSkeleton from '@/components/GenreCard/GenreCardSkeleton';
+import GenreSheet from '@/components/Sheets/Genres/GenreSheet';
 
 function Genres() {
   const { data: genres, isPending } = useQuery(getGenresQuery());
   const { data: stats, isPending: isStatsPending } = useQuery(getGenresStatsQuery());
-  const isMobile = useIsMobile();
 
   const kpiInfos = [
     { id: 1, value: stats?.totalGenres, title: 'Total Genres' },
@@ -33,12 +30,7 @@ function Genres() {
   return (
     <>
       <PageHeader title="Genres" description="Manage music genres and categories.">
-        <Button
-          size={isMobile ? 'sm' : 'default'}
-          className="bg-blue-500 text-white hover:bg-blue-600"
-        >
-          <PlusIcon /> Add Artist
-        </Button>
+        <GenreSheet />
       </PageHeader>
       <SearchInput placeholder="Search by genre name..." />
       <KpiCardWrapper data={kpiInfos} isPending={isStatsPending} />

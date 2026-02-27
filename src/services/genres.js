@@ -11,3 +11,7 @@ export const getGenresStats = async () => {
   if (error) throw error;
   return data;
 };
+
+export const createGenre = async (data) => console.log(data);
+
+export const updateGenre = async (data) => console.log(data);
