@@ -74,6 +74,4 @@ function GenreCard({ title, cover, description, tags, songsCount, albumsCount })
   );
 }
 
-// function CardBadge ({})
-
 export default GenreCard;
