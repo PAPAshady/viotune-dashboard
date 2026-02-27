@@ -3,10 +3,22 @@ import { Badge } from '@components/ui/badge';
 import { Separator } from '@components/ui/separator';
 import { Music, ListMusic, PencilIcon, TrashIcon } from 'lucide-react';
 import { Button } from '@components/ui/button';
+import useGenreSheet from '@/store/genresSheet.store';
 
 import defaultCover from '@assets/images/default-cover.jpg';
 
-function GenreCard({ title, cover, description, tags, songsCount, albumsCount }) {
+function GenreCard(genre) {
+  const { title, cover, description, tags, songsCount, albumsCount } = genre;
+  const setIsGenreSheetOpen = useGenreSheet((state) => state.setOpen); // open open edit/upload genre form
+  const setIsEditMode = useGenreSheet((state) => state.setIsEditMode); // set edit/uplaod genre form mode
+  const setGenre = useGenreSheet((state) => state.setGenre); // set seleced genre to edit
+
+  const openGenreSheet = () => {
+    setGenre(genre);
+    setIsEditMode(true);
+    setIsGenreSheetOpen(true);
+  };
+
   return (
     <Card className="flex flex-col">
       <div className="aspect-video overflow-hidden">
@@ -45,7 +57,7 @@ function GenreCard({ title, cover, description, tags, songsCount, albumsCount })
             <TrashIcon />
             Delete
           </Button>
-          <Button variant="outline" className="grow">
+          <Button variant="outline" className="grow" onClick={openGenreSheet}>
             <PencilIcon />
             Edit
           </Button>
