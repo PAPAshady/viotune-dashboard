@@ -13,7 +13,7 @@ export const getSongs = async ({
   const from = pageIndex * pageSize;
   const to = from + pageSize - 1;
   let query = supabase
-    .from('songs_extended')
+    .from('most_played_songs')
     .select('*', { count: 'exact' })
     .range(from, to)
     .or(`title.ilike.%${search}%,artist.ilike.%${search}%`)
@@ -291,4 +291,69 @@ export const updateSong = async ({ modifiedFields, prevSongData }) => {
 
   if (dbError) throw dbError;
   return dbData;
+};
+
+export const getSongsByAlbumId = async (albumId, keyword) => {
+  const { data, error, count } = await supabase
+    .from('album_songs')
+    .select('songs(*)', { count: 'exact' })
+    .eq(`album_id`, albumId)
+    .order('track_number', { foreignTable: 'songs', ascending: true })
+    .or(`title.ilike.%${keyword}%,artist.ilike.%${keyword}%`, { foreignTable: 'songs' });
+  if (error) throw error;
+  return { data: data.map((data) => data.songs), total: count };
+};
+
+export const getAlbumRecommendedSongs = async ({ pageParam, pageSize = 10, search, albumId }) => {
+  const { data: albumSongs, error: albumSongsError } = await getSongsByAlbumId(albumId, '');
+  if (albumSongsError) throw error;
+  const excludedIds = albumSongs.map((song) => song.id);
+
+  const { data, error } = await supabase
+    .from('most_played_songs')
+    .select('*')
+    .notIn('id', excludedIds)
+    .or(`title.ilike.%${search}%,artist.ilike.%${search}%`)
+    .gt('position', pageParam)
+    .lte('position', pageParam + pageSize);
+
+  if (error) throw error;
+
+  return data;
+};
+
+export const getPlaylistRecommendedSongs = async ({
+  pageParam,
+  pageSize = 10,
+  search,
+  playlistId,
+}) => {
+  const { data: playlistSongs, error: playlistSongsError } = await getSongsByPlaylistId(
+    playlistId,
+    ''
+  );
+  if (playlistSongsError) throw error;
+  const excludedIds = playlistSongs.map((song) => song.id);
+
+  const { data, error } = await supabase
+    .from('most_played_songs')
+    .select('*')
+    .notIn('id', excludedIds)
+    .or(`title.ilike.%${search}%,artist.ilike.%${search}%`)
+    .gt('position', pageParam)
+    .lte('position', pageParam + pageSize);
+
+  if (error) throw error;
+
+  return data;
+};
+
+export const getSongsByPlaylistId = async (playlistId, keyword) => {
+  const { data, error, count } = await supabase
+    .from('playlist_songs')
+    .select('songs(*)', { count: 'exact' })
+    .eq(`playlist_id`, playlistId)
+    .or(`title.ilike.%${keyword}%,artist.ilike.%${keyword}%`, { foreignTable: 'songs' });
+  if (error) throw error;
+  return { data: data.map((data) => data.songs), total: count };
 };

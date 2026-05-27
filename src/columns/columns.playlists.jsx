@@ -6,9 +6,9 @@ import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader
 import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
 import PlaylistsTablePlaylistCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTablePlaylistCell';
 import PlaylistsTableCreatorCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableCreatorCell';
-import PlaylistsTableGenreCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableGenreCell';
 import PlaylistsTableVisibilityCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableVisibilityCell';
 import ActionsCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
+import PlaylistsTableActionCell from '@/components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableActionCell';
 
 export default [
   {
@@ -41,12 +41,6 @@ export default [
     meta: { skeleton: <TextSkeleton className="max-w-12" /> },
   },
   {
-    accessorKey: 'genre_title',
-    header: 'Genre',
-    cell: (props) => <PlaylistsTableGenreCell {...props} />,
-    meta: { skeleton: <TextSkeleton /> },
-  },
-  {
     accessorKey: 'totaltracks',
     header: 'Tracks',
     meta: { skeleton: <TextSkeleton className="max-w-16" /> },
@@ -54,7 +48,7 @@ export default [
   {
     header: 'Actions',
     id: 'actions',
-    cell: (props) => <ActionsCell {...props} />,
+    cell: (props) => <PlaylistsTableActionCell {...props} />,
     meta: { skeleton: <ActionsCellSkeleton /> },
   },
 ];

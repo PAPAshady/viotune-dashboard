@@ -14,7 +14,10 @@ function PlaylistsTableCreatorCell({ row }) {
       <Avatar className="md:size-10">
         <AvatarImage src={creator.avatar_url} alt="Avatar" />
         <AvatarFallback>
-          <img src={defaultAvatar} className="size-full object-cover" />
+          <img
+            src={row.original.creator.avatar || defaultAvatar}
+            className="size-full object-cover"
+          />
         </AvatarFallback>
       </Avatar>
       <div className="space-y-1">

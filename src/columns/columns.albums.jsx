@@ -29,7 +29,7 @@ export default [
     meta: { skeleton: <TextSkeleton className="w-16" /> },
   },
   { accessorKey: 'totaltracks', header: 'Tracks', meta: { skeleton: <TextSkeleton /> } },
-  { accessorKey: 'play_count', header: 'Plays', meta: { skeleton: <TextSkeleton /> } },
+  { accessorKey: 'total_plays', header: 'Plays', meta: { skeleton: <TextSkeleton /> } },
   {
     accessorKey: 'genre_title',
     header: 'Genre',

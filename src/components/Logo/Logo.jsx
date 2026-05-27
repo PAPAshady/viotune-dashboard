@@ -12,7 +12,7 @@ export default function Logo({ size, isLoading, showText }) {
 
   const textSize = {
     md: 'text-sm mt-1 font-medium',
-    lg: 'subheading-1 font-bold ',
+    lg: 'text-[32px] font-bold ',
     xl: 'text-6xl mt-12 font-bold',
     xxl: 'text-7xl mt-14 font-bold',
   };

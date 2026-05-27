@@ -22,35 +22,32 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 import { useMutation } from '@tanstack/react-query';
+import { Textarea } from '@/components/ui/textarea';
 
 import FileUploadZone from '@/components/FileUpload/FileUploadZone';
 import UploadedFileItem from '@/components/FileUpload/UploadedFileItem';
 import FileItem from '@/components/FileUpload/FileItem';
-import shcema from '@/schemas/albums.schema';
+import shcema from '@/schemas/genres.schema';
 import { isURL } from '@/utils';
-import useAlbumSheet from '@/store/albumsSheet.store';
-import { createAlbumMutation, updateAlbumMutation } from '@/queries/albums';
+import useGenreSheet from '@/store/genresSheet.store';
+import { createGenreMutation, updateGenreMutation } from '@/queries/genres';
 import { Spinner } from '@/components/ui/spinner';
 import { getDirtyFields } from '@/utils';
 
-function AddAlbumSheet({ artists, genres }) {
-  const open = useAlbumSheet((state) => state.open);
-  const setOpen = useAlbumSheet((state) => state.setOpen);
-  const closeSheet = useAlbumSheet((state) => state.closeSheet);
-  const isEditMode = useAlbumSheet((state) => state.isEditMode);
-  const album = useAlbumSheet((state) => state.album); // selected album to edit
+function GenreSheet() {
+  const open = useGenreSheet((state) => state.open);
+  const setOpen = useGenreSheet((state) => state.setOpen);
+  const closeSheet = useGenreSheet((state) => state.closeSheet);
+  const isEditMode = useGenreSheet((state) => state.isEditMode);
+  const genre = useGenreSheet((state) => state.genre); // selected genre to edit
 
   const defaultValues = {
-    title: album?.title,
-    release_date: album?.release_date,
-    status: album?.status,
-    description: album?.description,
-    artist: `${album?.artist_id}|${album?.artist}`,
-    genre: `${album?.genre_id}|${album?.genre_title}`,
-    existingCoverUrl: album?.cover,
+    title: genre?.title,
+    status: genre?.status,
+    existingCoverUrl: genre?.cover, // to show the existing cover image in case of edit mode
+    description: genre?.description,
   };
 
   const {
@@ -62,10 +59,9 @@ function AddAlbumSheet({ artists, genres }) {
     formState: { errors, dirtyFields, isDirty },
     // fill out the form with dynamic in case user wants to edit an album.
   } = useForm({ resolver: zodResolver(shcema), values: isEditMode ? defaultValues : {} });
-  const mutation = useMutation(isEditMode ? updateAlbumMutation() : createAlbumMutation());
+  const mutation = useMutation(isEditMode ? updateGenreMutation() : createGenreMutation());
 
   const descriptionLength = +watch('description')?.length;
-
   const coverFile = watch('coverFile');
   const existingCoverUrl = watch('existingCoverUrl');
   const hasCoverFile = coverFile instanceof FileList && coverFile.length > 0;
@@ -84,9 +80,9 @@ function AddAlbumSheet({ artists, genres }) {
   const submitHandler = async (formData) => {
     const modifiedFields = getDirtyFields(formData, dirtyFields);
 
-    // data to pass to server depending if user wants to edit or upload a album
-    const data = isEditMode ? { modifiedFields, prevAlbumData: album } : formData;
-    
+    // data to pass to server depending if user wants to edit or upload a genre
+    const data = isEditMode ? { modifiedFields, prevGenreData: genre } : formData;
+
     mutation.mutate(data, { onSuccess: () => onSheetOpenChange(false) });
   };
 
@@ -95,15 +91,15 @@ function AddAlbumSheet({ artists, genres }) {
       <SheetTrigger asChild>
         <Button className="bg-blue-500 text-white hover:bg-blue-600">
           <Plus />
-          Create Album
+          Create Genre
         </Button>
       </SheetTrigger>
-      {/* prevent radix ui from scroling to top if user opened and closed the sheet from a song on songs table (via dropdown menu) */}
+      {/* prevent radix ui from scroling to top if user opened and closed the sheet from a genre on genres table (via dropdown menu) */}
       <SheetContent onCloseAutoFocus={(e) => e.preventDefault()}>
         <form className="flex h-full flex-col" onSubmit={handleSubmit(submitHandler)}>
           <SheetHeader className="border-b">
-            <SheetTitle>Create New Album</SheetTitle>
-            <SheetDescription>Add a new album to your library</SheetDescription>
+            <SheetTitle>Create New Genre</SheetTitle>
+            <SheetDescription>Add a new genre to your library</SheetDescription>
           </SheetHeader>
           <div className="w-full grow overflow-y-auto p-4 pb-10" style={{ scrollbarWidth: 'thin' }}>
             <FieldGroup className="gap-6">
@@ -112,50 +108,8 @@ function AddAlbumSheet({ artists, genres }) {
                 <FieldError>{errors.title?.message}</FieldError>
                 <Input
                   aria-invalid={!!errors.title}
-                  placeholder="Enter your album title"
+                  placeholder="Enter your genre title"
                   {...register('title')}
-                />
-              </Field>
-              <Field>
-                <FieldLabel>Artist</FieldLabel>
-                <FieldError>{errors.artist?.message}</FieldError>
-                <NativeSelect
-                  aria-invalid={!!errors.artist}
-                  className="bg-[#192134]! font-semibold"
-                  {...register('artist')}
-                >
-                  <NativeSelectOption value="">Select Artist</NativeSelectOption>
-                  {artists?.map((artist) => (
-                    // pass artist.id and artist.name together to use them in the submit handler
-                    <NativeSelectOption key={artist.id} value={`${artist.id}|${artist.name}`}>
-                      {artist.name}
-                    </NativeSelectOption>
-                  ))}
-                </NativeSelect>
-              </Field>
-              <Field>
-                <FieldLabel>Genre</FieldLabel>
-                <FieldError>{errors.genre?.message}</FieldError>
-                <NativeSelect
-                  aria-invalid={!!errors.genre}
-                  className="bg-[#192134]! font-semibold"
-                  {...register('genre')}
-                >
-                  <NativeSelectOption value="">Select Genre</NativeSelectOption>
-                  {genres?.map((genre) => (
-                    <NativeSelectOption key={genre.id} value={`${genre.id}|${genre.title}`}>
-                      {genre.title}
-                    </NativeSelectOption>
-                  ))}
-                </NativeSelect>
-              </Field>
-              <Field>
-                <FieldLabel>Release Date</FieldLabel>
-                <FieldError>{errors.release_date?.message}</FieldError>
-                <Input
-                  type="date"
-                  aria-invalid={!!errors.release_date}
-                  {...register('release_date')}
                 />
               </Field>
               <Field>
@@ -187,7 +141,7 @@ function AddAlbumSheet({ artists, genres }) {
                   <UploadedFileItem
                     fileType="image"
                     url={existingCoverUrl}
-                    name={album?.cover_path}
+                    name={genre?.cover_path}
                     onRemove={() => setValue('existingCoverUrl', null, { shouldDirty: true })}
                   />
                 )}
@@ -197,13 +151,13 @@ function AddAlbumSheet({ artists, genres }) {
               </Field>
               <Field>
                 <FieldLabel>Description</FieldLabel>
-                <FieldDescription>{100 - descriptionLength} Characters left</FieldDescription>
+                <FieldDescription>{200 - descriptionLength} Characters left</FieldDescription>
                 <FieldError>{errors.description?.message}</FieldError>
                 <Textarea
                   aria-invalid={!!errors.description}
-                  placeholder="Enter your album description"
+                  placeholder="Enter your genre description"
                   className="max-h-40 min-h-25"
-                  maxLength={100}
+                  maxLength={200}
                   {...register('description')}
                 />
               </Field>
@@ -225,7 +179,7 @@ function AddAlbumSheet({ artists, genres }) {
                 {mutation.isPending ? (
                   <>
                     <Spinner />
-                    {isEditMode ? 'Saving changes' : 'Creating album'}
+                    {isEditMode ? 'Saving changes' : 'Creating genre'}
                   </>
                 ) : isEditMode ? (
                   'Save changes'
@@ -241,4 +195,4 @@ function AddAlbumSheet({ artists, genres }) {
   );
 }
 
-export default AddAlbumSheet;
+export default GenreSheet;

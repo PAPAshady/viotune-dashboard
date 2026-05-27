@@ -42,7 +42,7 @@ function RecentActivityTable() {
       <div className="max-h-110 max-w-[calc(100dvw-50px)] overflow-x-auto overflow-y-auto md:max-w-[calc(100dvw-306px)]">
         <CardContent className="px-0 min-[375px]:px-6">
           <Table>
-            <TableCaption top>Recent Activity</TableCaption>
+            <TableCaption>Recent Activity</TableCaption>
             <TableBody>
               {isPending
                 ? Array(5)

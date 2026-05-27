@@ -8,6 +8,9 @@ import {
   createAlbum,
   deleteAlbum,
   deleteAlbums,
+  updateAlbum,
+  addSongToAlbum,
+  removeSongFromAlbum,
 } from '@/services/albums';
 import queryClient from '@/QueryClient';
 
@@ -94,5 +97,65 @@ export const deleteAlbumsMutation = () =>
         description: 'Something went wrong while deleting albums.',
       });
       console.error('Error while deleting albums => ', err);
+    },
+  });
+
+export const updateAlbumMutation = () =>
+  mutationOptions({
+    queryKey: ['albums'],
+    mutationFn: updateAlbum,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['albums']);
+      toast.success('Album updated successfully', {
+        description:
+          'Your changes have been saved. The album details are now up to date and ready to go.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Update failed.', {
+        description: 'We couldn’t update the album. Please try again.',
+      });
+      console.error('Error while updating album => ', err);
+    },
+  });
+
+export const addSongToAlbumMutation = (albumId) =>
+  mutationOptions({
+    queryKey: ['albums', { albumId }],
+    mutationFn: addSongToAlbum,
+    enabled: !!albumId,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['songs', { albumId }]);
+      queryClient.invalidateQueries(['albums']);
+      toast.success('Album updated successfully', {
+        description:
+          'Your changes have been saved. The album details are now up to date and ready to go.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Update failed.', {
+        description: 'We couldn’t update the album. Please try again.',
+      });
+      console.error('Error while updating album => ', err);
+    },
+  });
+
+export const removeSongFromAlbumMutation = (albumId) =>
+  mutationOptions({
+    queryKey: ['albums', { albumId }],
+    mutationFn: (songId) => removeSongFromAlbum(songId, albumId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['songs', { albumId }]);
+      queryClient.invalidateQueries(['albums']);
+      toast.success('Album updated successfully', {
+        description:
+          'Your changes have been saved. The album details are now up to date and ready to go.',
+      });
+    },
+    onError: (err) => {
+      toast.error('Update failed.', {
+        description: 'We couldn’t update the album. Please try again.',
+      });
+      console.error('Error while updating album => ', err);
     },
   });

@@ -1,16 +1,11 @@
 import { z } from 'zod';
 
 export default z.object({
-  // requierd fields
-
-  title: z.string().min(1, { message: 'Title is requierd.' }),
-  artist: z.string().min(1, { message: 'Artist is requierd.' }),
-  genre: z.string().min(1, { message: 'Genre is required.' }),
-  release_date: z.iso.date({ message: 'Use a valid date.' }),
-  status: z.enum(['published', 'draft'], { message: 'Status is required' }),
+  // required fields
+  title: z.string().min(1, 'Title is required'),
+  visibility: z.enum(['1', '0'], { message: 'Visibility is required' }),
 
   // optional fields
-  
   coverFile: z
     .instanceof(FileList)
     .nullable()

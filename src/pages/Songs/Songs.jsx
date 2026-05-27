@@ -32,7 +32,9 @@ const statusOptions = [
 
 function Songs() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
-  const { data: chartData } = useQuery(getMostPlayedSongsQuery({ limit: 6 }));
+  const { data: chartData, isPending: isChartDataPending } = useQuery(
+    getMostPlayedSongsQuery({ limit: 6 })
+  );
   const { data: statsData, isPending: isStatsPending } = useQuery(getCurrentStatsQuery());
   const { data: zeroPlayedSongsCount, isPending: isZeroPlayedSongsPending } = useQuery(
     getZeroPlayedSongsCountQuery()
@@ -143,8 +145,9 @@ function Songs() {
         bulkDeletePending={bulkDeleteMutation.isPending}
       />
       <MostPlaysChart
-        chartTitle="Top songs by Plays"
         data={chartData}
+        isPending={isChartDataPending}
+        chartTitle="Top songs by Plays"
         yAxisDataKey="title"
         barDataKey="total_plays"
       />

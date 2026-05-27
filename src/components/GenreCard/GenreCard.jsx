@@ -1,56 +1,46 @@
 import { Card, CardContent } from '@components/ui/card';
 import { Badge } from '@components/ui/badge';
 import { Separator } from '@components/ui/separator';
-import {
-  MusicIcon,
-  ListMusicIcon,
-  PencilIcon,
-  MoreHorizontalIcon,
-  EyeIcon,
-  TrashIcon,
-} from 'lucide-react';
+import { Music, ListMusic, PencilIcon, TrashIcon } from 'lucide-react';
 import { Button } from '@components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from '@components/ui/dropdown-menu';
+import useGenreSheet from '@/store/genresSheet.store';
+import { useMutation } from '@tanstack/react-query';
+import { Spinner } from '@components/ui/spinner';
 
 import defaultCover from '@assets/images/default-cover.jpg';
+import { deleteGenreMutation } from '@/queries/genres';
 
-function GenreCard({ title, cover, description, tags, songsCount, playlistsCount }) {
+function GenreCard(genre) {
+  const { title, cover, description, tags, songsCount, albumsCount } = genre;
+  const setIsGenreSheetOpen = useGenreSheet((state) => state.setOpen); // open open edit/upload genre form
+  const setIsEditMode = useGenreSheet((state) => state.setIsEditMode); // set edit/uplaod genre form mode
+  const setGenre = useGenreSheet((state) => state.setGenre); // set seleced genre to edit
+  const deletionMutation = useMutation(deleteGenreMutation());
+
+  const openGenreSheet = () => {
+    setGenre(genre);
+    setIsEditMode(true);
+    setIsGenreSheetOpen(true);
+  };
+
   return (
     <Card className="flex flex-col">
-      <div className="relative aspect-video overflow-hidden">
+      <div className="aspect-video overflow-hidden">
         <img
           src={cover || defaultCover}
           loading="lazy"
           alt={title}
           className="size-full object-cover"
         />
-        <div className="absolute inset-0 size-full">
-          <div className="flex flex-wrap justify-end gap-1 pe-3 pt-3">
-            <Badge variant="secondary" className="flex items-center border border-white">
-              <MusicIcon className="mr-1 size-4!" />
-              <span className="text-xs">{songsCount}</span>
-            </Badge>
-            <Badge variant="secondary" className="flex items-center border border-white">
-              <ListMusicIcon className="mr-1 size-4!" />
-              <span className="text-xs">{playlistsCount}</span>
-            </Badge>
-          </div>
-        </div>
       </div>
-
-      <CardContent className="flex grow flex-col px-3">
+      <CardContent className="-mt-1 flex grow flex-col px-3">
         <div className="h-full grow">
           <div className="mb-4">
             <h3 className="text-lg font-bold text-balance">{title}</h3>
-            <p className="text-muted-foreground mt-1 text-sm text-pretty">{description}</p>
+            <p className="text-muted-foreground mt-1 text-xs text-pretty">{description}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag) => (
+          <div className="flex flex-wrap gap-x-1 gap-y-2">
+            {tags?.map((tag) => (
               <Badge key={tag} variant="secondary">
                 {tag}
               </Badge>
@@ -58,34 +48,41 @@ function GenreCard({ title, cover, description, tags, songsCount, playlistsCount
           </div>
         </div>
         <Separator className="my-4" />
+        <div className="flex flex-wrap items-center gap-3 pb-4">
+          <div className="flex items-center gap-1 text-xs">
+            <Music className="size-4" /> {songsCount.toLocaleString()} Songs
+          </div>
+          <div className="flex items-center gap-1 text-xs">
+            <ListMusic className="size-4" /> {albumsCount.toLocaleString()} Albums
+          </div>
+        </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="grow">
+          <Button
+            variant="outline"
+            className="text-destructive grow"
+            disabled={deletionMutation.isPending}
+            onClick={() => deletionMutation.mutate(genre)}
+          >
+            {deletionMutation.isPending ? (
+              <>
+                <Spinner />
+                Deleting
+              </>
+            ) : (
+              <>
+                <TrashIcon />
+                Delete
+              </>
+            )}
+          </Button>
+          <Button variant="outline" className="grow" onClick={openGenreSheet}>
             <PencilIcon />
             Edit
           </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="p-1.5!">
-                <MoreHorizontalIcon />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <EyeIcon />
-                <span className="ms-1">View</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <TrashIcon />
-                <span className="text-destructive ms-1">Delete</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </CardContent>
     </Card>
   );
 }
-
-// function CardBadge ({})
 
 export default GenreCard;
