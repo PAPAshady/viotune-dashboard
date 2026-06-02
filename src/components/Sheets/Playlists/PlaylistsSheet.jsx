@@ -36,6 +36,7 @@ import schema from '@/schemas/playlists.schema';
 import { createPlaylistMutation, updatePlaylistMutation } from '@/queries/playlists';
 
 function PlaylistsSheet() {
+  'use no memo';
   const open = usePlaylistsSheet((state) => state.open);
   const setOpen = usePlaylistsSheet((state) => state.setOpen);
   const closeSheet = usePlaylistsSheet((state) => state.closeSheet);
@@ -57,7 +58,10 @@ function PlaylistsSheet() {
     setValue,
     reset: resetFields,
     // fill out the form with dynamic in case user wants to edit an playlist.
-  } = useForm({ resolver: zodResolver(schema), values: isEditMode ? defaultValues : undefined });
+  } = useForm({
+    resolver: zodResolver(schema),
+    values: isEditMode ? defaultValues : {},
+  });
   const {
     mutate,
     isPending,
@@ -73,9 +77,10 @@ function PlaylistsSheet() {
   const onSheetOpenChange = async (isOpen) => {
     // reset form values and mutation states when sheet is closed
     if (!isOpen) {
-      resetFields();
       resetMutation();
       closeSheet(); // close the sheet and reset sheet state
+      resetFields({ title: '', description: '', visibility: '1' });
+      console.log('closed');
       return;
     }
     setOpen(isOpen);

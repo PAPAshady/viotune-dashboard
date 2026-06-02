@@ -298,8 +298,8 @@ export const getSongsByAlbumId = async (albumId, keyword) => {
     .from('album_songs')
     .select('songs(*)', { count: 'exact' })
     .eq(`album_id`, albumId)
-    .order('track_number', { foreignTable: 'songs', ascending: true })
-    .or(`title.ilike.%${keyword}%,artist.ilike.%${keyword}%`, { foreignTable: 'songs' });
+    .order('track_number', { referencedTable: 'songs', ascending: true })
+    .or(`title.ilike.%${keyword}%,artist.ilike.%${keyword}%`, { referencedTable: 'songs' });
   if (error) throw error;
   return { data: data.map((data) => data.songs), total: count };
 };

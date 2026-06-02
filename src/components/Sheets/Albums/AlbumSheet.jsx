@@ -75,7 +75,7 @@ function AddAlbumSheet({ artists, genres }) {
     if (!isOpen) {
       mutation.reset();
       closeSheet();
-      resetFields();
+      resetFields({});
       return;
     }
     setOpen(isOpen);
@@ -86,7 +86,7 @@ function AddAlbumSheet({ artists, genres }) {
 
     // data to pass to server depending if user wants to edit or upload a album
     const data = isEditMode ? { modifiedFields, prevAlbumData: album } : formData;
-    
+
     mutation.mutate(data, { onSuccess: () => onSheetOpenChange(false) });
   };
 

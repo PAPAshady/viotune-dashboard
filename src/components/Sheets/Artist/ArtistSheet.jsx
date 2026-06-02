@@ -73,7 +73,7 @@ function ArtistsSheet({ genres }) {
     if (!isOpen) {
       mutation.reset();
       closeSheet();
-      resetFields();
+      resetFields({});
       return;
     }
     setOpen(isOpen);
