@@ -41,6 +41,8 @@ function UploadSongSheet({ genres, albums, artists }) {
   const isEditMode = useSongSheet((state) => state.isEditMode);
   const song = useSongSheet((state) => state.song); // selected song to edit
 
+  console.log(genres);
+
   // fill out the form with dynamic default values in case user wants to edit a song.
   const defaultValues = isEditMode
     ? {
@@ -110,7 +112,7 @@ function UploadSongSheet({ genres, albums, artists }) {
         </Button>
       </SheetTrigger>
       {/* prevent radix ui from scroling to top if user opened and closed the sheet from a song on songs table (via dropdown menu) */}
-      <SheetContent onCloseAutoFocus={(e) => e.preventDefault()}> 
+      <SheetContent onCloseAutoFocus={(e) => e.preventDefault()}>
         <form className="flex h-full flex-col" onSubmit={handleSubmit(submitHandler)}>
           <SheetHeader className="border-b">
             <SheetTitle>{isEditMode ? `Edit "${song.title}"` : 'Upload New Song'}</SheetTitle>

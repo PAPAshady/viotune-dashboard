@@ -2,7 +2,7 @@ import supabase from './supabase';
 
 import { getFileUrl, uploadFile, deleteFiles } from './storage';
 
-export const getGenres = async ({ search }) => {
+export const getGenres = async ({ search = '' } = {}) => {
   let query = supabase.from('genres_extended').select('*');
   if (search) query = query.ilike('title', `%${search.trim()}%`);
   const { data, error } = await query;
