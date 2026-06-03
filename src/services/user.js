@@ -6,7 +6,7 @@ export const getMe = async (userId) => {
   return data;
 };
 
-export const getUsers = async ({ pageIndex, pageSize, role, provider, status }) => {
+export const getUsers = async ({ pageIndex, pageSize, role, provider, status, search }) => {
   const from = pageIndex * pageSize;
   const to = from + pageSize - 1;
 
@@ -14,6 +14,7 @@ export const getUsers = async ({ pageIndex, pageSize, role, provider, status }) 
   if (role) params.append('role', role);
   if (provider) params.append('provider', provider);
   if (status) params.append('status', status);
+  if (search) params.append('search', search);
 
   const { data, error } = await supabase.functions.invoke(`get_users?${params.toString()}`);
   if (error) throw error;

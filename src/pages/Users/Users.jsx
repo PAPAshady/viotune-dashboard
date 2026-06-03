@@ -13,6 +13,7 @@ import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
 import { getUsersQuery } from '@/queries/users';
 import columns from '@/columns/columns.users.jsx';
+import useDebounce from '@/hooks/useDebounce';
 
 const rolesOptions = [
   { value: 'user', label: 'User' },
@@ -22,7 +23,6 @@ const rolesOptions = [
 
 const statusOptions = [
   { value: 'active', label: 'Active' },
-  { value: 'suspended', label: 'Suspended' },
   { value: 'banned', label: 'Banned' },
 ];
 
@@ -34,8 +34,8 @@ const authProviderOptions = [
 
 const kpiInfos = [
   { id: 1, value: 2, title: 'Total Users' },
-  { id: 2, value: 200, title: 'Acvtive Users' },
-  { id: 3, value: 0, title: 'Suspended Users' },
+  { id: 2, value: 0, title: 'Total Admins' },
+  { id: 3, value: 200, title: 'Active Users' },
   { id: 4, value: 15, title: 'Banned Users' },
 ];
 
@@ -44,11 +44,15 @@ function Users() {
   const [role, setRole] = useState();
   const [status, setStatus] = useState();
   const [provider, setProvider] = useState();
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearchValue = useDebounce(searchValue);
   const isMobile = useIsMobile();
 
   const filters = { role, status, provider };
 
-  const { data, isLoading } = useQuery(getUsersQuery({ ...pagination, ...filters }));
+  const { data, isLoading } = useQuery(
+    getUsersQuery({ ...pagination, ...filters, search: debouncedSearchValue })
+  );
 
   const onRoleChange = (e) => {
     const value = e.target.value;
@@ -84,7 +88,11 @@ function Users() {
           <PlusIcon /> Add User
         </Button>
       </PageHeader>
-      <SearchInput placeholder="Search by email or username..." />
+      <SearchInput
+        placeholder="Search by email or username..."
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
       <FilterBar filters={filters} onClearAll={clearFilters}>
         <FilterSelectBox
           filterName="Roles"
