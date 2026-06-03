@@ -2,9 +2,9 @@ import { queryOptions, keepPreviousData } from '@tanstack/react-query';
 
 import { getUsers } from '@/services/user';
 
-export const getUsersQuery = ({ pageIndex, pageSize }) =>
+export const getUsersQuery = (filters) =>
   queryOptions({
-    queryKey: ['users', { pageIndex, pageSize }],
-    queryFn: () => getUsers(pageIndex, pageSize),
+    queryKey: ['users', filters],
+    queryFn: () => getUsers(filters),
     placeholderData: keepPreviousData,
   });

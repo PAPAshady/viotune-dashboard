@@ -43,9 +43,12 @@ function Users() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [role, setRole] = useState();
   const [status, setStatus] = useState();
-  const [authProvider, setAuthProvider] = useState();
+  const [provider, setProvider] = useState();
   const isMobile = useIsMobile();
-  const { data, isLoading } = useQuery(getUsersQuery(pagination));
+
+  const filters = { role, status, provider };
+
+  const { data, isLoading } = useQuery(getUsersQuery({ ...pagination, ...filters }));
 
   const onRoleChange = (e) => {
     const value = e.target.value;
@@ -57,9 +60,15 @@ function Users() {
     setStatus(value);
   };
 
-  const onAuthProviderChange = (e) => {
+  const onProviderChange = (e) => {
     const value = e.target.value;
-    setAuthProvider(value);
+    setProvider(value);
+  };
+
+  const clearFilters = () => {
+    setRole('');
+    setStatus('');
+    setProvider('');
   };
 
   return (
@@ -76,7 +85,7 @@ function Users() {
         </Button>
       </PageHeader>
       <SearchInput placeholder="Search by email or username..." />
-      <FilterBar>
+      <FilterBar filters={filters} onClearAll={clearFilters}>
         <FilterSelectBox
           filterName="Roles"
           placeholder="Select role"
@@ -95,8 +104,8 @@ function Users() {
           filterName="Auth provider"
           placeholder="Select provider"
           options={authProviderOptions}
-          value={authProvider}
-          onChange={onAuthProviderChange}
+          value={provider}
+          onChange={onProviderChange}
         />
       </FilterBar>
       <KpiCardWrapper data={kpiInfos} />
