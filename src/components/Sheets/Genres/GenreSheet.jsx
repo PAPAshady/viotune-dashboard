@@ -151,7 +151,9 @@ function GenreSheet() {
               </Field>
               <Field>
                 <FieldLabel>Description</FieldLabel>
-                <FieldDescription>{200 - descriptionLength} Characters left</FieldDescription>
+                <FieldDescription>
+                  {descriptionLength ? 200 - descriptionLength : 200} Characters left
+                </FieldDescription>
                 <FieldError>{errors.description?.message}</FieldError>
                 <Textarea
                   aria-invalid={!!errors.description}
