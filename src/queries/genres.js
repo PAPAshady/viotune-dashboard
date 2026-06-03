@@ -10,7 +10,8 @@ import {
 } from '@/services/genres';
 import queryClient from '@/QueryClient';
 
-export const getGenresQuery = () => queryOptions({ queryKey: ['genres'], queryFn: getGenres });
+export const getGenresQuery = (filters) =>
+  queryOptions({ queryKey: ['genres', filters], queryFn: () => getGenres(filters) });
 
 export const getGenresStatsQuery = () =>
   queryOptions({ queryKey: ['genres', 'stats'], queryFn: getGenresStats });
