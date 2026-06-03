@@ -48,7 +48,57 @@ export const createGenre = async (data) => {
   return dbData;
 };
 
-export const updateGenre = async (data) => console.log(data);
+export const updateGenre = async ({ modifiedFields, prevGenreData }) => {
+  const updatedTitle = modifiedFields?.title;
+  const uploadedAt = new Date().toISOString(); // we use this timestamp in the name of our files in storage to be unique
+
+  const data = { ...modifiedFields }; // The data we want to send to db
+
+  // update cover in case user changed it.
+  if (data.coverFile || data.existingCoverUrl === null) {
+    // delete previous cover file from storage
+    const { error: prevCoverFileDeleteError } = await deleteFiles('genres-cover', [
+      prevGenreData.cover_path,
+    ]);
+
+    if (prevCoverFileDeleteError) throw prevCoverFileDeleteError;
+    data.cover = null;
+    data.cover_path = null;
+
+    // upload new cover if user selected a new cover
+    if (data.coverFile) {
+      const newCoverFile = data.coverFile[0];
+
+      // include updated title in the new cover file name (if changed)
+      const newCoverFileName = `${updatedTitle ? updatedTitle : prevGenreData.title}-${uploadedAt}`;
+
+      // upload new cover file to storage
+      const { data: newCoverFileData, error: newCoverFileError } = await uploadFile(
+        'genres-cover',
+        newCoverFileName,
+        newCoverFile
+      );
+      if (newCoverFileError) throw newCoverFileError;
+      data.cover_path = newCoverFileData.path;
+      data.cover = getFileUrl('genres-cover', newCoverFileData.path);
+    }
+  }
+
+  // remove unnecessary properties from data because we will send "data" to postgres database
+  delete data.existingCoverUrl;
+  delete data.coverFile;
+
+  const { data: dbData, error: dbError } = await supabase
+    .from('genres')
+    .update(data)
+    .eq('id', prevGenreData.id)
+    .select()
+    .single();
+
+  if (dbError) throw dbError;
+
+  return dbData;
+};
 
 export const deleteGenre = async (data) => {
   // delete cover file from storage if exists
