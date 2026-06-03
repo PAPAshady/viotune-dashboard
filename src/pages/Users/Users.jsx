@@ -11,7 +11,7 @@ import FilterBar from '@components/FilterBar/FilterBar';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
-import { getUsersQuery } from '@/queries/users';
+import { getUsersQuery, getUsersStatsQuery } from '@/queries/users';
 import columns from '@/columns/columns.users.jsx';
 import useDebounce from '@/hooks/useDebounce';
 
@@ -32,13 +32,6 @@ const authProviderOptions = [
   { value: 'github', label: 'Github' },
 ];
 
-const kpiInfos = [
-  { id: 1, value: 2, title: 'Total Users' },
-  { id: 2, value: 0, title: 'Total Admins' },
-  { id: 3, value: 200, title: 'Active Users' },
-  { id: 4, value: 15, title: 'Banned Users' },
-];
-
 function Users() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [role, setRole] = useState();
@@ -46,6 +39,7 @@ function Users() {
   const [provider, setProvider] = useState();
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
+  const { data: stats, isPending: isStatsPending } = useQuery(getUsersStatsQuery());
   const isMobile = useIsMobile();
 
   const filters = { role, status, provider };
@@ -74,6 +68,13 @@ function Users() {
     setStatus('');
     setProvider('');
   };
+
+  const usersKpiInfos = [
+    { id: 1, value: stats?.totalUsers || 0, title: 'Total Users' },
+    { id: 2, value: stats?.totalAdmins || 0, title: 'Total Admins' },
+    { id: 3, value: stats?.activeUsers || 0, title: 'Active Users' },
+    { id: 4, value: stats?.bannedUsers || 0, title: 'Banned Users' },
+  ];
 
   return (
     <>
@@ -116,7 +117,7 @@ function Users() {
           onChange={onProviderChange}
         />
       </FilterBar>
-      <KpiCardWrapper data={kpiInfos} />
+      <KpiCardWrapper data={usersKpiInfos} isPending={isStatsPending} />
       <PrimaryTable
         columns={columns}
         rows={data}
