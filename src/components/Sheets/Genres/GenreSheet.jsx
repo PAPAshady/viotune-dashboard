@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Sheet,
   SheetClose,
@@ -9,7 +11,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, XIcon, XCircle } from 'lucide-react';
 import {
   FieldGroup,
   Field,
@@ -25,6 +27,7 @@ import { Input } from '@/components/ui/input';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 import { useMutation } from '@tanstack/react-query';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 
 import FileUploadZone from '@/components/FileUpload/FileUploadZone';
 import UploadedFileItem from '@/components/FileUpload/UploadedFileItem';
@@ -35,8 +38,10 @@ import useGenreSheet from '@/store/genresSheet.store';
 import { createGenreMutation, updateGenreMutation } from '@/queries/genres';
 import { Spinner } from '@/components/ui/spinner';
 import { getDirtyFields } from '@/utils';
+import { tagSchema } from '@/schemas/genres.schema';
 
 function GenreSheet() {
+  const [tagInput, setTagInput] = useState('');
   const open = useGenreSheet((state) => state.open);
   const setOpen = useGenreSheet((state) => state.setOpen);
   const closeSheet = useGenreSheet((state) => state.closeSheet);
@@ -48,12 +53,16 @@ function GenreSheet() {
     status: genre?.status,
     existingCoverUrl: genre?.cover, // to show the existing cover image in case of edit mode
     description: genre?.description,
+    tags: genre?.tags || [],
   };
 
   const {
     handleSubmit,
     register,
     setValue,
+    setError,
+    clearErrors,
+    getValues,
     watch,
     reset: resetFields,
     formState: { errors, dirtyFields, isDirty },
@@ -78,12 +87,45 @@ function GenreSheet() {
   };
 
   const submitHandler = async (formData) => {
+    clearErrors('tags'); // clear previous tag errors before submit
     const modifiedFields = getDirtyFields(formData, dirtyFields);
 
     // data to pass to server depending if user wants to edit or upload a genre
     const data = isEditMode ? { modifiedFields, prevGenreData: genre } : formData;
 
     mutation.mutate(data, { onSuccess: () => onSheetOpenChange(false) });
+  };
+
+  const addTagHandler = () => {
+    clearErrors('tags'); // clear previous errors
+    const currentTags = getValues('tags') || [];
+
+    const newTag = tagInput;
+    const validated = tagSchema.safeParse(newTag);
+    if (!validated.success) {
+      setError('tags', { message: validated.error.flatten().formErrors });
+      return;
+    }
+    if (currentTags.length >= 3) {
+      setError('tags', { message: 'You can only add up to 3 tags.' });
+      return;
+    }
+    if (currentTags.includes(newTag)) {
+      setError('tags', { message: 'This tag is already added.' });
+      return;
+    }
+    setValue('tags', [...currentTags, newTag], { shouldDirty: true });
+    setTagInput('');
+  };
+
+  const removeTagHandler = (tag) => {
+    const currentTags = getValues('tags') || [];
+    setValue(
+      'tags',
+      currentTags.filter((t) => t !== tag),
+      { shouldDirty: true }
+    );
+    clearErrors('tags'); // clear errors on tag remove
   };
 
   return (
@@ -123,6 +165,37 @@ function GenreSheet() {
                   <NativeSelectOption value="published">Published</NativeSelectOption>
                   <NativeSelectOption value="draft">Draft</NativeSelectOption>
                 </NativeSelect>
+              </Field>
+              <Field>
+                <FieldLabel>Tags</FieldLabel>
+                <FieldError>{errors.tags?.message}</FieldError>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Input
+                      aria-invalid={!!errors.tags}
+                      placeholder="Enter genre tags"
+                      value={tagInput}
+                      onChange={(e) => setTagInput(e.target.value)}
+                    />
+                    <Button onClick={addTagHandler} type="button" variant="secondary" className="">
+                      <Plus />
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {watch('tags')?.map((tag) => (
+                      <Badge
+                        title="Click to remove"
+                        className="cursor-pointer gap-2"
+                        variant="secondary"
+                        key={tag}
+                        onClick={() => removeTagHandler(tag)}
+                      >
+                        {tag}
+                        <XCircle className="size-4.5! text-red-400" />
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
               </Field>
               <FieldSeparator />
               <div>
