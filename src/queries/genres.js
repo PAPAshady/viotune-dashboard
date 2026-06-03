@@ -26,6 +26,12 @@ export const createGenreMutation = () =>
       });
     },
     onError: (err) => {
+      if (err.code === '23505') {
+        toast.error('A genre with this title already exists.', {
+          description: 'Please choose another title.',
+        });
+        return;
+      }
       toast.error('Creation failed', {
         description: 'Something went wrong while creating the genre.',
       });
@@ -45,6 +51,12 @@ export const updateGenreMutation = () =>
       });
     },
     onError: (err) => {
+      if (err.code === '23505') {
+        toast.error('A genre with this title already exists.', {
+          description: 'Please choose another title.',
+        });
+        return;
+      }
       toast.error('Update failed.', {
         description: 'We couldn’t update the genre. Please try again.',
       });
