@@ -10,6 +10,7 @@ import UsersTableUserCellSkeleton from '@components/Tables/ColumnDefs/Cells/User
 import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
 import UsersTableProvidersCellSkeleton from '@components/Tables/ColumnDefs/Cells/UsersTableCells/Skeleton/UsersTableProvidersCellSkeleton';
 import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
+import UsersTableStatusCell from '@components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableStatusCell';
 
 export default [
   {
@@ -48,6 +49,12 @@ export default [
     header: 'Auth Providers',
     cell: (props) => <UsersTableProvidersCell {...props} />,
     meta: { skeleton: <UsersTableProvidersCellSkeleton /> },
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: (props) => <UsersTableStatusCell {...props} />,
+    meta: { skeleton: <TextSkeleton className="h-5 w-30" /> },
   },
   {
     id: 'actions',
