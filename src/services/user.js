@@ -32,3 +32,9 @@ export const updateUser = async (userData) => {
   if (error) throw error;
   return data;
 };
+
+export const toggleUserStatus = async (userData) => {
+  const { data, error } = await supabase.functions.invoke('rapid-service', { body: userData });
+  if (error) throw error;
+  return data;
+};

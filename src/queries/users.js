@@ -1,7 +1,7 @@
 import { queryOptions, keepPreviousData, mutationOptions } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { getUsers, getUsersStats, updateUser } from '@/services/user';
+import { getUsers, getUsersStats, updateUser, toggleUserStatus } from '@/services/user';
 import queryClient from '@/QueryClient';
 
 export const getUsersQuery = (filters) =>
@@ -28,5 +28,19 @@ export const updateUserMutationOptions = () =>
     onError: (err) => {
       toast.error('Failed to update user. Please try again.');
       console.log('Error updating user => ', err);
+    },
+  });
+
+export const toggleUserStatusMutationOptions = () =>
+  mutationOptions({
+    mutationKey: ['users'],
+    mutationFn: toggleUserStatus,
+    onSuccess: async (_, { status }) => {
+      await queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast.success(`User ${status === 'active' ? 'unbanned' : 'banned'} successfully.`);
+    },
+    onError: (err) => {
+      toast.error('Failed to update status. Please try again.');
+      console.log('Error updating user status => ', err);
     },
   });

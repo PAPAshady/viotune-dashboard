@@ -9,13 +9,27 @@ import {
 } from '@components/ui/dropdown-menu';
 import { Button } from '@components/ui/button';
 import { MoreHorizontalIcon, Ban, UserCheck } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import { Spinner } from '@/components/ui/spinner';
 
 import UsersSheet from '@/components/Sheets/Users/UsersSheet';
+import { toggleUserStatusMutationOptions } from '@/queries/users';
 
 function UsersTableActionCell({ row }) {
   const [open, setOpen] = useState(false);
   const user = row.original;
   const isBanned = user.status === 'banned';
+  const { mutate, isPending } = useMutation(toggleUserStatusMutationOptions());
+
+  const closeDropDown = () => setOpen(false);
+
+  const onStatusChange = async (e) => {
+    e.preventDefault();
+    mutate(
+      { userId: user.id, status: isBanned ? 'active' : 'banned' },
+      { onSuccess: closeDropDown }
+    );
+  };
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -33,10 +47,14 @@ function UsersTableActionCell({ row }) {
         />
         <DropdownMenuSeparator />
         <DropdownMenuItem
+          onSelect={onStatusChange}
+          disabled={isPending}
           variant={!isBanned && 'destructive'}
           className={isBanned && 'text-green-300'}
         >
-          {isBanned ? (
+          {isPending ? (
+            <Spinner className="me-2" />
+          ) : isBanned ? (
             <UserCheck className="me-2 size-4 text-green-300" />
           ) : (
             <Ban className="me-2 size-4" />
