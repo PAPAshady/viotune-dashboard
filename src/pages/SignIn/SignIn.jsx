@@ -57,10 +57,20 @@ function SignIn() {
       if (data.user) {
         const user = await getMe(data.user.id);
         const isAdmin = user.role === 'admin' || user.role === 'super_admin';
+        const isBanned = user.status === 'banned';
 
         if (!isAdmin) {
           await supabase.auth.signOut();
           setError('root', { message: 'Incorrect email or password.' });
+          return;
+        }
+
+        if (isBanned) {
+          await supabase.auth.signOut();
+          setError('root', {
+            message:
+              'Your banned from this platform. Contact zamani.nim18@gmail.com for more info.',
+          });
           return;
         }
 
