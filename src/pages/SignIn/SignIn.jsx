@@ -69,7 +69,7 @@ function SignIn() {
           await supabase.auth.signOut();
           setError('root', {
             message:
-              'Your banned from this platform. Contact zamani.nim18@gmail.com for more info.',
+              'Your banned from this platform. Contact zamani.nima18@gmail.com for more info.',
           });
           return;
         }
