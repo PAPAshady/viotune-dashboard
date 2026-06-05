@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Sheet,
   SheetClose,
@@ -21,15 +23,41 @@ import {
   SelectLabel,
   SelectItem,
 } from '@components/ui/select';
+import { Spinner } from '@/components/ui/spinner';
 import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
 
-export default function UsersSheet({ userName, role, status }) {
-  const { handleSubmit, watch, setValue } = useForm({ defaultValues: { role, status } });
+import { updateUserMutationOptions } from '@/queries/users';
+import { getDirtyFields } from '@/utils';
 
-  const submitHandler = (data) => console.log(data);
+export default function UsersSheet({ userId, userName, role, status }) {
+  const [open, setOpen] = useState(false);
+  const {
+    handleSubmit,
+    watch,
+    setValue,
+    reset: resetFields,
+    formState: { isDirty, dirtyFields },
+  } = useForm({ defaultValues: { role, status } });
+  const { mutateAsync, isPending, reset } = useMutation(updateUserMutationOptions());
+
+  const submitHandler = async (data) => {
+    const modifiedFields = getDirtyFields(data, dirtyFields);
+    await mutateAsync({ ...modifiedFields, userId }, { onSuccess: () => onSheetOpenChange(false) });
+  };
+
+  function onSheetOpenChange(isOpen) {
+    if (!isOpen) {
+      reset();
+      resetFields({});
+      setOpen(false);
+      return;
+    }
+    setOpen(isOpen);
+  }
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={onSheetOpenChange}>
       <SheetTrigger asChild>
         <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
           <PencilIcon className="me-2 size-4" />
@@ -46,7 +74,10 @@ export default function UsersSheet({ userName, role, status }) {
             <FieldGroup className="gap-6">
               <Field>
                 <FieldLabel>Role</FieldLabel>
-                <Select onValueChange={(value) => setValue('role', value)} value={watch('role')}>
+                <Select
+                  onValueChange={(value) => setValue('role', value, { shouldDirty: true })}
+                  value={watch('role')}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder={watch('role')} />
                   </SelectTrigger>
@@ -63,7 +94,7 @@ export default function UsersSheet({ userName, role, status }) {
               <Field>
                 <FieldLabel>Status</FieldLabel>
                 <Select
-                  onValueChange={(value) => setValue('status', value)}
+                  onValueChange={(value) => setValue('status', value, { shouldDirty: true })}
                   value={watch('status')}
                 >
                   <SelectTrigger>
@@ -87,8 +118,20 @@ export default function UsersSheet({ userName, role, status }) {
                   Cancel
                 </Button>
               </SheetClose>
-              <Button className="bg-blue-500 text-white hover:bg-blue-600" type="submit" size="sm">
-                save changes
+              <Button
+                disabled={isPending || !isDirty}
+                className="bg-blue-500 text-white hover:bg-blue-600"
+                type="submit"
+                size="sm"
+              >
+                {isPending ? (
+                  <>
+                    <Spinner />
+                    Saving changes
+                  </>
+                ) : (
+                  'Save changes'
+                )}
               </Button>
             </div>
           </SheetFooter>

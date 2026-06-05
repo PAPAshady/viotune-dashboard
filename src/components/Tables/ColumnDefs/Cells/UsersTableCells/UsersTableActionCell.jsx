@@ -25,7 +25,12 @@ function UsersTableActionCell({ row }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <UsersSheet userName={user.full_name} role={user.role} status={user.status} />
+        <UsersSheet
+          userId={user.id}
+          userName={user.full_name}
+          role={user.role}
+          status={user.status}
+        />
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant={!isBanned && 'destructive'}
