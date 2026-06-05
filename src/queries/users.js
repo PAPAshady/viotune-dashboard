@@ -40,8 +40,9 @@ export const toggleUserStatusMutationOptions = () =>
       await queryClient.invalidateQueries({ queryKey: ['users'] });
       toast.success(`User ${status === 'active' ? 'unbanned' : 'banned'} successfully.`);
     },
-    onError: (err) => {
-      toast.error('Failed to update status. Please try again.');
-      console.log('Error updating user status => ', err);
+    onError: async (errResponse) => {
+      const errorData = await errResponse.json();
+      toast.error(errorData.error || 'Failed to update status. Please try again.');
+      console.log('Error updating user status => ', errResponse);
     },
   });
