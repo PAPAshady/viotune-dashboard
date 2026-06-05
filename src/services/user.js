@@ -28,8 +28,10 @@ export const getUsersStats = async () => {
 };
 
 export const updateUser = async (userData) => {
-  const { data, error } = await supabase.functions.invoke('rapid-service', { body: userData });
-  if (error) throw error;
+  const { data, error, response } = await supabase.functions.invoke('rapid-service', {
+    body: userData,
+  });
+  if (error) throw response;
   return data;
 };
 

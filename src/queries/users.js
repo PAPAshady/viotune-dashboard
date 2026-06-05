@@ -25,9 +25,10 @@ export const updateUserMutationOptions = () =>
       await queryClient.invalidateQueries({ queryKey: ['users'] });
       toast.success('User updated successfully');
     },
-    onError: (err) => {
-      toast.error('Failed to update user. Please try again.');
-      console.log('Error updating user => ', err);
+    onError: async (errResponse) => {
+      const errorData = await errResponse.json();
+      toast.error(errorData.error || 'Failed to update user. Please try again.');
+      console.log('Error updating user => ', errResponse);
     },
   });
 
