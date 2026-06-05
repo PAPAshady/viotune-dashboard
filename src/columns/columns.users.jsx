@@ -2,7 +2,6 @@ import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader
 import CheckBoxCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
 import UsersTableUserCell from '@/components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableUserCell';
 import UsersTableRoleCell from '@/components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableRoleCell';
-import ActionsCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
 import TimeCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/TimeCell';
 import UsersTableProvidersCell from '@/components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableProvidersCell';
 import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
@@ -11,6 +10,7 @@ import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/
 import UsersTableProvidersCellSkeleton from '@components/Tables/ColumnDefs/Cells/UsersTableCells/Skeleton/UsersTableProvidersCellSkeleton';
 import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
 import UsersTableStatusCell from '@components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableStatusCell';
+import UsersTableActionCell from '@components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableActionCell';
 
 export default [
   {
@@ -58,7 +58,7 @@ export default [
   },
   {
     id: 'actions',
-    cell: (props) => <ActionsCell {...props} />,
+    cell: (props) => <UsersTableActionCell {...props} />,
     header: 'Actions',
     meta: { skeleton: <ActionsCellSkeleton /> },
   },

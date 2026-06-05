@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-import { useIsMobile } from '@hooks/use-mobile';
-import { PlusIcon } from 'lucide-react';
-import { Button } from '@components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 
 import SearchInput from '@components/SearchInput/SearchInput';
@@ -40,7 +37,6 @@ function Users() {
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearchValue = useDebounce(searchValue);
   const { data: stats, isPending: isStatsPending } = useQuery(getUsersStatsQuery());
-  const isMobile = useIsMobile();
 
   const filters = { role, status, provider };
 
@@ -78,17 +74,7 @@ function Users() {
 
   return (
     <>
-      <PageHeader title="Users" description="Manage users, roles, and activity.">
-        <Button size={isMobile ? 'sm' : 'default'} variant="outline">
-          Bulk Actions (0)
-        </Button>
-        <Button
-          size={isMobile ? 'sm' : 'default'}
-          className="bg-blue-500 text-white hover:bg-blue-600"
-        >
-          <PlusIcon /> Add User
-        </Button>
-      </PageHeader>
+      <PageHeader title="Users" description="Manage users, roles, and activity." />
       <SearchInput
         placeholder="Search by email or username..."
         value={searchValue}
