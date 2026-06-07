@@ -23,7 +23,6 @@ function AuthLayout() {
           <p className="text-muted-foreground text-sm">Admin Dashboard for Music Streaming</p>
         </div>
         <Outlet />
-
       </div>
     </div>
   );
