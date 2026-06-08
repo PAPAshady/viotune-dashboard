@@ -1,11 +1,11 @@
 import { Card, CardContent } from '@components/ui/card';
 import { Badge } from '@components/ui/badge';
 import { Separator } from '@components/ui/separator';
-import { Music, ListMusic, PencilIcon, TrashIcon } from 'lucide-react';
+import { Music, ListMusic, PencilIcon } from 'lucide-react';
 import { Button } from '@components/ui/button';
 import useGenreSheet from '@/store/genresSheet.store';
 import { useMutation } from '@tanstack/react-query';
-import { Spinner } from '@components/ui/spinner';
+import DeleteGenreDialog from '@components/Dialogs/DeleteGenreDialog';
 
 import defaultCover from '@assets/images/default-cover.jpg';
 import { deleteGenreMutation } from '@/queries/genres';
@@ -57,24 +57,10 @@ function GenreCard(genre) {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="text-destructive grow"
-            disabled={deletionMutation.isPending}
-            onClick={() => deletionMutation.mutate(genre)}
-          >
-            {deletionMutation.isPending ? (
-              <>
-                <Spinner />
-                Deleting
-              </>
-            ) : (
-              <>
-                <TrashIcon />
-                Delete
-              </>
-            )}
-          </Button>
+          <DeleteGenreDialog
+            onDelete={() => deletionMutation.mutate(genre)}
+            isPending={deletionMutation.isPending}
+          />
           <Button variant="outline" className="grow" onClick={openGenreSheet}>
             <PencilIcon />
             Edit

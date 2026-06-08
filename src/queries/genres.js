@@ -10,7 +10,8 @@ import {
 } from '@/services/genres';
 import queryClient from '@/QueryClient';
 
-export const getGenresQuery = () => queryOptions({ queryKey: ['genres'], queryFn: getGenres });
+export const getGenresQuery = (filters) =>
+  queryOptions({ queryKey: ['genres', filters], queryFn: () => getGenres(filters) });
 
 export const getGenresStatsQuery = () =>
   queryOptions({ queryKey: ['genres', 'stats'], queryFn: getGenresStats });
@@ -26,6 +27,12 @@ export const createGenreMutation = () =>
       });
     },
     onError: (err) => {
+      if (err.code === '23505') {
+        toast.error('A genre with this title already exists.', {
+          description: 'Please choose another title.',
+        });
+        return;
+      }
       toast.error('Creation failed', {
         description: 'Something went wrong while creating the genre.',
       });
@@ -45,6 +52,12 @@ export const updateGenreMutation = () =>
       });
     },
     onError: (err) => {
+      if (err.code === '23505') {
+        toast.error('A genre with this title already exists.', {
+          description: 'Please choose another title.',
+        });
+        return;
+      }
       toast.error('Update failed.', {
         description: 'We couldn’t update the genre. Please try again.',
       });

@@ -1,23 +1,15 @@
-import CheckBoxHeader from '@components/Tables/ColumnDefs/Headers/CheckBoxHeader';
-import CheckBoxCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/CheckBoxCell';
 import UsersTableUserCell from '@/components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableUserCell';
 import UsersTableRoleCell from '@/components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableRoleCell';
-import ActionsCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
 import TimeCell from '@/components/Tables/ColumnDefs/Cells/GenreicTableCells/TimeCell';
 import UsersTableProvidersCell from '@/components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableProvidersCell';
-import CheckBoxSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/CheckBoxSkeleton';
 import UsersTableUserCellSkeleton from '@components/Tables/ColumnDefs/Cells/UsersTableCells/Skeleton/UsersTableUserCellSkeleton';
 import TextSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/TextSkeleton';
 import UsersTableProvidersCellSkeleton from '@components/Tables/ColumnDefs/Cells/UsersTableCells/Skeleton/UsersTableProvidersCellSkeleton';
 import ActionsCellSkeleton from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/Skeleton/ActionsCellSkeleton';
+import UsersTableStatusCell from '@components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableStatusCell';
+import UsersTableActionCell from '@components/Tables/ColumnDefs/Cells/UsersTableCells/UsersTableActionCell';
 
 export default [
-  {
-    id: 'select',
-    header: (props) => <CheckBoxHeader {...props} />,
-    cell: (props) => <CheckBoxCell {...props} />,
-    meta: { skeleton: <CheckBoxSkeleton /> },
-  },
   {
     id: 'user',
     header: 'User',
@@ -50,8 +42,14 @@ export default [
     meta: { skeleton: <UsersTableProvidersCellSkeleton /> },
   },
   {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: (props) => <UsersTableStatusCell {...props} />,
+    meta: { skeleton: <TextSkeleton className="h-5 w-30" /> },
+  },
+  {
     id: 'actions',
-    cell: (props) => <ActionsCell {...props} />,
+    cell: (props) => <UsersTableActionCell {...props} />,
     header: 'Actions',
     meta: { skeleton: <ActionsCellSkeleton /> },
   },

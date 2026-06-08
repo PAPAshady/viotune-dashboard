@@ -73,7 +73,7 @@ function ArtistsSheet({ genres }) {
     if (!isOpen) {
       mutation.reset();
       closeSheet();
-      resetFields();
+      resetFields({});
       return;
     }
     setOpen(isOpen);
@@ -166,7 +166,9 @@ function ArtistsSheet({ genres }) {
 
               <Field>
                 <FieldLabel>Bio</FieldLabel>
-                <FieldDescription>{200 - bioLength} Characters left</FieldDescription>
+                <FieldDescription>
+                  {bioLength ? 200 - bioLength : 200} Characters left
+                </FieldDescription>
                 <FieldError>{errors.bio?.message}</FieldError>
                 <Textarea
                   aria-invalid={!!errors.bio}

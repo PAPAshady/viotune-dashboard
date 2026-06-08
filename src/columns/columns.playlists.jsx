@@ -7,7 +7,6 @@ import CheckBoxCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/
 import PlaylistsTablePlaylistCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTablePlaylistCell';
 import PlaylistsTableCreatorCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableCreatorCell';
 import PlaylistsTableVisibilityCell from '@components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableVisibilityCell';
-import ActionsCell from '@components/Tables/ColumnDefs/Cells/GenreicTableCells/ActionsCell';
 import PlaylistsTableActionCell from '@/components/Tables/ColumnDefs/Cells/PlaylistsTableCells/PlaylistsTableActionCell';
 
 export default [

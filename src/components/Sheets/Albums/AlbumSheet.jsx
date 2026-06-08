@@ -75,7 +75,7 @@ function AddAlbumSheet({ artists, genres }) {
     if (!isOpen) {
       mutation.reset();
       closeSheet();
-      resetFields();
+      resetFields({});
       return;
     }
     setOpen(isOpen);
@@ -86,7 +86,7 @@ function AddAlbumSheet({ artists, genres }) {
 
     // data to pass to server depending if user wants to edit or upload a album
     const data = isEditMode ? { modifiedFields, prevAlbumData: album } : formData;
-    
+
     mutation.mutate(data, { onSuccess: () => onSheetOpenChange(false) });
   };
 
@@ -197,7 +197,9 @@ function AddAlbumSheet({ artists, genres }) {
               </Field>
               <Field>
                 <FieldLabel>Description</FieldLabel>
-                <FieldDescription>{100 - descriptionLength} Characters left</FieldDescription>
+                <FieldDescription>
+                  {descriptionLength ? 200 - descriptionLength : 200} Characters left
+                </FieldDescription>
                 <FieldError>{errors.description?.message}</FieldError>
                 <Textarea
                   aria-invalid={!!errors.description}

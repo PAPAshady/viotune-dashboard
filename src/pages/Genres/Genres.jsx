@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
 
 import PageHeader from '@components/shared/PageHeader/PageHeader';
@@ -7,9 +9,12 @@ import GenreCard from '@components/GenreCard/GenreCard';
 import { getGenresQuery, getGenresStatsQuery } from '@/queries/genres';
 import GenreCardSkeleton from '@/components/GenreCard/GenreCardSkeleton';
 import GenreSheet from '@/components/Sheets/Genres/GenreSheet';
+import useDebounce from '@/hooks/useDebounce';
 
 function Genres() {
-  const { data: genres, isPending } = useQuery(getGenresQuery());
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearchValue = useDebounce(searchValue);
+  const { data: genres, isPending } = useQuery(getGenresQuery({ search: debouncedSearchValue }));
   const { data: stats, isPending: isStatsPending } = useQuery(getGenresStatsQuery());
 
   const kpiInfos = [
@@ -32,7 +37,11 @@ function Genres() {
       <PageHeader title="Genres" description="Manage music genres and categories.">
         <GenreSheet />
       </PageHeader>
-      <SearchInput placeholder="Search by genre name..." />
+      <SearchInput
+        placeholder="Search by genre name..."
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
       <KpiCardWrapper data={kpiInfos} isPending={isStatsPending} />
       <div className="mt-4 grid grid-cols-1 gap-4 px-4 min-[480px]:grid-cols-2 min-[480px]:px-0 lg:grid-cols-3 xl:grid-cols-4">
         {isPending

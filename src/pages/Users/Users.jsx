@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-import { useIsMobile } from '@hooks/use-mobile';
-import { PlusIcon } from 'lucide-react';
-import { Button } from '@components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 
 import SearchInput from '@components/SearchInput/SearchInput';
@@ -11,8 +8,9 @@ import FilterBar from '@components/FilterBar/FilterBar';
 import FilterSelectBox from '@components/FilterSelectBox/FilterSelectBox';
 import KpiCardWrapper from '@components/KpiCardWrapper/KpiCardWrapper';
 import PrimaryTable from '@components/Tables/PrimaryTable/PrimaryTable';
-import { getUsersQuery } from '@/queries/users';
+import { getUsersQuery, getUsersStatsQuery } from '@/queries/users';
 import columns from '@/columns/columns.users.jsx';
+import useDebounce from '@/hooks/useDebounce';
 
 const rolesOptions = [
   { value: 'user', label: 'User' },
@@ -22,7 +20,6 @@ const rolesOptions = [
 
 const statusOptions = [
   { value: 'active', label: 'Active' },
-  { value: 'suspended', label: 'Suspended' },
   { value: 'banned', label: 'Banned' },
 ];
 
@@ -32,20 +29,20 @@ const authProviderOptions = [
   { value: 'github', label: 'Github' },
 ];
 
-const kpiInfos = [
-  { id: 1, value: 2, title: 'Total Users' },
-  { id: 2, value: 200, title: 'Acvtive Users' },
-  { id: 3, value: 0, title: 'Suspended Users' },
-  { id: 4, value: 15, title: 'Banned Users' },
-];
-
 function Users() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [role, setRole] = useState();
   const [status, setStatus] = useState();
-  const [authProvider, setAuthProvider] = useState();
-  const isMobile = useIsMobile();
-  const { data, isLoading } = useQuery(getUsersQuery(pagination));
+  const [provider, setProvider] = useState();
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearchValue = useDebounce(searchValue);
+  const { data: stats, isPending: isStatsPending } = useQuery(getUsersStatsQuery());
+
+  const filters = { role, status, provider };
+
+  const { data, isLoading } = useQuery(
+    getUsersQuery({ ...pagination, ...filters, search: debouncedSearchValue })
+  );
 
   const onRoleChange = (e) => {
     const value = e.target.value;
@@ -57,26 +54,33 @@ function Users() {
     setStatus(value);
   };
 
-  const onAuthProviderChange = (e) => {
+  const onProviderChange = (e) => {
     const value = e.target.value;
-    setAuthProvider(value);
+    setProvider(value);
   };
+
+  const clearFilters = () => {
+    setRole('');
+    setStatus('');
+    setProvider('');
+  };
+
+  const usersKpiInfos = [
+    { id: 1, value: stats?.totalUsers || 0, title: 'Total Users' },
+    { id: 2, value: stats?.totalAdmins || 0, title: 'Total Admins' },
+    { id: 3, value: stats?.activeUsers || 0, title: 'Active Users' },
+    { id: 4, value: stats?.bannedUsers || 0, title: 'Banned Users' },
+  ];
 
   return (
     <>
-      <PageHeader title="Users" description="Manage users, roles, and activity.">
-        <Button size={isMobile ? 'sm' : 'default'} variant="outline">
-          Bulk Actions (0)
-        </Button>
-        <Button
-          size={isMobile ? 'sm' : 'default'}
-          className="bg-blue-500 text-white hover:bg-blue-600"
-        >
-          <PlusIcon /> Add User
-        </Button>
-      </PageHeader>
-      <SearchInput placeholder="Search by email or username..." />
-      <FilterBar>
+      <PageHeader title="Users" description="Manage users, roles, and activity." />
+      <SearchInput
+        placeholder="Search by email or username..."
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
+      <FilterBar filters={filters} onClearAll={clearFilters}>
         <FilterSelectBox
           filterName="Roles"
           placeholder="Select role"
@@ -95,11 +99,11 @@ function Users() {
           filterName="Auth provider"
           placeholder="Select provider"
           options={authProviderOptions}
-          value={authProvider}
-          onChange={onAuthProviderChange}
+          value={provider}
+          onChange={onProviderChange}
         />
       </FilterBar>
-      <KpiCardWrapper data={kpiInfos} />
+      <KpiCardWrapper data={usersKpiInfos} isPending={isStatsPending} />
       <PrimaryTable
         columns={columns}
         rows={data}
