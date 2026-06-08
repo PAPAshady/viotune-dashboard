@@ -301,7 +301,14 @@ export const getSongsByAlbumId = async (albumId, keyword) => {
     .order('track_number', { referencedTable: 'songs', ascending: true })
     .or(`title.ilike.%${keyword}%,artist.ilike.%${keyword}%`, { referencedTable: 'songs' });
   if (error) throw error;
-  return { data: data.map((data) => data.songs), total: count };
+
+  const albumSongs = [];
+  data.forEach((item) => item.songs && albumSongs.push(item.songs));
+
+  return {
+    data: albumSongs,
+    total: count,
+  };
 };
 
 export const getAlbumRecommendedSongs = async ({ pageParam, pageSize = 10, search, albumId }) => {
