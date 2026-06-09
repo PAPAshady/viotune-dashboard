@@ -316,13 +316,15 @@ export const getAlbumRecommendedSongs = async ({ pageParam, pageSize = 10, searc
   if (albumSongsError) throw error;
   const excludedIds = albumSongs.map((song) => song.id);
 
-  const { data, error } = await supabase
-    .from('most_played_songs')
-    .select('*')
-    .notIn('id', excludedIds)
-    .or(`title.ilike.%${search}%,artist.ilike.%${search}%`)
-    .gt('position', pageParam)
-    .lte('position', pageParam + pageSize);
+  const query = supabase.from('most_played_songs').select('*').notIn('id', excludedIds);
+
+  if (search) {
+    query.or(`title.ilike.%${search}%,artist.ilike.%${search}%`);
+  } else {
+    query.gt('position', pageParam).lte('position', pageParam + pageSize);
+  }
+
+  const { data, error } = await query;
 
   if (error) throw error;
 

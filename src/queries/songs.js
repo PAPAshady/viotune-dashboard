@@ -151,6 +151,7 @@ export const getAlbumRecommendedSongsInfiniteQuery = (options) =>
     queryFn: ({ pageParam }) => getAlbumRecommendedSongs({ pageParam, ...options }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
+      if (options.search) return;
       const params = lastPage.map((song) => song.position);
       const nextPageParam = Math.max(...params);
       if (nextPageParam !== -Infinity) {
