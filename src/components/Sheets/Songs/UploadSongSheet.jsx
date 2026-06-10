@@ -41,8 +41,6 @@ function UploadSongSheet({ genres, albums, artists }) {
   const isEditMode = useSongSheet((state) => state.isEditMode);
   const song = useSongSheet((state) => state.song); // selected song to edit
 
-  console.log(genres);
-
   // fill out the form with dynamic default values in case user wants to edit a song.
   const defaultValues = isEditMode
     ? {
