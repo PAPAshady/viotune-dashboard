@@ -14,8 +14,6 @@ import {
   MicVocalIcon,
   TagIcon,
   UsersIcon,
-  ChartColumnIcon,
-  SettingsIcon,
 } from 'lucide-react';
 
 import SidebarItem from './SidebarItem';
