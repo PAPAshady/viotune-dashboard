@@ -6,7 +6,6 @@ import StatCard from '@/components/StatCard/StatCard';
 import StatCardSkeleton from '@/components/StatCard/StatCardSkeleton';
 import TotalPlaysChart from '@/components/Charts/TotalPlaysChart/TotalPlaysChart';
 import UsersChart from '@/components/Charts/UsersChart/UsersChart';
-import SessionDurationChart from '@/components/Charts/SessionDurationChart/SessionDurationChart';
 import RecentActivityTable from '@/components/Tables/RecentActivityTable/RecentActivityTable';
 
 import { getCurrentStatsQuery, getStatsByDaysAgoQuery } from '@/queries/stats';
@@ -59,10 +58,7 @@ function Dashboard() {
             : stats.map((stat) => <StatCard key={stat?.id} {...stat} />)}
         </div>
         <TotalPlaysChart />
-        <div className="flex flex-col gap-6 lg:flex-row lg:gap-4">
-          <UsersChart />
-          <SessionDurationChart />
-        </div>
+        <UsersChart />
         <RecentActivityTable />
       </div>
     </>

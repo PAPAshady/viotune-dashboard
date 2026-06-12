@@ -34,7 +34,7 @@ const chartConfig = {
 };
 
 function UsersChart() {
-  const [range, setRange] = useState(90);
+  const [range, setRange] = useState(7);
   const { data, isPending } = useQuery(getUsersStatsSinceQuery(range));
   const isTablet = useMediaQuery('(min-width: 768px)');
 
@@ -67,7 +67,7 @@ function UsersChart() {
         </CardAction>
       </CardHeader>
       <CardContent className="px-2 md:ps-0 md:pe-6">
-        <ChartContainer config={chartConfig} className="max-h-50 min-h-42 w-full">
+        <ChartContainer config={chartConfig} className="max-h-70 min-h-42 w-full">
           {isPending ? (
             <div className="flex size-full items-center justify-center">
               <Spinner className="xs:size-13 size-10" />
