@@ -34,7 +34,7 @@ const chartConfig = {
 };
 
 function UsersChart() {
-  const [range, setRange] = useState(90);
+  const [range, setRange] = useState(7);
   const { data, isPending } = useQuery(getUsersStatsSinceQuery(range));
   const isTablet = useMediaQuery('(min-width: 768px)');
 

@@ -34,7 +34,7 @@ const chartConfig = {
 
 function TotalPlaysChart() {
   const isTablet = useMediaQuery('(min-width: 1024px)');
-  const [range, setRange] = useState(90);
+  const [range, setRange] = useState(7);
   const { data, isPending } = useQuery(getPlaysStatsSinceQuery(range));
 
   const handleChange = (value) => {
@@ -97,7 +97,7 @@ function TotalPlaysChart() {
                 type="monotone"
                 stroke="var(--primary)"
                 fill="url(#usersGradient)" // use gradient for chart
-                name='Plays'
+                name="Plays"
               />
               <XAxis dataKey="dateLabel" />
               <YAxis hide={!isTablet} />
