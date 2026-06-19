@@ -8,6 +8,25 @@ The dashboard provides administrators with a centralized interface for managing 
 
 ---
 
+# 📷 Screenshots
+
+> Dashboard Overview
+![Dashboard](./public/screenshot-1.png)
+
+> Songs Management
+
+*Add screenshot*
+
+> Analytics
+
+*Add screenshot*
+
+> User Management
+
+*Add screenshot*
+
+---
+
 ## ✨ Overview
 
 VioTune Dashboard was built to solve the same problems that production content management systems solve every day.
@@ -267,26 +286,6 @@ Working on this project deepened my understanding of:
 * production dashboard workflows
 
 The result is a complete content management system that powers the VioTune platform from the administrative side.
-
----
-
-# 📷 Screenshots
-
-> Dashboard Overview
-
-*Add screenshot*
-
-> Songs Management
-
-*Add screenshot*
-
-> Analytics
-
-*Add screenshot*
-
-> User Management
-
-*Add screenshot*
 
 ---
 
