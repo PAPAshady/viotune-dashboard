@@ -80,6 +80,7 @@ export const getRecentActivities = async ({ limit = 5 } = {}) => {
     )
     .limit(limit)
     .order('created_at', { ascending: false });
+
   if (error) throw error;
   return data;
 };
