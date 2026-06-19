@@ -1,6 +1,6 @@
 # 🎵 VioTune Dashboard
 
-A modern content management system built for **VioTune**, a music streaming platform.
+A modern content management system built for [**VioTune**](https://github.com/papashady/music-app), a music streaming platform.
 
 The dashboard provides administrators with a centralized interface for managing songs, artists, albums, playlists, genres, users, and platform analytics. It includes role-based authorization, media uploads, advanced data tables, and a comprehensive analytics system built without relying on third-party analytics services.
 
@@ -235,15 +235,16 @@ It includes:
 
 ```
 src/
+├── assets/
+├── columns/
 ├── components/
-├── pages/
-├── layouts/
-├── features/
 ├── hooks/
-├── services/
+├── lib/
+├── pages/
+├── queries/
 ├── schemas/
-├── utils/
-└── types/
+├── services/
+├── store/
 ```
 
 (The exact structure may differ as the project evolves.)
@@ -252,7 +253,7 @@ src/
 
 # 🎯 Why I Built This
 
-After building the VioTune music streaming application, I wanted to understand what happens behind the scenes of real products.
+After building the [VioTune music streaming application](https://github.com/papashady/music-app), I wanted to understand what happens behind the scenes of real products.
 
 Instead of relying on an existing CMS, I designed and implemented a custom administrative dashboard from scratch.
 
@@ -293,4 +294,4 @@ The result is a complete content management system that powers the VioTune platf
 
 **Nima Zamani**
 
-Frontend Developer specializing in React and modern frontend ecosystems with experience building complete end-to-end web applications and production-style administrative dashboards.
+Frontend Developer specializing in React and Next.js and modern frontend ecosystems with experience building complete end-to-end web applications and production-style administrative dashboards.
