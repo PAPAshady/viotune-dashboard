@@ -133,6 +133,7 @@ Charts and insights:
 ### State Management & Data Fetching
 
 * TanStack Query
+* Zustand
 
 ### Data Tables
 
