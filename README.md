@@ -11,20 +11,14 @@ The dashboard provides administrators with a centralized interface for managing 
 # 📷 Screenshots
 
 > Dashboard Overview
-![Dashboard](./public/screenshot-1.png)
+<img src="./public/Screenshot-1.png" width="700" />
 
 > Songs Management
 
-*Add screenshot*
-
-> Analytics
-
-*Add screenshot*
+<img src="./public/Screenshot-2.png" width="700" />
 
 > User Management
-
-*Add screenshot*
-
+<img src="./public/Screenshot-3.png" width="700" />
 ---
 
 ## ✨ Overview
