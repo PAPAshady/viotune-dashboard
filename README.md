@@ -47,7 +47,6 @@ A read-only **Guest** role is available so recruiters and visitors can explore t
 
 ### Advanced Tables
 
-* Global search
 * Server-side filtering
 * Sorting
 * Pagination
