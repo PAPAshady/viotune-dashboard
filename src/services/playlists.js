@@ -46,7 +46,7 @@ export const getMostPlayedPlaylists = async ({ limit = 5 }) => {
     .from('most_played_playlists')
     .select('*')
     .limit(limit)
-    .order('play_count', { ascending: false });
+    .order('total_plays', { ascending: false });
   if (error) throw error;
   return data;
 };
