@@ -1,8 +1,7 @@
-import { SearchIcon, MenuIcon } from 'lucide-react';
+import { MenuIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { InputGroup, InputGroupInput, InputGroupAddon } from '@/components/ui/input-group';
 import { useSidebar } from '@/components/ui/sidebar';
 
 import defaultAvatar from '@assets/images/default-avatar.png';
@@ -19,13 +18,7 @@ function Header() {
         <MenuIcon onClick={toggleSidebar} size={20} />
       </button>
 
-      <InputGroup className="md:max-w-md">
-        <InputGroupInput placeholder="Search..." />
-        <InputGroupAddon>
-          <SearchIcon />
-        </InputGroupAddon>
-      </InputGroup>
-      <Avatar className="md:size-10">
+      <Avatar className="ms-auto md:size-10">
         <AvatarImage src={avatar || defaultAvatar} alt={userFullName} />
         <AvatarFallback>
           <Skeleton className="size-full" />
