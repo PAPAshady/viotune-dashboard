@@ -14,7 +14,6 @@ import { Label } from '@components/ui/label';
 import { Checkbox } from '@components/ui/checkbox';
 import { Button } from '@components/ui/button';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
-import { Link } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import supabase from '@/services/supabase';
@@ -32,19 +31,22 @@ function SignIn() {
     register,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm({ resolver: zodResolver(schema) });
+  } = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: { email: 'johndoe@gmail.com', password: '123456789' },
+  });
 
   const onSubmit = async (userInfo) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword(userInfo);
       if (data.user) {
         const user = await getMe(data.user.id);
-        const isAdmin = user.role === 'admin' || user.role === 'super_admin';
+        const isUser = user.role === 'user';
         const isBanned = user.status === 'banned';
 
-        if (!isAdmin) {
+        if (isUser) {
           await supabase.auth.signOut();
-          setError('root', { message: 'Incorrect email or password.' });
+          setError('root', { message: 'You don’t have permission to access this page.' });
           return;
         }
 
@@ -110,7 +112,6 @@ function SignIn() {
                     <Checkbox id="remember-me" />
                     <Label htmlFor="remember-me">Remember me</Label>
                   </div>
-                  <Link className="text-sm text-blue-400 underline">Forgot Password?</Link>
                 </div>
               </FieldGroup>
               <Button

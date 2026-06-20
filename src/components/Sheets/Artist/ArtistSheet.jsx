@@ -35,6 +35,7 @@ import useArtistSheet from '@/store/artistsSheet.store';
 import { createArtistMutation, updateArtistMutation } from '@/queries/artists';
 import { Spinner } from '@/components/ui/spinner';
 import { getDirtyFields } from '@/utils';
+import GuestAlert from '@/components/GuestAlert/GuestAlert';
 
 function ArtistsSheet({ genres }) {
   const open = useArtistSheet((state) => state.open);
@@ -103,6 +104,7 @@ function ArtistsSheet({ genres }) {
             <SheetDescription>Add a new artist to your library</SheetDescription>
           </SheetHeader>
           <div className="w-full grow overflow-y-auto p-4 pb-10" style={{ scrollbarWidth: 'thin' }}>
+            <GuestAlert />
             <FieldGroup className="gap-6">
               <Field>
                 <FieldLabel>Name</FieldLabel>

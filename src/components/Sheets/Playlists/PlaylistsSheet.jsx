@@ -34,6 +34,7 @@ import usePlaylistsSheet from '@/store/playlistsSheer.store';
 import { isURL, getDirtyFields } from '@/utils';
 import schema from '@/schemas/playlists.schema';
 import { createPlaylistMutation, updatePlaylistMutation } from '@/queries/playlists';
+import GuestAlert from '@/components/GuestAlert/GuestAlert';
 
 function PlaylistsSheet() {
   'use no memo';
@@ -116,6 +117,7 @@ function PlaylistsSheet() {
             </SheetDescription>
           </SheetHeader>
           <div className="w-full grow overflow-y-auto p-4 pb-10" style={{ scrollbarWidth: 'thin' }}>
+            <GuestAlert />
             <FieldGroup className="gap-6">
               <Field>
                 <FieldLabel>Title</FieldLabel>

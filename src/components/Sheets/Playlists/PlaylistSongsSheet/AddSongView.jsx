@@ -21,6 +21,7 @@ import SongCardSkeleton from '@/components/SongCard/SongCardSkeleton';
 import { getPlaylistRecommendedSongsInfiniteQuery } from '@/queries/songs';
 import useDebounce from '@/hooks/useDebounce';
 import { addSongToPlaylistMutation } from '@/queries/playlists';
+import GuestAlert from '@/components/GuestAlert/GuestAlert';
 
 function AddSongView({ onBack, playlist }) {
   const [selectedSongs, setSelectedSongs] = useState(new Set());
@@ -66,6 +67,9 @@ function AddSongView({ onBack, playlist }) {
             <SheetTitle className="text-xl font-bold">Add Songs</SheetTitle>
             <SheetDescription>Browse existing songs to add to "{playlist.title}"</SheetDescription>
           </div>
+        </div>
+        <div className="px-4">
+          <GuestAlert className="my-0 max-w-none" />
         </div>
       </SheetHeader>
       <div className="mb-4 px-4">

@@ -35,6 +35,7 @@ import useAlbumSheet from '@/store/albumsSheet.store';
 import { createAlbumMutation, updateAlbumMutation } from '@/queries/albums';
 import { Spinner } from '@/components/ui/spinner';
 import { getDirtyFields } from '@/utils';
+import GuestAlert from '@/components/GuestAlert/GuestAlert';
 
 function AddAlbumSheet({ artists, genres }) {
   const open = useAlbumSheet((state) => state.open);
@@ -106,6 +107,7 @@ function AddAlbumSheet({ artists, genres }) {
             <SheetDescription>Add a new album to your library</SheetDescription>
           </SheetHeader>
           <div className="w-full grow overflow-y-auto p-4 pb-10" style={{ scrollbarWidth: 'thin' }}>
+            <GuestAlert />
             <FieldGroup className="gap-6">
               <Field>
                 <FieldLabel>Title</FieldLabel>
