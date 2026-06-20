@@ -39,6 +39,7 @@ import { createGenreMutation, updateGenreMutation } from '@/queries/genres';
 import { Spinner } from '@/components/ui/spinner';
 import { getDirtyFields } from '@/utils';
 import { tagSchema } from '@/schemas/genres.schema';
+import GuestAlert from '@/components/GuestAlert/GuestAlert';
 
 function GenreSheet() {
   const [tagInput, setTagInput] = useState('');
@@ -144,6 +145,7 @@ function GenreSheet() {
             <SheetDescription>Add a new genre to your library</SheetDescription>
           </SheetHeader>
           <div className="w-full grow overflow-y-auto p-4 pb-10" style={{ scrollbarWidth: 'thin' }}>
+            <GuestAlert className="mt-0" />
             <FieldGroup className="gap-6">
               <Field>
                 <FieldLabel>Title</FieldLabel>

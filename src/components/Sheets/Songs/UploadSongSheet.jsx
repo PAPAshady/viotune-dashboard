@@ -33,6 +33,7 @@ import schema from '@/schemas/songs.schema';
 import { uploadSongMutation, updateSongMutation } from '@/queries/songs';
 import useSongSheet from '@/store/songSheet.store';
 import { isURL, getDirtyFields } from '@/utils';
+import GuestAlert from '@/components/GuestAlert/GuestAlert';
 
 function UploadSongSheet({ genres, albums, artists }) {
   const open = useSongSheet((state) => state.open);
@@ -121,6 +122,7 @@ function UploadSongSheet({ genres, albums, artists }) {
             </SheetDescription>
           </SheetHeader>
           <div className="w-full grow overflow-y-auto p-4 pb-10" style={{ scrollbarWidth: 'thin' }}>
+            <GuestAlert />
             <FieldGroup>
               <Field>
                 <FieldLabel className="text-base">Audio File</FieldLabel>

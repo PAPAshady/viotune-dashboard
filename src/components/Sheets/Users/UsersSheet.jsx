@@ -29,6 +29,7 @@ import { useMutation } from '@tanstack/react-query';
 
 import { updateUserMutationOptions } from '@/queries/users';
 import { getDirtyFields } from '@/utils';
+import GuestAlert from '@/components/GuestAlert/GuestAlert';
 
 export default function UsersSheet({ userId, userName, role, status }) {
   const [open, setOpen] = useState(false);
@@ -71,6 +72,7 @@ export default function UsersSheet({ userId, userName, role, status }) {
             <SheetDescription>Edit {userName} data</SheetDescription>
           </SheetHeader>
           <div className="w-full grow overflow-y-auto p-4 pb-10" style={{ scrollbarWidth: 'thin' }}>
+            <GuestAlert className="mt-0" />
             <FieldGroup className="gap-6">
               <Field>
                 <FieldLabel>Role</FieldLabel>
@@ -87,6 +89,7 @@ export default function UsersSheet({ userId, userName, role, status }) {
                       <SelectItem value="user">User</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
                       <SelectItem value="super_admin">Super Admin</SelectItem>
+                      <SelectItem value="guest">Guest</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
