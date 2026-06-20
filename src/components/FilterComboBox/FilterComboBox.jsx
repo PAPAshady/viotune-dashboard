@@ -78,9 +78,9 @@ function FilterComboBox({
                     </CommandItem>
                     {options.map((option) => (
                       <CommandItem
-                        value={option.id}
+                        value={option[valueKey]}
                         key={option.id}
-                        onSelect={onSelectHandler}
+                        onSelect={() => onSelectHandler(option.id)}
                         className={cn(value === option.id && 'bg-accent/50')}
                       >
                         <div className="flex items-center gap-2">
