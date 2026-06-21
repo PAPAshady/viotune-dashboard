@@ -127,6 +127,8 @@ export const deleteAlbums = async (albumRows) => {
 
   if (error) throw error;
 
+  if (!data.length) throw new Error('No albums were removed.');
+
   return data;
 };
 
@@ -215,7 +217,8 @@ export const removeSongFromAlbum = async (song_id, album_id) => {
     .from('album_songs')
     .delete()
     .match({ album_id, song_id })
-    .select();
+    .select()
+    .single();
   if (error) throw error;
   return data;
 };

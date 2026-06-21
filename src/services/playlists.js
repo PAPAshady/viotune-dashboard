@@ -127,6 +127,7 @@ export const deletePlaylists = async (playlistRows) => {
   const { data, error } = await supabase.from('playlists').delete().in('id', playlistIds).select();
 
   if (error) throw error;
+  if (!data.length) throw new Error('No playlists were removed.');
 
   return data;
 };
@@ -195,7 +196,8 @@ export const removeSongFromPlaylist = async (song_id, playlist_id) => {
     .from('playlist_songs')
     .delete()
     .match({ playlist_id, song_id })
-    .select();
+    .select()
+    .single();
   if (error) throw error;
   return data;
 };

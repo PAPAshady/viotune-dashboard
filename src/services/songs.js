@@ -141,7 +141,12 @@ export const deleteSong = async (data) => {
   }
 
   // remove song metadata from database
-  const { error: songMetadataError } = await supabase.from('songs').delete().eq('id', data.id);
+  const { error: songMetadataError } = await supabase
+    .from('songs')
+    .delete()
+    .eq('id', data.id)
+    .select()
+    .single();
 
   if (songMetadataError) throw songMetadataError;
 };
