@@ -35,8 +35,6 @@ const generateText = (mediaType, metadata, action) => {
 function RecentActivityTable() {
   const { data, isPending } = useQuery(getRecentActivitiesQuery());
 
-  console.log(data, isPending);
-
   return (
     <Card>
       <CardHeader>
