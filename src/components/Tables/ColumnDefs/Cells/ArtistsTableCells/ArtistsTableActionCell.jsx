@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
 } from '@components/ui/dropdown-menu';
 import { Button } from '@components/ui/button';
-import { MoreHorizontalIcon, PencilIcon, EyeOffIcon, Trash2Icon } from 'lucide-react';
+import { MoreHorizontalIcon, PencilIcon } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 
 import useArtistSheet from '@/store/artistsSheet.store';
@@ -46,10 +46,6 @@ function ArtistsTableActionCell({ row }) {
         <DropdownMenuItem onSelect={openAlbumSheet}>
           <PencilIcon className="me-2 size-4" />
           Edit metadata
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <EyeOffIcon className="me-2 size-4" />
-          Hide / Unpublish
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DeleteDialog
