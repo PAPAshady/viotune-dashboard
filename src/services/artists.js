@@ -148,6 +148,7 @@ export const deleteArtists = async (artistRows) => {
   const { data, error } = await supabase.from('artists').delete().in('id', artistIds).select();
 
   if (error) throw error;
+  if (!data.length) throw new Error('No artists were removed.');
 
   return data;
 };

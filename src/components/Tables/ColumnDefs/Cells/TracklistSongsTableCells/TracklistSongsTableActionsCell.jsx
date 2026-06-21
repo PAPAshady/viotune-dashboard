@@ -8,9 +8,8 @@ import { removeSongFromPlaylistMutation } from '@/queries/playlists';
 
 function TracklistSongsTableActionsCell({ table, row }) {
   const tracklist = table.options.meta.tracklist;
-  const isAlbum = tracklist.type === 'album';
+  const isAlbum = tracklist.tracklistType === 'album';
   const { id } = tracklist;
-
 
   const { isPending, mutate } = useMutation(
     isAlbum ? removeSongFromAlbumMutation(id) : removeSongFromPlaylistMutation(id)
